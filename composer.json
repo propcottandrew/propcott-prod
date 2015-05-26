@@ -1,11 +1,11 @@
 {
-	"name": "laravel/laravel",
-	"description": "The Laravel Framework.",
+	"name": "propcott/propcott",
+	"description": "Reinventing Boycotts.",
 	"keywords": ["framework", "laravel"],
-	"license": "MIT",
 	"type": "project",
 	"require": {
-		"laravel/framework": "5.0.*"
+		"laravel/framework": "5.0.*",
+		"laravel/socialite": "~2.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
