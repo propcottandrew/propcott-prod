@@ -7,6 +7,15 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Login</div>
 				<div class="panel-body">
+					<div style="text-align: center;">
+						<div style="border: 1px solid transparent; margin: 0.5em;">Log in with...</div>
+						<a href="{{ url('/login/facebook') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Facebook</a>
+						<a href="{{ url('/login/twitter') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Twitter</a>
+						<a href="{{ url('/login/google') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Google</a>
+					</div>
+					
+					<hr />
+					
 					@if (count($errors) > 0)
 						<div class="alert alert-danger">
 							<strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -49,7 +58,7 @@
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary">Login</button>
 
-								<a class="btn btn-link" href="{{ url('/password/email') }}">Forgot Your Password?</a>
+								<a class="btn btn-link" href="{{ url('/login/forgot') }}">Forgot Your Password?</a>
 							</div>
 						</div>
 					</form>

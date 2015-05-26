@@ -33,23 +33,23 @@ return [
 		'model'  => 'App\User',
 		'secret' => '',
 	],
-	
+
 	'facebook' => [
 		'client_id' => env('FACEBOOK_CLIENT_ID'),
 		'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-		'redirect' => 'http://propcott.localhost/login/facebook/callback',
+		'redirect' => 'http://localhost/login/facebook/callback',
 	],
-	
+
 	'twitter' => [
 		'client_id' => env('TWITTER_CLIENT_ID'),
 		'client_secret' => env('TWITTER_CLIENT_SECRET'),
-		'redirect' => 'http://propcott.localhost/login/twitter/callback',
+		'redirect' => 'http://localhost/login/twitter/callback',
 	],
-	
+
 	'google' => [
 		'client_id' => env('GOOGLE_CLIENT_ID'),
 		'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-		'redirect' => 'http://propcott.localhost/login/google/callback',
+		'redirect' => 'http://localhost/login/google/callback',
 	],
 
 ];

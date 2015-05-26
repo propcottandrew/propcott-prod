@@ -13,13 +13,8 @@ $providers = implode('|', str_replace('|', '\|', str_replace('\\', '\\\\', [
 |--------------------------------------------------------------------------
 */
 
-// remove this one once learned from it
+Route::get('/', 'WelcomeController@index');
 Route::get('/home', 'HomeController@index');
-
-Route::get('/', 'WelcomeController@index');
-Route::get('/', 'WelcomeController@index');
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -27,29 +22,39 @@ Route::get('/', 'WelcomeController@index');
 |--------------------------------------------------------------------------
 */
 
-// replace these asap (D:\Work\Propcott\server\vendor\laravel\framework\src\Illuminate\Foundation\Auth)
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-]);
+Route::get('/register', 'AuthController@registrationForm');
+Route::post('/register', 'AuthController@register');
 
-Route::get('/register', 'Auth\AuthController@registrationForm');
-Route::post('/register', 'Auth\AuthController@register');
-
-Route::get('/logout', 'Auth\AuthController@logout');
+Route::get('/logout', 'AuthController@logout');
 
 Route::group(['prefix' => 'login'], function() use ($providers)
 {
-	Route::get('/', 'Auth\AuthController@loginForm');
-	Route::post('/', 'Auth\AuthController@login');
+	Route::get('/', 'AuthController@loginForm');
+	Route::post('/', 'AuthController@login');
 	
 	Route::get('/verify', 'WelcomeController@showForm'); // should redirect if query param is attached
 	Route::post('/verify', 'WelcomeController@verifyCode');
 	
-	Route::get('/forgot', 'WelcomeController@index');
-	Route::get('/reset', 'WelcomeController@index');
+	Route::get('/forgot', 'AuthController@forgotForm');
+	Route::post('/forgot', 'AuthController@forgot');
+	Route::get('/reset/{token}', 'AuthController@resetForm');
+	Route::post('/reset', 'AuthController@reset');
 	
-	// Social network route and callback
-	Route::get('/{provider}', 'Auth\AuthController@social')->where('provider', $providers);
-	Route::get('/{provider}/callback', 'Auth\AuthController@callback')->where('provider', $providers);
+	Route::get('/{provider}', 'AuthController@social')->where('provider', $providers);
+	Route::get('/{provider}/callback', 'AuthController@callback')->where('provider', $providers);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Account Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::group(['prefix' => 'account'], function() use ($providers)
+{
+	Route::get('/', 'AccountController@index');
+	Route::post('/', 'AuthController@update'); // should try to update and pass any messages to index (maybe flash?)
+	
+	Route::get('/connect/{provider}', 'AuthController@social')->where('provider', $providers);
+	Route::get('/connect/{provider}/callback', 'AuthController@callback')->where('provider', $providers);
 });
