@@ -70,7 +70,7 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function registrationForm()
+	public function registerView()
 	{
 		return view('auth.register');
 	}
@@ -102,7 +102,7 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function loginForm()
+	public function loginView()
 	{
 		return view('auth.login');
 	}
@@ -228,7 +228,7 @@ class AuthController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function forgotForm()
+	public function forgotView()
 	{
 		return view('auth.password');
 	}
@@ -274,7 +274,7 @@ class AuthController extends Controller {
 	 * @param  string  $token
 	 * @return Response
 	 */
-	public function resetForm($token = null)
+	public function resetView($token = null)
 	{
 		if (is_null($token))
 		{
