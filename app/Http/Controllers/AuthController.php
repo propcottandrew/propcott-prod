@@ -6,6 +6,8 @@ use App\Services\Registrar;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\User;
+use App\UserSocialAccount;
 
 /**
  * Todo
@@ -163,31 +165,24 @@ class AuthController extends Controller {
 	{
 		$user = \Socialize::with($provider)->user();
 		
-		/*
-		when user signs up through email:
-			does an account with that email exist?
-			yes
-				is it a site account?
-				yes
-					hey, you already made an account
-				no
-					you have some social network accounts, verify your email to tie them all together
-			no
-				great, you're almost there. verify your email to log in
-			when they attempt to connect an account:
-				great, you already have an account. both have been tied together
-		when user signs up through social:
-			add user to db.
-			when they attempt to connect an account:
-				
+		/**
+		 * $user->getId();
+		 * $user->getName();
+		 * $user->getEmail();
+		 * $user->getAvatar();
+		 */
 		
+		$account = UserSocialAccount::where('id', '=', $user->getId())->where('provider', '=', $provider);
 		
-		// All Providers
-		$user->getId();
-		$user->getName();
-		$user->getEmail();
-		$user->getAvatar();
-		*/
+		if($account->count())
+		{
+			// flash successfuly logged in
+			$user = $account->user();
+		} else {
+			// doesn't exist... login now!
+			// flash no user found but logging in for first time. click here to link to an existing account
+			$user = $account;
+		}
 		
 		return response()->json($user);
 		

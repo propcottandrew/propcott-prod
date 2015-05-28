@@ -36,9 +36,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	protected $hidden = [
 		'password',
 		'remember_token',
-		'facebook_id',
-		'twitter_id',
-		'google_id',
 	];
+	
+	public function accounts()
+	{
+		return $this->hasMany('App\UserSocialAccount', 'user_id');
+	}
 
 }

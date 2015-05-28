@@ -2,14 +2,14 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserVerify extends Model {
+class UserSocialAccount extends Model {
 
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'users_verify';
+	protected $table = 'users_social_accounts';
 
 	/**
 	 * The attributes that are mass assignable.
@@ -17,8 +17,7 @@ class UserVerify extends Model {
 	 * @var array
 	 */
 	protected $fillable = [
-		'email',
-		'code',
+		
 	];
 
 	/**
@@ -29,5 +28,10 @@ class UserVerify extends Model {
 	protected $hidden = [
 		
 	];
-
+	
+	public function user()
+	{
+		return $this->belongsTo('App\User', 'user_id', 'id');
+	}
+	
 }
