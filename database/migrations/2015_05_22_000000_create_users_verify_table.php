@@ -16,7 +16,7 @@ class CreateUsersVerifyTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('email');
-			$table->string('code', 32);
+			$table->string('token', 32);
 			$table->rememberToken();
 			$table->timestamps();
 		});

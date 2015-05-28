@@ -1,11 +1,11 @@
 {
 	"name": "propcott/propcott",
-	"description": "Reinventing Boycotts.",
+	"description": "Reinventing Boycotts",
 	"keywords": ["framework", "laravel"],
 	"type": "project",
 	"require": {
 		"laravel/framework": "5.0.*",
-		"laravel/socialite": "~2.0"
+		"laravel/socialite": "2.0.4"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

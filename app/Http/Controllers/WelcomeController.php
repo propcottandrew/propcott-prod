@@ -1,7 +1,5 @@
 <?php namespace App\Http\Controllers;
 
-use Illuminate\Support\Collection;
-
 class WelcomeController extends Controller {
 
 	/*
@@ -32,14 +30,7 @@ class WelcomeController extends Controller {
 	 */
 	public function index()
 	{
-		return view('welcome', ['quote' => Collection::make([
-			'When there is no desire, all things are at peace. - Laozi',
-			'Simplicity is the ultimate sophistication. - Leonardo da Vinci',
-			'Simplicity is the essence of happiness. - Cedric Bledsoe',
-			'Smile, breathe, and go slowly. - Thich Nhat Hanh',
-			'Simplicity is an acquired taste. - Katharine Gerould',
-			'Well begun is half done. - Aristotle',
-		])->random()]);
+		return view('welcome', ['quote' => 'Reinventing boycotts']);
 	}
 
 }

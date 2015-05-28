@@ -182,18 +182,8 @@ class AuthController extends Controller {
 				
 		
 		
-		find if user by social network id exists
-		
-		// OAuth Two Providers
-		$token = $user->token;
-
-		// OAuth One Providers
-		$token = $user->token;
-		$tokenSecret = $user->tokenSecret;
-
 		// All Providers
 		$user->getId();
-		$user->getNickname();
 		$user->getName();
 		$user->getEmail();
 		$user->getAvatar();

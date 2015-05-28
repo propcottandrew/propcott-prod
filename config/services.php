@@ -37,19 +37,19 @@ return [
 	'facebook' => [
 		'client_id' => env('FACEBOOK_CLIENT_ID'),
 		'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-		'redirect' => 'http://localhost/login/facebook/callback',
+		'redirect' => 'http://24-205-115-123.dhcp.hspr.ca.charter.com/login/facebook/callback',
 	],
 
 	'twitter' => [
 		'client_id' => env('TWITTER_CLIENT_ID'),
 		'client_secret' => env('TWITTER_CLIENT_SECRET'),
-		'redirect' => 'http://localhost/login/twitter/callback',
+		'redirect' => 'http://24-205-115-123.dhcp.hspr.ca.charter.com/login/twitter/callback',
 	],
 
 	'google' => [
 		'client_id' => env('GOOGLE_CLIENT_ID'),
 		'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-		'redirect' => 'http://localhost/login/google/callback',
+		'redirect' => 'http://24-205-115-123.dhcp.hspr.ca.charter.com/login/google/callback',
 	],
 
 ];
