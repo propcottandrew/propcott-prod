@@ -20,10 +20,10 @@ class CreateUsersSocialAccountsTable extends Migration {
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			
 			$table->enum('provider', ['facebook', 'twitter', 'google']);
-			$table->string('provider_id');
-			$table->string('name');
-			$table->string('email');
-			$table->string('avatar');
+			$table->string('provider_id')->unique();
+			$table->string('name')->nullable();
+			$table->string('email')->nullable();
+			$table->string('avatar')->nullable();
 			//$table->string('token', 32);
 			//$table->rememberToken();
 			$table->timestamps();

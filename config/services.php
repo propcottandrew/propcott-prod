@@ -30,26 +30,26 @@ return [
 	],
 
 	'stripe' => [
-		'model'  => 'App\User',
+		'model'  => 'App\Models\User',
 		'secret' => '',
 	],
 
 	'facebook' => [
 		'client_id' => env('FACEBOOK_CLIENT_ID'),
 		'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-		'redirect' => url('/login/facebook/callback'),
+		'redirect' => (php_sapi_name() == 'cli') ? '' : url('/oauth/connect/facebook/callback'),
 	],
 
 	'twitter' => [
 		'client_id' => env('TWITTER_CLIENT_ID'),
 		'client_secret' => env('TWITTER_CLIENT_SECRET'),
-		'redirect' => url('/login/twitter/callback'),
+		'redirect' => (php_sapi_name() == 'cli') ? '' : url('/oauth/connect/twitter/callback'),
 	],
 
 	'google' => [
 		'client_id' => env('GOOGLE_CLIENT_ID'),
 		'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-		'redirect' => url('/login/google/callback'),
+		'redirect' => (php_sapi_name() == 'cli') ? '' : url('/oauth/connect/google/callback'),
 	],
 
 ];

@@ -1,4 +1,4 @@
-<?php namespace App;
+<?php namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -40,7 +40,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	
 	public function accounts()
 	{
-		return $this->hasMany('App\UserSocialAccount', 'user_id');
+		return $this->hasMany('App\Models\UserSocialAccount', 'user_id');
 	}
 
 }

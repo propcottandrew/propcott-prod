@@ -7,15 +7,6 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Login</div>
 				<div class="panel-body">
-					<div style="text-align: center;">
-						<div style="border: 1px solid transparent; margin: 0.5em;">Log in with...</div>
-						<a href="{{ url('/login/facebook') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Facebook</a>
-						<a href="{{ url('/login/twitter') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Twitter</a>
-						<a href="{{ url('/login/google') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Google</a>
-					</div>
-					
-					<hr />
-					
 					@if (count($errors) > 0)
 						<div class="alert alert-danger">
 							<strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -26,6 +17,15 @@
 							</ul>
 						</div>
 					@endif
+					
+					<div style="text-align: center;">
+						<div style="border: 1px solid transparent; margin: 0.5em;">Log in with...</div>
+						<a href="{{ url('/oauth/connect/facebook') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Facebook</a>
+						<a href="{{ url('/oauth/connect/twitter') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Twitter</a>
+						<a href="{{ url('/oauth/connect/google') }}" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: 1em;">Google</a>
+					</div>
+					
+					<hr />
 
 					<form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">

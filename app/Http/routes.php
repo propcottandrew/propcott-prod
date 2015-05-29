@@ -27,34 +27,39 @@ $providers = implode('|', str_replace('|', '\|', str_replace('\\', '\\\\', [
 Route::get('/', 'WelcomeController@index');
 Route::get('/home', 'HomeController@index');
 
-
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
 |--------------------------------------------------------------------------
 */
 
-Route::get('/register', 'AuthController@registerView');
-Route::post('/register', 'AuthController@register');
+Route::match(['get', 'post'], '/register', 'AuthController@register');
 
 Route::get('/logout', 'AuthController@logout');
 
 Route::group(['prefix' => 'login'], function() use ($providers)
 {
-	Route::get('/', 'AuthController@loginView');
-	Route::post('/', 'AuthController@login');
+	Route::match(['get', 'post'], '/', 'AuthController@login');
 	
-	Route::get('/verify', 'WelcomeController@showView'); // should redirect if query param is attached
-	Route::post('/verify', 'WelcomeController@verifyCode');
+	//Route::get('/verify', 'WelcomeController@showView'); // should redirect if query param is attached
+	//Route::post('/verify', 'WelcomeController@verifyCode');
 	
 	Route::get('/forgot', 'AuthController@forgotView');
 	Route::post('/forgot', 'AuthController@forgot');
 	
-	Route::get('/reset/{token}', 'AuthController@resetView');
-	Route::post('/reset', 'AuthController@reset');
-	
-	Route::get('/{provider}', 'AuthController@social')->where('provider', $providers);
-	Route::get('/{provider}/callback', 'AuthController@callback')->where('provider', $providers);
+	Route::match(['get', 'post'], '/reset/{token?}', 'AuthController@reset');
+});
+
+/*
+|--------------------------------------------------------------------------
+| OAuth Routes
+|--------------------------------------------------------------------------
+*/
+Route::group(['prefix' => 'oauth'], function() use ($providers)
+{
+	Route::get('/connect/{provider}', 'OAuthController@connect')->where('provider', $providers);
+	Route::get('/connect/{provider}/callback', 'OAuthController@callback')->where('provider', $providers);
+	Route::match(['get','post'], '/disconnect/{provider}', 'OAuthController@disconnect')->where('provider', $providers);
 });
 
 /*
@@ -63,20 +68,9 @@ Route::group(['prefix' => 'login'], function() use ($providers)
 |--------------------------------------------------------------------------
 */
 
-Route::group(['prefix' => 'account'], function() use ($providers)
+Route::group(['prefix' => 'account'], function()
 {
-	Route::get('/', 'AccountController@index');
-	Route::post('/', 'AuthController@update'); // should try to update and pass any messages to index (maybe flash?)
-	
-	Route::get('/merge', 'AccountController@mergeView');
-	Route::post('/merge', 'AccountController@merge');
-	
-	Route::get('/split', 'AccountController@splitView');
-	Route::post('/split', 'AccountController@split');
-	
-	// if an account exists, redirect to merge
-	Route::get('/connect/{provider}', 'AuthController@social')->where('provider', $providers);
-	Route::get('/connect/{provider}/callback', 'AuthController@callback')->where('provider', $providers);
-	Route::get('/disconnect/{provider}', 'AuthController@social')->where('provider', $providers);
-	// should have a copySettings parameter
+	Route::match(['get', 'post'], '/', 'AccountController@index');
+	Route::match(['get', 'post'], '/merge', 'AccountController@merge');	
+	Route::match(['get', 'post'], '/delete', 'AccountController@delete');
 });

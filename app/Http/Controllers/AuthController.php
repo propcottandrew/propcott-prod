@@ -6,8 +6,8 @@ use App\Services\Registrar;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\User;
-use App\UserSocialAccount;
+use App\Models\User;
+use App\Models\UserSocialAccount;
 
 /**
  * Todo
@@ -65,17 +65,6 @@ class AuthController extends Controller {
 
 		$this->middleware('guest', ['except' => 'logout']);
 	}
-	
-	
-	/**
-	 * Show the application registration form.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function registerView()
-	{
-		return view('auth.register');
-	}
 
 	/**
 	 * Handle a registration request for the application.
@@ -85,28 +74,23 @@ class AuthController extends Controller {
 	 */
 	public function register(Request $request)
 	{
-		$validator = $this->registrar->validator($request->all());
-
-		if ($validator->fails())
+		if (\Request::isMethod('post'))
 		{
-			$this->throwValidationException(
-				$request, $validator
-			);
+			$validator = $this->registrar->validator($request->all());
+
+			if ($validator->fails())
+			{
+				$this->throwValidationException(
+					$request, $validator
+				);
+			}
+
+			$this->auth->login($this->registrar->create($request->all()));
+
+			return redirect('/home');
 		}
-
-		$this->auth->login($this->registrar->create($request->all()));
-
-		return redirect($this->redirectPath());
-	}
-
-	/**
-	 * Show the application login form.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function loginView()
-	{
-		return view('auth.login');
+		
+		return view('auth.register');
 	}
 
 	/**
@@ -117,22 +101,27 @@ class AuthController extends Controller {
 	 */
 	public function login(Request $request)
 	{
-		$this->validate($request, [
-			'email' => 'required|email', 'password' => 'required',
-		]);
-
-		$credentials = $request->only('email', 'password');
-
-		if ($this->auth->attempt($credentials, $request->has('remember')))
+		if (\Request::isMethod('post'))
 		{
-			return redirect()->intended($this->redirectPath());
-		}
+			$this->validate($request, [
+				'email' => 'required|email', 'password' => 'required',
+			]);
 
-		return redirect($this->loginPath())
-					->withInput($request->only('email', 'remember'))
-					->withErrors([
-						'email' => $this->getFailedLoginMessage(),
-					]);
+			$credentials = $request->only('email', 'password');
+
+			if ($this->auth->attempt($credentials, $request->has('remember')))
+			{
+				return redirect('/home');
+			}
+			
+			return redirect('/login')
+				->withInput($request->except('password'))
+				->withErrors([
+					'email' => 'These credentials do not match our records.',
+				]);
+		}
+		
+		return view('auth.login');
 	}
 
 	/**
@@ -147,78 +136,6 @@ class AuthController extends Controller {
 	}
 
 	/**
-	 * ...
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function social($provider)
-	{
-		return \Socialize::with($provider)->redirect();
-	}
-
-	/**
-	 * ...
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function callback($provider)
-	{
-		$user = \Socialize::with($provider)->user();
-		
-		/**
-		 * $user->getId();
-		 * $user->getName();
-		 * $user->getEmail();
-		 * $user->getAvatar();
-		 */
-		
-		$account = UserSocialAccount::where('id', '=', $user->getId())->where('provider', '=', $provider);
-		
-		if($account->count())
-		{
-			// flash successfuly logged in
-			$user = $account->user();
-		} else {
-			// doesn't exist... login now!
-			// flash no user found but logging in for first time. click here to link to an existing account
-			$user = $account;
-		}
-		
-		return response()->json($user);
-		
-	}
-	
-	/**
-	 * Get the failed login message.
-	 *
-	 * @return string
-	 */
-	protected function getFailedLoginMessage()
-	{
-		return 'These credentials do not match our records.';
-	}
-
-	/**
-	 * Get the path to the login route.
-	 *
-	 * @return string
-	 */
-	public function loginPath()
-	{
-		return property_exists($this, 'loginPath') ? $this->loginPath : '/login';
-	}
-	
-	/**
-	 * Display the form to request a password reset link.
-	 *
-	 * @return Response
-	 */
-	public function forgotView()
-	{
-		return view('auth.password');
-	}
-
-	/**
 	 * Send a reset link to the given user.
 	 *
 	 * @param  Request  $request
@@ -226,47 +143,26 @@ class AuthController extends Controller {
 	 */
 	public function forgot(Request $request)
 	{
-		$this->validate($request, ['email' => 'required|email']);
-
-		$response = $this->passwords->sendResetLink($request->only('email'), function($m)
+		if (\Request::isMethod('post'))
 		{
-			$m->subject($this->getEmailSubject());
-		});
+			$this->validate($request, ['email' => 'required|email']);
 
-		switch ($response)
-		{
-			case PasswordBroker::RESET_LINK_SENT:
-				return redirect()->back()->with('status', trans($response));
+			$response = $this->passwords->sendResetLink($request->only('email'), function($m)
+			{
+				$m->subject(isset($this->subject) ? $this->subject : 'Your Password Reset Link');
+			});
 
-			case PasswordBroker::INVALID_USER:
-				return redirect()->back()->withErrors(['email' => trans($response)]);
+			switch ($response)
+			{
+				case PasswordBroker::RESET_LINK_SENT:
+					return redirect()->back()->with('status', trans($response));
+
+				case PasswordBroker::INVALID_USER:
+					return redirect()->back()->withErrors(['email' => trans($response)]);
+			}
 		}
-	}
-
-	/**
-	 * Get the e-mail subject line to be used for the reset link email.
-	 *
-	 * @return string
-	 */
-	protected function getEmailSubject()
-	{
-		return isset($this->subject) ? $this->subject : 'Your Password Reset Link';
-	}
-
-	/**
-	 * Display the password reset view for the given token.
-	 *
-	 * @param  string  $token
-	 * @return Response
-	 */
-	public function resetView($token = null)
-	{
-		if (is_null($token))
-		{
-			throw new NotFoundHttpException;
-		}
-
-		return view('auth.reset')->with('token', $token);
+		
+		return view('auth.password');
 	}
 
 	/**
@@ -275,52 +171,46 @@ class AuthController extends Controller {
 	 * @param  Request  $request
 	 * @return Response
 	 */
-	public function reset(Request $request)
+	public function reset($token = null, Request $request)
 	{
-		$this->validate($request, [
-			'token' => 'required',
-			'email' => 'required|email',
-			'password' => 'required|confirmed',
-		]);
-
-		$credentials = $request->only(
-			'email', 'password', 'password_confirmation', 'token'
-		);
-
-		$response = $this->passwords->reset($credentials, function($user, $password)
+		if (\Request::isMethod('post'))
 		{
-			$user->password = bcrypt($password);
+			$this->validate($request, [
+				'token' => 'required',
+				'email' => 'required|email',
+				'password' => 'required|confirmed',
+			]);
 
-			$user->save();
+			$credentials = $request->only(
+				'email', 'password', 'password_confirmation', 'token'
+			);
 
-			$this->auth->login($user);
-		});
+			$response = $this->passwords->reset($credentials, function($user, $password)
+			{
+				$user->password = bcrypt($password);
 
-		switch ($response)
-		{
-			case PasswordBroker::PASSWORD_RESET:
-				return redirect($this->redirectPath());
+				$user->save();
 
-			default:
-				return redirect()->back()
-							->withInput($request->only('email'))
-							->withErrors(['email' => trans($response)]);
+				$this->auth->login($user);
+			});
+
+			switch ($response)
+			{
+				case PasswordBroker::PASSWORD_RESET:
+					return redirect('/login');
+
+				default:
+					return redirect()->back()
+						->withInput($request->only('email'))
+						->withErrors(['email' => trans($response)]);
+			}
 		}
-	}
-
-	/**
-	 * Get the post register / login redirect path.
-	 *
-	 * @return string
-	 */
-	public function redirectPath()
-	{
-		if (property_exists($this, 'redirectPath'))
+		
+		if (is_null($token))
 		{
-			return $this->redirectPath;
+			throw new NotFoundHttpException;
 		}
 
-		return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+		return view('auth.reset')->with('token', $token);
 	}
-
 }
