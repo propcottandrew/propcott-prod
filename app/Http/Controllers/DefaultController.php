@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-class WelcomeController extends Controller {
+class DefaultController extends Controller {
 
 	/*
 	|--------------------------------------------------------------------------
@@ -28,9 +28,9 @@ class WelcomeController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function page($page)
 	{
-		return view('welcome');
+		return view('static.' . $page);
 	}
 
 }

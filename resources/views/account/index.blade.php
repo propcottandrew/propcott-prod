@@ -38,8 +38,7 @@
 						Connect new account:
 						<a href="{{ url('/oauth/connect/facebook') }}">Facebook</a>,
 						<a href="{{ url('/oauth/connect/twitter') }}">Twitter</a>,
-						<a href="{{ url('/oauth/connect/google') }}">Google</a>,
-						<a href="{{ url('/account/merge') }}">Propcott</a>.
+						<a href="{{ url('/oauth/connect/google') }}">Google</a>.
 					</p>
 					
 					<h2>Account Management</h2>

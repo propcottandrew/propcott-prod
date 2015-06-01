@@ -1,15 +1,20 @@
 <?php
 
 // Define available socialite providers
-$providers = implode('|', str_replace('|', '\|', str_replace('\\', '\\\\', [
+$providers = implode('|', [
 	'facebook',
 	'twitter',
 	'google',
-])));
+]);
+
+$static = implode('|', [
+	'about',
+	'legal',
+]);
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Static Routes
 |--------------------------------------------------------------------------
 
 /{page?}
@@ -26,6 +31,7 @@ $providers = implode('|', str_replace('|', '\|', str_replace('\\', '\\\\', [
 
 Route::get('/', 'WelcomeController@index');
 Route::get('/home', 'HomeController@index');
+Route::get('/{page}', 'DefaultController@page')->where('page', $static);
 
 /*
 |--------------------------------------------------------------------------
@@ -44,9 +50,7 @@ Route::group(['prefix' => 'login'], function() use ($providers)
 	//Route::get('/verify', 'WelcomeController@showView'); // should redirect if query param is attached
 	//Route::post('/verify', 'WelcomeController@verifyCode');
 	
-	Route::get('/forgot', 'AuthController@forgotView');
-	Route::post('/forgot', 'AuthController@forgot');
-	
+	Route::match(['get', 'post'], '/forgot', 'AuthController@forgot');	
 	Route::match(['get', 'post'], '/reset/{token?}', 'AuthController@reset');
 });
 
@@ -55,6 +59,7 @@ Route::group(['prefix' => 'login'], function() use ($providers)
 | OAuth Routes
 |--------------------------------------------------------------------------
 */
+
 Route::group(['prefix' => 'oauth'], function() use ($providers)
 {
 	Route::get('/connect/{provider}', 'OAuthController@connect')->where('provider', $providers);

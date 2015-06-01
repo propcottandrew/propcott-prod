@@ -6,8 +6,6 @@ use App\Services\Registrar;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Models\User;
-use App\Models\UserSocialAccount;
 
 /**
  * Todo

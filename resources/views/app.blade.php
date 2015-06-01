@@ -55,7 +55,11 @@
 	</nav>
 
 	@yield('content')
-
+	
+	<div class="container-fluid">
+		<p style="text-align:center;"><a href="{{ url('/about') }}">About</a> &bull; <a href="{{ url('/legal') }}">Legal</a> &bull; Copyright &copy; 2015 Propcott LLC</p>
+	</div>
+	
 	<!-- Scripts -->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
