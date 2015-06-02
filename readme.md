@@ -24,7 +24,7 @@ Password: `(same as google account)`
  * Account merge *- pushed to ~CP1*
  * ~~Connect social~~
  * ~~Disconnect social~~
-* **100%** ~~Create Propcott data structure~~ *- will need to come back to fix data structure as all elements are `string` data type.*
+* **100%** ~~Create Propcott data structure~~
 * Seed database with dummy data
 * Build Blade *master* template
 * Build Blade templates
@@ -61,7 +61,7 @@ php artisan migrate
 5. Update .env file with new information.
 6. Enter the following:
 <pre>
-php -S localhost:8000
+php -S [localhost:8000](http://localhost:8000/)
 </pre>
 
 Go to `localhost:8000` in your web browser.
@@ -83,5 +83,5 @@ php artisan migrate
 4. Update .env file with new information.
 5. Enter the following:
 <pre>
-php -S localhost:8000
+php -S [localhost:8000](http://localhost:8000/)
 </pre>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Propcott</title>
+	<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<link href='http://fonts.googleapis.com/css?family=Lato:100|Open+Sans' rel='stylesheet' type='text/css'>
+	<script type="text/javascript" src="js/chart.js"></script>
+</head>
+<body>
+	
+	<div class="propcott-full" style="position: relative;">
+		<div class="propcott-gallery"></div>
+		<h1>Title</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad vel iste fugiat, harum molestias quibusdam ipsa deserunt minus perferendis nobis.</p>
+		<p>&nbsp;</p>
+		<canvas id="myChart" width="400" height="50" style="position: absolute; right: 0; bottom: 0;"></canvas>
+	</div>
+	<script type="text/javascript">
+	
+	function arrayMax(arr) {
+		var len = arr.length, max = -Infinity;
+		while(len--) if(arr[len] > max) max = arr[len];
+		return max;
+	};
+	
+	var chart = function(ctx, data, color) {
+		var max = arrayMax(data);
+		var width = ctx.canvas.width;
+		var height = ctx.canvas.height;
+		
+		console.log(width, height);
+		
+		ctx.fillStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(0, height);
+		for(var i=0; i<data.length; i++) {
+			ctx.lineTo(i / (data.length-1) * width, height - (data[i]||0) / max * height);
+		}
+		ctx.lineTo(width, height);
+		ctx.fill();
+	};
+	
+	chart(
+		document.getElementById('myChart').getContext('2d'),
+		Array(0).concat([0, 2, 9, 24, 26, 28, 35, 41, 49, 54, 70, 100]),
+		'rgba(151,187,205,1)'
+	);
+	
+	</script>
+</body>
+</html>
