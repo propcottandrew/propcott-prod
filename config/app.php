@@ -147,6 +147,8 @@ return [
 		
 		
 		'Laravel\Socialite\SocialiteServiceProvider',
+		'LaravelReactPHP\Providers\ReactCommandProvider',
+		'Laravact\Providers\LaravactCommandProvider',
 	],
 
 	/*

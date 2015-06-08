@@ -29,6 +29,10 @@ $static = implode('|', [
 
 */
 
+Route::get('/blank', function() {
+	return '';
+});
+
 Route::get('/', 'WelcomeController@index');
 Route::get('/home', 'HomeController@index');
 Route::get('/{page}', 'DefaultController@page')->where('page', $static);

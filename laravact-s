@@ -1,0 +1,65 @@
+#!/usr/bin/env php
+<?php
+
+class SharedData extends Stackable {
+    //private $name;
+    public function __construct($_name = '') {
+        
+    }
+    public function run(){
+        
+    }
+}
+
+function formatBytes($size, $precision = 2, $useIEC = true)
+{
+	$suffixes = $useIEC ? array('', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB') : array('', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');  
+	$factor = $useIEC ? 1024 : 1000;
+	$base = log($size, $factor);
+
+	return round(pow($factor, $base - floor($base)), $precision) . $suffixes[floor($base)];
+}
+
+require __DIR__.'/laravact/src/Server.php';
+$shared = new SharedData();
+$pool = array();
+$workers = 2;
+for($i = 0; $i < $workers; $i++) {
+	$pool[] = new Laravact\Server($shared, '24-205-115-123.dhcp.hspr.ca.charter.com', 5501 + $i, $i);
+	end($pool)->start();
+}
+
+$itr = 0;
+
+require __DIR__.'/vendor/react/event-loop/LoopInterface.php';
+require __DIR__.'/vendor/react/event-loop/StreamSelectLoop.php';
+require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitterTrait.php';
+require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitterInterface.php';
+require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitter.php';
+require __DIR__.'/vendor/react/socket/src/ServerInterface.php';
+require __DIR__.'/vendor/react/socket/src/Server.php';
+require __DIR__.'/vendor/react/http/src/ServerInterface.php';
+require __DIR__.'/vendor/react/http/src/Server.php';
+require __DIR__.'/vendor/react/event-loop/Tick/FutureTickQueue.php';
+require __DIR__.'/vendor/react/event-loop/Tick/NextTickQueue.php';
+require __DIR__.'/vendor/react/event-loop/Timer/TimerInterface.php';
+require __DIR__.'/vendor/react/event-loop/Timer/Timer.php';
+require __DIR__.'/vendor/react/event-loop/Timer/Timers.php';
+$loop = new \React\EventLoop\StreamSelectLoop();
+$socket = new \React\Socket\Server($loop);
+$http = new \React\Http\Server($socket, $loop);
+$http->on('request', function ($request, $response) {
+	global $itr, $workers;
+	$response->writeHead(200, array('Content-Type' => 'text/html'));
+	$response->end('hard at work...');
+});
+$socket->listen(5500, '127.0.0.1');
+
+$loop->addPeriodicTimer(3, function() use ($shared) {
+	printf('manager : %s %s' . PHP_EOL, formatBytes(memory_get_usage()), formatBytes(memory_get_peak_usage()));
+	foreach($shared as $num => $d) {
+		printf('server %d: %s %s' . PHP_EOL, $num, formatBytes($d[1]), formatBytes($d[2]));
+	}
+});
+
+$loop->run();

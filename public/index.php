@@ -51,7 +51,7 @@ $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
 $response = $kernel->handle(
 	$request = Illuminate\Http\Request::capture()
 );
-
+$response->header('x-execution-time', microtime(true) - LARAVEL_START);
 $response->send();
 
 $kernel->terminate($request, $response);

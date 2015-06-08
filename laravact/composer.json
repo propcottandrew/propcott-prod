@@ -1,0 +1,25 @@
+{
+    "name": "evankennedy/laravact",
+    "type": "library",
+    "description": "Laravel 5 on ReactPHP with a built-in Process Manager",
+    "keywords": ["ReactPHP", "Laravel"],
+    "homepage": "http://github.com/evankennedy/laravact",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Evan Kennedy",
+            "email": "evan_kennedy@yahoo.com",
+            "homepage": "https://github.com/evankennedy"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "laravel/framework": "5.0.*",
+        "react/react": "0.4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laravact\\": "src/"
+        }
+    }
+}
