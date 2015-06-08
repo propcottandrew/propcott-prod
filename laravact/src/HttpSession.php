@@ -28,10 +28,13 @@ class HttpSession {
 	 * @param string $host binding host
 	 * @param int $port binding port
 	 */
-	public function __construct($host, $port)
+	public function __construct($host, $port, \React\Http\Request $request, \React\Http\Response $response, $kernel)
 	{
 		$this->host = $host;
 		$this->port = $port;
+		$this->request = $request;
+		$this->response = $response;
+		$this->kernel = $kernel;
 	}
 
 	protected function getRequestUri(array $headers, $path)
@@ -40,7 +43,7 @@ class HttpSession {
 		if (isset($headers['HTTPS'])) {
 			$protocol = "https://";
 		}
-		$http_host = $protocol.$this->host;
+		$http_host = $protocol.$this->host;//.(($this->port==80)?'':(':'.$this->port));
 		if (isset($headers['Host'])) {
 			//$http_host = $protocol.$headers['Host'];
 		}
@@ -101,36 +104,54 @@ class HttpSession {
 		return $headers;
 	}
 
-	public function handle(\React\Http\Request $request, \React\Http\Response $response, $data)
+	public function handle($data)
 	{
-		require_once __DIR__.'/../../bootstrap/autoload.php';
-		require __DIR__.'/../../bootstrap/app.php';
-		
-		$this->post_params = [];
-		
 		$start = microtime(true);
 		
+		$headers = $this->request->getHeaders();
+		
+		$request_complete = true;
+		if(isset($headers['Content-Length']))
+		{
+			$request_complete = $headers['Content-Length'] == strlen($data);
+		}
+		
+		echo "::" . $this->request->getPath() . PHP_EOL;
+		
+		if(!$request_complete) return;
+		
+		$this->post_params = [];
 		$this->request_body = $data;
+		
 		parse_str($data, $this->post_params);
-		
-		$kernel = $app->make('Illuminate\Contracts\Http\Kernel');
-		
-		$laravel_request = \Illuminate\Http\Request::create(
-			$this->getRequestUri($request->getHeaders(), $request->getPath()),
-			$request->getMethod(),
-			array_merge($request->getQuery(), $this->post_params),
-			$this->getCookies($request->getHeaders()),
+		$request = \Illuminate\Http\Request::create(
+			$this->getRequestUri($this->request->getHeaders(), $this->request->getPath()),
+			$this->request->getMethod(),
+			array_merge($this->request->getQuery(), $this->post_params),
+			$this->getCookies($this->request->getHeaders()),
 			[],
 			[],
 			$this->request_body
 		);
-	
-		$laravel_response = $kernel->handle($laravel_request);
-		$headers = array_merge($laravel_response->headers->allPreserveCase(), $this->buildCookies($laravel_response->headers->getCookies()));
-		$response->writeHead($laravel_response->getStatusCode(), $headers);
-		$response->end($laravel_response->getContent());
-
-		$kernel->terminate($laravel_request, $laravel_response);
+		/*print_r(array(
+			$this->getRequestUri($this->request->getHeaders(), $this->request->getPath()),
+			$this->request->getMethod(),
+			array_merge($this->request->getQuery(), $this->post_params),
+			$this->getCookies($this->request->getHeaders()),
+			[],
+			[],
+			$this->request_body
+		));*/
+		$response = $this->kernel->handle($request);
+		$headers = array_merge($response->headers->allPreserveCase(), $this->buildCookies($response->headers->getCookies()));
+		try {
+			$this->response->writeHead($response->getStatusCode(), $headers);
+			$this->response->end($response->getContent());
+		} finally {
+			
+		}
+		
+		$this->kernel->terminate($request, $response);
 		
 		echo $this->port . ': ' . (microtime(true) - $start) . 'ms' . PHP_EOL;
 	}

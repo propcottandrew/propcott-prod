@@ -19,6 +19,7 @@
 						</div>
 					@endif
 					<h2>Account Information</h2>
+					<p>User {{ Auth::user()->id }}</p>
 					<form role="form" method="POST" action="{{ url('/account') }}">
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">
 						<p>Name: <input type="text" name="name" value="{{ Auth::user()->name }}" /></p>

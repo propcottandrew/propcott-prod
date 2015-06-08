@@ -25,7 +25,7 @@ $shared = new SharedData();
 $pool = array();
 $workers = 2;
 for($i = 0; $i < $workers; $i++) {
-	$pool[] = new Laravact\Server($shared, '24-205-115-123.dhcp.hspr.ca.charter.com', 5501 + $i, $i);
+	$pool[] = new Laravact\Server($shared, 'localhost', 5501 + $i, $i);
 	end($pool)->start();
 }
 
@@ -36,7 +36,15 @@ require __DIR__.'/vendor/react/event-loop/StreamSelectLoop.php';
 require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitterTrait.php';
 require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitterInterface.php';
 require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitter.php';
+require __DIR__.'/vendor/react/stream/src/WritableStreamInterface.php';
+require __DIR__.'/vendor/react/stream/src/ReadableStreamInterface.php';
+require __DIR__.'/vendor/react/stream/src/DuplexStreamInterface.php';
+require __DIR__.'/vendor/react/stream/src/Buffer.php';
+require __DIR__.'/vendor/react/stream/src/Stream.php';
 require __DIR__.'/vendor/react/socket/src/ServerInterface.php';
+require __DIR__.'/vendor/react/socket/src/ConnectionInterface.php';
+require __DIR__.'/vendor/react/socket/src/Connection.php';
+require __DIR__.'/vendor/react/http/src/RequestHeaderParser.php';
 require __DIR__.'/vendor/react/socket/src/Server.php';
 require __DIR__.'/vendor/react/http/src/ServerInterface.php';
 require __DIR__.'/vendor/react/http/src/Server.php';
