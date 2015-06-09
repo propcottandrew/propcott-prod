@@ -98,7 +98,84 @@ PHP_CONF="--prefix=/usr/local \
 ./configure $PHP_CONF
 make
 make install
-cp php.ini-development /etc/php.ini</pre>
+cp php.ini-development /etc/php.ini
+ln -s /usr/local/bin/php /usr/bin/php
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer</pre>
+
+Need to add to path. Should add this to .bashrc
+
+<pre>export PATH=/usr/local/bin:$PATH</pre>
+
+Add to php.ini
+
+<pre>extension=pthreads.so</pre>
+
+Run:
+
+<pre>yum install nginx</pre>
+
+Always safe to make a backup...
+
+<pre>cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak</pre>
+
+Write this to nginx.conf:
+
+<pre>
+worker_processes  1;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+
+    upstream backend {
+        server 127.0.0.1:5501;
+        server 127.0.0.1:5502;
+    }
+
+    server {
+        listen       80;
+        server_name  localhost;
+
+        root "D:/Work/Propcott/server/public/";
+        location / {
+            if (!-f $request_filename) {
+                proxy_pass http://backend;
+                break;
+            }
+        }
+    }
+
+    server {
+        listen       443 default_server ssl;
+        server_name  localhost;
+
+        root "D:/Work/Propcott/server/public/";
+        location / {
+            if (!-f $request_filename) {
+                proxy_pass http://backend;
+                break;
+            }
+        }
+    }
+}
+</pre>
+
+Then git clone -b production https://... propcott<br />
+navigate to dir<br />
+run nginx and server
+
+<pre>nginx
+php laravact-s</pre>
+
+Look into tying Route 53 into instance rather than IP... http://stackoverflow.com/questions/10096594/have-route-53-point-to-an-instance-instead-of-an-ip-or-cname
 
 ## Server Switches
 
