@@ -41,6 +41,71 @@ Password: `(same as google account)`
 
 ## Development
 
+### Startup AWS machine
+
+This will install development tools, make our custom php build, and grab the most recent propcott application version.
+
+On AWS Linux x64, SSH in and run:
+
+<pre>sudo su
+cd /etc/ssh/
+vi sshd_config</pre>
+
+Comment out any `PermitRootLogin` lines and add:
+
+<pre>PermitRootLogin without-password</pre>
+
+Save, exit, then run:
+
+<pre>/etc/init.d/sshd reload
+yum groupinstall "Development Tools"
+yum install mysql mysql-server libxml2-devel openssl-devel bzip2-devel curl-devel libmcrypt libmcrypt-devel
+VERSION=5.6.9
+cd /usr/local/src
+wget http://www.php.net/distributions/php-$VERSION.tar.gz
+tar zxvf php-$VERSION.tar.gz
+cd /usr/local/src/php-$VERSION
+PHP_CONF="--prefix=/usr/local \
+    --with-config-file-path=/etc \
+    --enable-maintainer-zts \
+    --enable-fpm \
+    --enable-inline-optimization \
+    --disable-debug \
+    --with-mcrypt \
+    --with-zlib \
+    --enable-mbstring \
+    --with-curl \
+    --with-bz2 \
+    --enable-zip \
+    --enable-sockets \
+    --enable-sysvsem \
+    --enable-sysvshm \
+    --with-mhash \
+    --with-pcre-regex \
+    --with-gettext \
+    --with-mysql \
+    --with-mysqli \
+    --enable-bcmath \
+    --enable-calendar \
+    --enable-ftp \
+    --enable-soap \
+    --with-pdo-mysql \
+    --enable-json \
+    --enable-libxml \
+    --with-openssl \
+    --with-openssl-dir=/usr/bin/openssl \
+    --with-pear"
+./configure $PHP_CONF
+make
+make install
+cp php.ini-development /etc/php.ini</pre>
+
+## Server Switches
+
+I'll discuss starting the ReactPHP version with a built in process manager and nginx load balancing, and a way to fallback to the original application state with nginx+fastcgi. I want both because the ReactPHP version will be much faster but may have issues until fully tested. We should be able to fallback at a moments notice with minimal service interruption.
+
+## Below is for notes. It will be rewritten
+
 Follow this to develop/test locally. Social network authentication will not work using this method, but you can register normally.
 
 ### Windows
@@ -85,3 +150,4 @@ php artisan migrate
 <pre>
 php -S [localhost:8000](http://localhost:8000/)
 </pre>
+
