@@ -1,5 +1,39 @@
 <?php namespace Laravact;
 
+function print_array($array,$depth=1,$indentation=0){
+    if (is_array($array)){
+                    echo "Array(\n";
+        foreach ($array as $key=>$value){
+            if(is_array($value)){
+                if($depth){
+                    echo "max depth reached.";
+                }
+                else{
+                    for($i=0;$i<$indentation;$i++){
+                        echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    }
+                    echo $key."=Array(";
+                    print_array($value,$depth-1,$indentation+1);
+                    for($i=0;$i<$indentation;$i++){
+                        echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    }
+                    echo ");";
+                }
+            }
+            else{
+                for($i=0;$i<$indentation;$i++){
+                    echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+                echo $key."=>".$value."\n";
+            }
+        }
+                    echo ");\n";
+    }
+    else{
+        echo "It is not an array\n";
+    }
+}
+
 class HttpSession {
 
 	/**
@@ -30,6 +64,7 @@ class HttpSession {
 	 */
 	public function __construct($host, $port, \React\Http\Request $request, \React\Http\Response $response, $kernel)
 	{
+		$this->start = microtime(true);
 		$this->host = $host;
 		$this->port = $port;
 		$this->request = $request;
@@ -43,12 +78,9 @@ class HttpSession {
 		if (isset($headers['HTTPS'])) {
 			$protocol = "https://";
 		}
-		$http_host = $protocol.$this->host;//.(($this->port==80)?'':(':'.$this->port));
+		$http_host = $protocol.$this->host;
 		if (isset($headers['Host'])) {
-			//$http_host = $protocol.$headers['Host'];
-		}
-		if (isset($this->hostOverride)) {
-			//$http_host = $protocol.$this->hostOverride;
+			$http_host = $protocol.$headers['Host'];
 		}
 
 		return $http_host.$path;
@@ -103,27 +135,21 @@ class HttpSession {
 
 		return $headers;
 	}
-
+	
 	public function handle($data)
 	{
-		$start = microtime(true);
-		
 		$headers = $this->request->getHeaders();
 		
-		$request_complete = true;
-		if(isset($headers['Content-Length']))
+		if (isset($headers['Content-Length']))
 		{
-			$request_complete = $headers['Content-Length'] == strlen($data);
+			if ($headers['Content-Length'] != strlen($data)) return;
 		}
 		
-		echo "::" . $this->request->getPath() . PHP_EOL;
-		
-		if(!$request_complete) return;
-		
-		$this->post_params = [];
 		$this->request_body = $data;
+		$this->post_params = [];
 		
 		parse_str($data, $this->post_params);
+		
 		$request = \Illuminate\Http\Request::create(
 			$this->getRequestUri($this->request->getHeaders(), $this->request->getPath()),
 			$this->request->getMethod(),
@@ -133,26 +159,18 @@ class HttpSession {
 			[],
 			$this->request_body
 		);
-		/*print_r(array(
-			$this->getRequestUri($this->request->getHeaders(), $this->request->getPath()),
-			$this->request->getMethod(),
-			array_merge($this->request->getQuery(), $this->post_params),
-			$this->getCookies($this->request->getHeaders()),
-			[],
-			[],
-			$this->request_body
-		));*/
+		
 		$response = $this->kernel->handle($request);
+		
 		$headers = array_merge($response->headers->allPreserveCase(), $this->buildCookies($response->headers->getCookies()));
-		try {
-			$this->response->writeHead($response->getStatusCode(), $headers);
-			$this->response->end($response->getContent());
-		} finally {
-			
-		}
+		$this->response->writeHead($response->getStatusCode(), $headers);
+		$this->response->end($response->getContent());
 		
 		$this->kernel->terminate($request, $response);
 		
-		echo $this->port . ': ' . (microtime(true) - $start) . 'ms' . PHP_EOL;
+		printf('%.3fms -> :%d%s' . PHP_EOL, microtime(true) - $this->start, $this->port, $this->request->getPath());
+		if (isset($headers['Content-Length'])) echo $this->request_body . PHP_EOL;
+		
+
 	}
 }

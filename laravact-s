@@ -29,45 +29,69 @@ for($i = 0; $i < $workers; $i++) {
 	end($pool)->start();
 }
 
-$itr = 0;
+require __DIR__.'/bootstrap/autoload.php';
 
-require __DIR__.'/vendor/react/event-loop/LoopInterface.php';
-require __DIR__.'/vendor/react/event-loop/StreamSelectLoop.php';
-require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitterTrait.php';
-require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitterInterface.php';
-require __DIR__.'/vendor/evenement/evenement/src/Evenement/EventEmitter.php';
-require __DIR__.'/vendor/react/stream/src/WritableStreamInterface.php';
-require __DIR__.'/vendor/react/stream/src/ReadableStreamInterface.php';
-require __DIR__.'/vendor/react/stream/src/DuplexStreamInterface.php';
-require __DIR__.'/vendor/react/stream/src/Buffer.php';
-require __DIR__.'/vendor/react/stream/src/Stream.php';
-require __DIR__.'/vendor/react/socket/src/ServerInterface.php';
-require __DIR__.'/vendor/react/socket/src/ConnectionInterface.php';
-require __DIR__.'/vendor/react/socket/src/Connection.php';
-require __DIR__.'/vendor/react/http/src/RequestHeaderParser.php';
-require __DIR__.'/vendor/react/socket/src/Server.php';
-require __DIR__.'/vendor/react/http/src/ServerInterface.php';
-require __DIR__.'/vendor/react/http/src/Server.php';
-require __DIR__.'/vendor/react/event-loop/Tick/FutureTickQueue.php';
-require __DIR__.'/vendor/react/event-loop/Tick/NextTickQueue.php';
-require __DIR__.'/vendor/react/event-loop/Timer/TimerInterface.php';
-require __DIR__.'/vendor/react/event-loop/Timer/Timer.php';
-require __DIR__.'/vendor/react/event-loop/Timer/Timers.php';
-$loop = new \React\EventLoop\StreamSelectLoop();
+class Server2 extends \Evenement\EventEmitter implements \React\Http\ServerInterface
+{
+    private $io;
+    public function __construct(\React\Socket\ServerInterface $io)
+    {
+        $this->io = $io;
+        $this->io->on('connection', function (\React\Socket\ConnectionInterface $conn) {
+            // TODO: http 1.1 keep-alive
+            // TODO: chunked transfer encoding (also for outgoing data)
+            // TODO: multipart parsing
+            $parser = new \React\Http\RequestHeaderParser();
+            $parser->on('headers', function (\React\Http\Request $request, $bodyBuffer) use ($conn, $parser) {
+                // attach remote ip to the request as metadata
+                $request->remoteAddress = $conn->getRemoteAddress();
+                $this->handleRequest($conn, $request, $bodyBuffer);
+                $conn->removeListener('data', array($parser, 'feed'));
+                $conn->on('end', function () use ($request) {
+                    $request->emit('end');
+                });
+                $conn->on('data', function ($data) use ($request) {
+                    $request->emit('data', array($data));
+                });
+                $request->on('pause', function () use ($conn) {
+                    $conn->emit('pause');
+                });
+                $request->on('resume', function () use ($conn) {
+                    $conn->emit('resume');
+                });
+            });
+            $conn->on('data', array($parser, 'feed'));
+        });
+    }
+    public function handleRequest(\React\Socket\ConnectionInterface $conn, \React\Http\Request $request, $bodyBuffer)
+    {
+        $response = new \React\Http\Response($conn);
+        $response->on('close', array($request, 'close'));
+        if (!$this->listeners('request')) {
+            $response->end();
+            return;
+        }
+                	
+        $this->emit('request', array($request, $response));
+        $request->emit('data', array($bodyBuffer));
+    }
+}
+
+$loop = \React\EventLoop\Factory::create();
 $socket = new \React\Socket\Server($loop);
 $http = new \React\Http\Server($socket, $loop);
 $http->on('request', function ($request, $response) {
-	global $itr, $workers;
+	print_r($_FILES);
 	$response->writeHead(200, array('Content-Type' => 'text/html'));
-	$response->end('hard at work...');
+	$response->end('<form method="POST"><input name="textr" /><input type="file" name="filer" /><input type="submit" /></form>');
 });
 $socket->listen(5500, '127.0.0.1');
 
-$loop->addPeriodicTimer(3, function() use ($shared) {
+/*$loop->addPeriodicTimer(3, function() use ($shared) {
 	printf('manager : %s %s' . PHP_EOL, formatBytes(memory_get_usage()), formatBytes(memory_get_peak_usage()));
 	foreach($shared as $num => $d) {
 		printf('server %d: %s %s' . PHP_EOL, $num, formatBytes($d[1]), formatBytes($d[2]));
 	}
-});
+});*/
 
 $loop->run();

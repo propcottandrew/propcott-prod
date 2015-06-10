@@ -1,0 +1,47 @@
+class React\Http\Request#43 (8) {
+  private $readable =>
+  bool(true)
+  private $method =>
+  string(4) "POST"
+  private $path =>
+  string(8) "/account"
+  private $query =>
+  array(0) {
+  }
+  private $httpVersion =>
+  string(3) "1.0"
+  private $headers =>
+  array(13) {
+    'Host' =>
+    string(9) "localhost"
+    'Connection' =>
+    string(5) "close"
+    'Content-Length' =>
+    string(3) "127"
+    'Cache-Control' =>
+    string(9) "max-age=0"
+    'Authorization' =>
+    string(26) "Basic YWRtaW46ISQ0MmVLc0M="
+    'Accept' =>
+    string(74) "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+    'Origin' =>
+    string(16) "http://localhost"
+    'User-Agent' =>
+    string(109) "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36"
+    'Content-Type' =>
+    string(33) "application/x-www-form-urlencoded"
+    'Referer' =>
+    string(24) "http://localhost/account"
+    'Accept-Encoding' =>
+    string(13) "gzip, deflate"
+    'Accept-Language' =>
+    string(14) "en-US,en;q=0.8"
+    'Cookie' =>
+    string(825) "remember_82e5d2c56bdd0811318f0cf078b78bfc=eyJpdiI6ImMySG5IcHFEVkNOODM3ZGYrRXozbFE9PSIsInZhbHVlIjoiVTNCNDBBbXdSUlF3OXRVM2JcL1wvc2p3PT0iLCJtYWMiOiIzOGJkYzdlNDJlNDEyM2QwOTg5YjJlZjUyZTMwZDRjOGJkNzA3MmUxODI3NWYxZTQzNjZkMGQwNDVjZTU0MGM1In0%3D; XSRF-TOKEN=eyJpdiI6IktRS2YrcU5aQ2lOSHg3SWFKM1JDVlE9PSIsInZhbHVlIjoiR1hoZUhXZVVodjZ3UXZxYW82dUJRMGo4a0FVNmM5cE9XZFJrdkU3cVd5SmU3V21tM1RGa3FtTkp0cnVyRitDS3pXTHRsTG5RcEhlU0xIRkw2RVF3dUE9PSIsIm1hYyI6IjQ1MDdmMDY2ZmQ0YjhiMmZmZGFkY2JmYzQxNmM3ZjY2ZjQ0ZGU4NjBlZTgxNDM4MWRkNzEyY2FhM2Q2NzcxMmMifQ%3D%3D; laravel_session=eyJpdiI6IjNQVzFuRkU0M0VUbVpjYjZxcTJCbkE9PSIsInZhbHVlIjoiODQ0VlJFZGFBUE94XC9rUHpuMmFWUEJEMm1wanJjZ2R5SWFsNUwyM296azRkTzZXSHZvTmtnZm1QQWZiMVBFOEtGOG5KNjMwdWkyU3BmWXp6K2RyN013PT0iLCJtYWMiOiI0M2RhNGU0OGY0NWExYjZkNDE1M2U5ZGJlYzk0YjZkODc4ZjY2NmFlN2JhYjllZmM1NjZjYmRhYjBjMjY4NGRhIn0%3D"
+  }
+  public $remoteAddress =>
+  string(9) "127.0.0.1"
+  protected $listeners =>
+  array(0) {
+  }
+}
