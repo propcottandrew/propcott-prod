@@ -111,7 +111,7 @@ class AuthController extends Controller {
 			{
 				return redirect('/home');
 			}
-			
+			return print_r(DB::getQueryLog(), true);
 			return redirect('/login')
 				->withInput($request->except('password'))
 				->withErrors([
