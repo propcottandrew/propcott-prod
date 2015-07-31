@@ -1,0 +1,30 @@
+
+body {
+    padding-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+	padding-bottom: 30px
+}
+
+
+.navbar-header {
+    padding:2px;
+}
+
+#startbutton {
+	margin-right:50%;
+}
+
+.jumbotron {
+  height: 450px;
+  background-image:url('http://i.istockimg.com/cms/resources/images/HomePage/Tiles/Feb%202015/people-3352786.jpg');
+  
+}
+
+.jumbotron .container {
+  
+  top:200px;  
+
+.img-center {
+    margin: 0 auto;
+}
+
+

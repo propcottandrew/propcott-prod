@@ -1,0 +1,59 @@
+html {
+	font-size: 16px;
+}
+
+body {
+	background: #cccccc;
+	color: #333333;
+	margin: 1em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Lato', 'Open Sans', sans-serif;
+	color: #C80017;
+}
+
+.propcott-full {
+	/* 
+	 *
+	 */
+	max-width: 600px;
+	background: #ffffff;
+	
+}
+.propcott-large {
+	/* Propcott - Large - Vertical
+	 * Includes featured image, title, summary, # supporters, supporter history, date created (or other headline info), hotness icon
+	 */
+	 
+}
+.propcott-large-horizontal {
+	/* Propcott - Large - Horizontal
+	 * 
+	 */
+	 
+}
+.propcott-medium {
+	/* Propcott - Medium - Vertical
+	 * 
+	 */
+	
+}
+.propcott-medium-horizontal {
+	/* Propcott - Medium - Horizontal
+	 * 
+	 */
+	
+}
+.propcott-small {
+	/* Propcott - Small - Vertical
+	 * 
+	 */
+	
+}
+.propcott-small-horizontal {
+	/* Propcott - Small - Horizontal
+	 * 
+	 */
+	
+}
