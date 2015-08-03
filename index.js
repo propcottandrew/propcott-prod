@@ -1,26 +1,24 @@
-global.__base = __dirname + '/';
-
+require('./init');
 require('dotenv').load();
+local('config');
+
 var express = require('express');
 var session = require('express-session');
-var DynamoSessionStore = require(__base + 'framework/DynamoSessionStore')(session);
-var aws = require('aws-sdk');
-var flash = require(__base + 'framework/Messaging');
+var flash = local('framework/Messaging');
+var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var swig = require('swig');
+var DynamoSessionStore = local('framework/DynamoSessionStore')(session);
+var controllers = local('controllers');
+var passport = require('passport');
 
 var app = express();
 
-aws.config.accessKeyId = process.env.AWS_KEY;
-aws.config.secretAccessKey = process.env.AWS_SECRET;
-aws.config.region = process.env.AWS_REGION;
-aws.config.apiVersions = {
-	dynamodb: '2012-08-10'
-};
-
 app.use(express.static('public'));
+app.use(bodyParser());
 app.use(cookieParser(process.env.APP_SECRET));
 app.use(flash());
+app.use(passport.initialize());
 app.use(session({
 	store: new DynamoSessionStore,
 	secret: process.env.APP_SECRET,
@@ -32,6 +30,10 @@ app.use(session({
 		maxAge: 2700000000
 	}
 }));
+app.use(function(req, res, next) {
+	res.locals.session = req.session;
+	next();
+});
 
 swig.setDefaults({ cache: false });
 //swig.setDefaults({
@@ -44,10 +46,6 @@ swig.setDefaults({ cache: false });
 app.use(function(req, res, next) {
 	res.render = (function(render) {
 		return function() {
-			res.locals.user = {
-				name: 'Evan',
-				id: '1'
-			};
 			res.locals.tabs = [
 				{
 					name: 'Hot',
@@ -108,12 +106,15 @@ app.engine('swig', swig.renderFile);
 app.set('view engine', 'swig');
 
 app.get('/', function(req, res) {
-	res.redirect('/1');
-});
-
-app.get('/1', function(req, res) {
+	console.log(res.locals.session.user);
 	res.render('home');
 });
+
+
+app.get('/login', controllers.auth.login);
+app.post('/login', controllers.auth.authenticate);
+app.post('/register', controllers.auth.register);
+app.get('/logout', controllers.auth.logout);
 
 var server = app.listen(3000, function () {
 	var host = server.address().address;

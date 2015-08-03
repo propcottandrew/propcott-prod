@@ -4,7 +4,7 @@
  */
 
 var util = require('util');
-var aws = require('aws-sdk');
+var dynamo = local('framework/DynamoDB');
 
 var noop = function(){};
 
@@ -33,7 +33,7 @@ module.exports = function (session) {
 		this.prefix = options.prefix || 'session';
 		this.column = 'Artifact';
 
-		this.db = new aws.DynamoDB();
+		this.db = dynamo;
 	}
 
 	/**
@@ -85,7 +85,7 @@ module.exports = function (session) {
 	 * @api public
 	 */
 	DynamoSessionStore.prototype.set = function (sid, sess, callback) {
-		console.log('set', sid, sess);
+		console.log('set', sid);
 		if (!callback) callback = noop;
 
 		try {
@@ -99,7 +99,7 @@ module.exports = function (session) {
 			Item: {
 				Id: {S: sid},
 				Section: {S: this.prefix},
-				Expiration: {N: '1337'},
+				Expires: {N: '1337'},
 				Value: {S: sess},
 				Serialized: {BOOL: true}
 			}

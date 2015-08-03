@@ -301,7 +301,7 @@
 	{% if messages %}
 	<div class="alert-container">
 		<div class="container" style="text-align: center;">
-			<div class="alert-info">{{ messages }}</div>
+			<div class="alert-info">{{ JSON.stringify(messages) }}</div>
 		</div>
 	</div>
 	{% endif %}
@@ -333,9 +333,9 @@
 						{% else %}
 							<span class="dropdown">
 								<a href="/account" class="block round navigation-item">
-									<span class="navigation-text">{{ user.name }}</span>
+									<span class="navigation-text">{{ session.user.name }}</span>
 									{% if user.avatar %}
-									<span class="navigation-avatar" style="background-image: url('{{ user.avatar }}');"></span>
+									<span class="navigation-avatar" style="background-image: url('{{ session.user.avatar }}');"></span>
 									{% else %}
 									<span class="typcn typcn-user"></span>
 									{% endif %}
