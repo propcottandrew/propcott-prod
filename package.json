@@ -23,6 +23,7 @@
     "session-file-store": "0.0.16",
     "swig": "^1.4.2",
     "twig": "^0.8.2",
-    "validator": "^4.0.1"
+    "validator": "^4.0.1",
+    "less": "^2.5.1"
   }
 }

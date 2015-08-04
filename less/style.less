@@ -1,15 +1,14 @@
-@import 'normalize.css';
-@import 'typicons.min.css';
+@import 'lib/normalize';
+@import 'lib/typicons';
 
-@import 'less/define-colors';
-@import 'less/define-type';
-@import 'less/define-grid';
+@import 'define/colors';
+@import 'define/type';
+@import 'define/grid';
 
-@import 'less/make-type';
-@import 'less/make-grid';
+@import 'make/type';
+@import 'make/grid';
 
 .block {
-
 	font-family: @font-family-headings;
 	display: inline-block;
 	cursor: default;
@@ -17,17 +16,17 @@
 	padding: 0 .75em;
 	vertical-align: center;
 	transition: background-color 300ms ease-out;
-	
+
 	&.large {
 		padding: .5em 1em;
 	}
-	
+
 	&.small {
 		line-height: 1;
 		padding: .15em .4em;
 		margin: .35em 0;
 	}
-	
+
 	.typcn {
 		line-height: 1;
 		font-size: 1.5em;
@@ -41,6 +40,11 @@ html {
 	font-family: @font-family-body;
 	line-height: 2;
 	color: @color-body;
+}
+
+body {
+	background: @color-background;
+	padding-top: 52px;
 }
 
 *, *:before, *:after {
@@ -73,13 +77,6 @@ html {
 	border: none;
 }
 
-@import 'less/define-colors';
-@import 'less/define-type';
-@import 'less/define-grid';
-
-@import 'less/make-colors';
-@import 'less/make-type';
-
 .block {
 
 	font-family: @font-family-headings;
@@ -89,17 +86,17 @@ html {
 	padding: 0 .75em;
 	vertical-align: center;
 	transition: background-color 300ms ease-out;
-	
+
 	&.large {
 		padding: .5em 1em;
 	}
-	
+
 	&.small {
 		line-height: 1;
 		padding: .15em .4em;
 		margin: .35em 0;
 	}
-	
+
 	.typcn {
 		line-height: 1;
 		font-size: 1.5em;
@@ -158,12 +155,12 @@ blockquote {
 	background: #f7f7f7;
 	border-left: @font-size solid @color-primary-light;
 	padding: @font-size;
-	
+
 	cite {
 		display: block;
 		text-align: right;
 		font-style: italic;
-		
+
 		&:before {
 			content: '\00AB';
 		}
@@ -175,7 +172,7 @@ blockquote {
 
 kbd, code {
 	.radius;
-	
+
 	background-color: #ededed;
 	color: #222222;
 	border: 1px solid #dddddd;
@@ -202,17 +199,17 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
 	font-size: 0;
 	display: inline-block;
 	overflow: hidden;
-	
+
 	* {
 		font-size: @font-size;
 		border-radius: 0;
 		margin-right: 1px;
-		
+
 		&:last-of-type {
 			margin-right: 0;
 		}
 	}
-	
+
 	&.radius {
 		& > button, & > .button {
 			&:first-of-type, &:last-of-type {
@@ -228,7 +225,7 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
 			}
 		}
 	}
-	
+
 	&.round {
 		button, .button {
 			&:first-of-type, &:last-of-type {

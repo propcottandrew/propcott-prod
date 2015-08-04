@@ -2,11 +2,12 @@
 	width: @container-width;
 	max-width: 100%;
 	margin: auto;
+	padding: 0 1em;
 }
 
 .row {
 	font-size: 0;
-	
+
 	&.pad {
 		margin: 0 -@col-padding;
 	}
@@ -38,7 +39,7 @@
 			margin-right: (@i * 100% / @grid-columns);
 		}
 	}
-	
+
 	.make-grid(@postfix, (@i + 1));
 }
 

@@ -120,8 +120,6 @@ app.route('/login')
 	.get(controllers.auth.login)
 	.post(controllers.auth.authenticate);
 
-//app.get('/login', controllers.auth.login);
-//app.post('/login', controllers.auth.authenticate);
 app.post('/register', controllers.auth.register);
 app.get('/logout', controllers.auth.logout);
 

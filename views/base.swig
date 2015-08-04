@@ -12,20 +12,6 @@
 	<link href="/css/style.css" rel="stylesheet">
 	<link href="http://fonts.googleapis.com/css?family=Josefin+Sans:400,700,400italic,700italic|Merriweather:400,400italic,700,700italic" rel="stylesheet" type="text/css">
 	<style type="text/css">
-	body {
-		background: #E8E8E8;
-		padding-top: 52px;
-	}
-	a {
-		color: #B51010;
-	}
-	* {
-		word-break: break-word;
-	}
-	.container {
-		padding-left: 1em;
-		padding-right: 1em;
-	}
 	#navigation {
 		padding: 10px;
 		border-bottom: 1px solid #eee;
@@ -37,9 +23,6 @@
 		right: 0;
 		background: white;
 		z-index: 99;
-	}
-	.block .typcn {
-		font-size: 24px;
 	}
 	.group {
 		display: inline-block;
