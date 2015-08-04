@@ -9,7 +9,7 @@
 <div class="container">
 
 	<p style="text-align: center;">
-		<a href="{{ url('/oauth/connect/facebook') }}" class="block" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: .5em 5em;color: white;cursor: pointer;background-color: rgb(0, 119, 255);border-radius: 10px;">Log in with Facebook <span class="typcn typcn-social-facebook"></span></a>
+		<a href="/oauth/facebook" class="block" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: .5em 5em;color: white;cursor: pointer;background-color: rgb(0, 119, 255);border-radius: 10px;">Log in with Facebook <span class="typcn typcn-social-facebook"></span></a>
 	</p>
 
 	<div class="row">

@@ -1,5 +1,6 @@
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 var dynamo = local('framework/DynamoDB');
 var bcrypt = require('bcrypt-nodejs');
 
@@ -34,6 +35,35 @@ passport.use(new LocalStrategy({
 						return done('Incorrect username or password.');
 					}
 				}
+			});
+		});
+	}
+));
+
+passport.use(new FacebookStrategy({
+		clientID: process.env.FACEBOOK_CLIENT_ID,
+		clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+		callbackURL: 'http://localhost:3000/oauth/facebook/callback',
+		enableProof: false
+	},
+	function(accessToken, refreshToken, profile, done) {
+		var params = {
+			TableName: 'users',
+			ConditionExpression: 'attribute_exists(Id)',
+			Item: {
+				Id: {S: 'facebook:' + profile.id},
+				Created: {N: Date.now().toString()},
+				Info: {S: JSON.stringify(profile)}
+			}
+		};
+
+		dynamo.putItem(params, function(err, data) {
+			console.log(err, data);
+			if(err) return done(err);
+			return done(null, {
+				provider: 'facebook',
+				name: profile.name,
+				email: profile.email
 			});
 		});
 	}

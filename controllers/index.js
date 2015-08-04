@@ -1,3 +1,4 @@
 module.exports = {
-	auth: local('controllers/auth')
+	auth: local('controllers/auth'),
+	oauth: local('controllers/auth/oauth')
 };

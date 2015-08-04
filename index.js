@@ -31,6 +31,12 @@ app.use(session({
 	}
 }));
 app.use(function(req, res, next) {
+	res.render = (function(render) {
+		return function() {
+			res.locals.user = req.session.user;
+			render.apply(this, arguments);
+		};
+	})(res.render);
 	res.locals.session = req.session;
 	next();
 });
@@ -106,15 +112,21 @@ app.engine('swig', swig.renderFile);
 app.set('view engine', 'swig');
 
 app.get('/', function(req, res) {
-	console.log(res.locals.session.user);
 	res.render('home');
 });
 
 
-app.get('/login', controllers.auth.login);
-app.post('/login', controllers.auth.authenticate);
+app.route('/login')
+	.get(controllers.auth.login)
+	.post(controllers.auth.authenticate);
+
+//app.get('/login', controllers.auth.login);
+//app.post('/login', controllers.auth.authenticate);
 app.post('/register', controllers.auth.register);
 app.get('/logout', controllers.auth.logout);
+
+app.get('/oauth/facebook', controllers.oauth.connect);
+app.get('/oauth/facebook/callback', controllers.oauth.callback);
 
 var server = app.listen(3000, function () {
 	var host = server.address().address;

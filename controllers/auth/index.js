@@ -11,7 +11,7 @@ module.exports.authenticate = function(req, res) {
 		}
 		req.session.user = user;
 		return res.redirect('/');
-	})(req, res);
+	}).apply(this, arguments);
 };
 
 module.exports.login = function(req, res) {
