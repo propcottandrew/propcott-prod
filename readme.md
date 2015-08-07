@@ -94,15 +94,13 @@ We use DynamoDB as an index for data stored in S3 because it's much faster than 
 
 Name			| Type		| Indexes
 -------         | -------   | -------
-Type			| String	| Primary Hash
-Id				| String	| Primary Range<br>Global 1 Hash<br>(SAll, SPrevious, Creator)
-Created			| Number	| Primary Range
+Status			| String	| Primary Hash
+Id				| Number	| Primary Range<br>Global 1 Hash<br>(SAll, SPrevious)
 SDay			| Number	| Local Range
 SWeek			| Number	| Local Range
 SMonth			| Number	| Local Range
 SAll			| Number	| Local Range
 SPrevious		| Number	| 
-Creator			| Number	| 
 Industry		| String	| 
 Target			| String	| 
 
@@ -215,7 +213,7 @@ To avoid `Key` conflicts between various store uses, each `Key` should have a pr
 Name			| Type		| Indexes
 -------         | -------   | -------
 Key				| String	| Primary Hash
-Expires			| Number	| Local Range
+Expires			| Number	| Primary Range
 Value			| Mixed		| 
 
 ### SimpleDB

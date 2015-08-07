@@ -111,7 +111,15 @@ app.use(function(req, res, next) {
 app.engine('swig', swig.renderFile);
 app.set('view engine', 'swig');
 
+
+var Propcott = local('models/propcott.js');
 app.get('/', function(req, res) {
+	var propcott = new Propcott(req);
+	propcott.title = 'abcd';
+	propcott.save(function(err, data) {
+
+	});
+
 	res.render('home');
 });
 
