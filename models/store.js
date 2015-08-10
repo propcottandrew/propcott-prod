@@ -57,6 +57,20 @@ Store.set = function(key, value, expires, callback) {
 	});
 };
 
+Store.remove = function(key, callback) {
+	callback = callback || noop;
+	
+	var params = {
+		TableName: 'Store',
+		Key: {Key:   {S: sid}}
+	};
+
+	this.db.deleteItem(params, function(err, data) {
+		if (err) return callback(err);
+		return callback();
+	});
+};
+
 Store.increment = function(key, amount, callback) {
 	if(typeof amount === 'function') {
 		callback = callback || amount;

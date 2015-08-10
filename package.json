@@ -9,6 +9,7 @@
   "author": "Evan Kennedy",
   "license": "ISC",
   "dependencies": {
+    "async": "^1.4.2",
     "aws-sdk": "^2.1.41",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.13.3",
@@ -16,11 +17,11 @@
     "dotenv": "^1.2.0",
     "express": "^4.13.1",
     "express-session": "^1.11.3",
+    "less": "^2.5.1",
     "passport": "^0.2.2",
     "passport-facebook": "^2.0.0",
     "passport-local": "^1.0.0",
     "swig": "^1.4.2",
-    "validator": "^4.0.1",
-    "less": "^2.5.1"
+    "validator": "^4.0.1"
   }
 }

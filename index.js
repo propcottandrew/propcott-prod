@@ -115,14 +115,45 @@ app.set('view engine', 'swig');
 var Propcott = local('models/propcott.js');
 app.get('/', function(req, res) {
 	var propcott = new Propcott(req);
-	propcott.title = 'abcd';
+	propcott.title = 'Urging Reddit not to censor content or else there will be a huge loss of users!!';
+	propcott.supporters = 86;
+	propcott.how = '<ul><li>Stop using Reddit</li><li>Do not purchase Reddit Gold</li><li>Turn on Adblock when using Reddit</li></ul>';
+	propcott.alt = '<ul><li>Voat.co</li></ul>';
+	propcott.target = 'Reddit';
+	propcott.creator = {
+		name: 'Drew',
+		org: 'Boycott Reddit',
+		org_link: 'https://www.facebook.com/pages/Boycott-Reddit/109983302671706'
+	};
+	propcott.what = 'For Reddit to remove its censorship policies';
+	propcott.why = '<p>Reddit used to be the paragon of free speech on the internet where <strong>anyone</strong> can create a subreddit for <strong>anything.&nbsp;</strong>&nbsp;Not anymore. In light of recent events and announcements, Reddit has foregone there core values and has brought Reddit into a new age of censorship&nbsp;</p><p>Action must be taken to prevent Reddit from being further run into the ground.</p>';
+	propcott.media = {
+		type: 'image',
+		link: 'http://static.propcott.com/uploads/55ae9cc633f5f.png'
+	};
+	propcott.updates = [
+		{
+			content: 'Don\'t go there again! They\re tricking us to be friendly. Like they\'re being real mean and you shouldn\'t go there. Please listen...',
+			created: 1439003993591
+		}
+	];
 	propcott.save(function(err, data) {
-
+		console.log(err, data);
 	});
 
 	res.render('home');
 });
 
+var User = local('models/user');
+app.get('/test', function(req, res) {
+	var user = new User(7);
+	user.load(function(err, user) {
+		user.link('local', 'evan_kennedy1@yahoo.com');
+		user.save(function(err, user) {
+			res.send(String(user));
+		});
+	});
+});
 
 app.route('/login')
 	.get(controllers.auth.login)

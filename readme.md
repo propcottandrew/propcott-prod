@@ -78,13 +78,6 @@ We use DynamoDB as an index for data stored in S3 because it's much faster than 
 * Get list of all targets sorted alphabetically
 * Get list of all targets sorted by popularity
 
-##### Methods
-
-* Propcotts.get(id) - gets html, supporters, creator, previous_support
-* Propcotts.text(id) - gets propcott text.json
-* Propcotts.add(Propcott)
-* new Propcott
-
 ##### Throughput
 
 * Table: `Read: 3 - Write: 5`
@@ -100,9 +93,9 @@ SDay			| Number	| Local Range
 SWeek			| Number	| Local Range
 SMonth			| Number	| Local Range
 SAll			| Number	| Local Range
-SPrevious		| Number	| 
-Industry		| String	| 
-Target			| String	| 
+SPrevious		| Number	|
+Industry		| String	|
+Target			| String	|
 
 #### Credentials
 
@@ -114,15 +107,6 @@ Stores info to retrieve an account Id based on a user's email & password or prov
 ##### Required Functionality
 
 * Get a user by provider & Id
-
-##### Methods
-
-* Credentials.account(Provider, Key[, Password], callback) - callback(err, id)
-* new User;
-* need invisible accessor methods to s3
-	- user.accounts()
-	- 
-* user.save()
 
 ##### Throughput
 
@@ -147,8 +131,8 @@ Name			| Type		| Indexes
 Key				| String	| Primary Hash
 Provider		| String	| Primary Range
 Verified		| Number	| Local Range
-Password		| String	| 
-Id				| Number	| 
+Password		| String	|
+Id				| Number	|
 
 #### Supporters
 
@@ -159,11 +143,6 @@ Records the timestamp each time a user supports a specific propcott. Querying th
 * Get a list of all supporters for a propcott
 * Get a list of all supporters for a propcott within a date range
 * (Implement Global Secondary Index to support this) Get a list of all propcotts a user supports sorted by support date
-
-##### Methods
-
-* Supporters.list(PropcottId[, AfterDate])
-* Supporters.count(PropcottId[, AfterDate])
 
 ##### Throughput
 
@@ -176,7 +155,7 @@ Name			| Type		| Indexes
 PropcottId		| Number	| Primay Hash
 UserId			| Number	| Primary Range
 Created			| Number	| Local Range
-Previous		| Boolean	| 
+Previous		| Boolean	|
 
 #### Store
 
@@ -198,12 +177,6 @@ To avoid `Key` conflicts between various store uses, each `Key` should have a pr
 * Provide an interface to map the proper data type so JSON can be stored as well as numbers for `increment` operations
 * May need to move sessions to dedicated table in the future. Will see how performance is will range-based lookups
 
-##### Methods
-
-* Store.get(Key)
-* Store.set(Key, Value[, Expires])
-* Store.add(Key, Amount)
-
 ##### Throughput
 
 * Table: `Read: 6 - Write: 8`
@@ -214,7 +187,7 @@ Name			| Type		| Indexes
 -------         | -------   | -------
 Key				| String	| Primary Hash
 Expires			| Number	| Primary Range
-Value			| Mixed		| 
+Value			| Mixed		|
 
 ### SimpleDB
 

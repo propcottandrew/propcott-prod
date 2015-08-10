@@ -4,9 +4,7 @@
  */
 
 var util = require('util');
-var dynamo = local('framework/DynamoDB');
-
-var noop = function(){};
+var Store = local('models/store');
 
 /**
  * Return the `DynamoSessionStore` extending `express`'s session Store.
@@ -31,9 +29,6 @@ module.exports = function (session) {
 		options = options || {};
 		DynamoSessionStore.super_.call(this, options);
 		this.prefix = options.prefix || 'session';
-		this.column = 'Artifact';
-
-		this.db = dynamo;
 	}
 
 	/**
@@ -51,28 +46,10 @@ module.exports = function (session) {
 	 */
 	DynamoSessionStore.prototype.get = function (sid, callback) {
 		console.log('get', sid);
-		if (!callback) callback = noop;
-
-		var params = {
-			TableName: 'cache',
-			Key: {
-				Id:      {S: sid},
-				Section: {S: this.prefix}
-			},
-			ConsistentRead: false,
-			ExpressionAttributeNames: {'#Value': 'Value'},
-			ProjectionExpression: '#Value'
-		};
-
-		this.db.getItem(params, function(err, data) {
-			if (err) return callback(err);
-
-			try {
-				data = JSON.parse(data.Item.Value.S);
-			} catch (err) {
-				return callback(err);
-			}
-			return callback(null, data);
+		callback = callback || noop;
+		
+		Store.get(this.prefix + ':' + sid, function(err, data) {
+			console.log(err, data);
 		});
 	};
 
@@ -86,28 +63,10 @@ module.exports = function (session) {
 	 */
 	DynamoSessionStore.prototype.set = function (sid, sess, callback) {
 		console.log('set', sid);
-		if (!callback) callback = noop;
-
-		try {
-			sess = JSON.stringify(sess);
-		} catch (err) {
-			return callback(err);
-		}
-
-		var params = {
-			TableName: 'cache',
-			Item: {
-				Id: {S: sid},
-				Section: {S: this.prefix},
-				Expires: {N: '1337'},
-				Value: {S: sess},
-				Serialized: {BOOL: true}
-			}
-		};
-
-		this.db.putItem(params, function(err, data) {
-			if (err) return callback(err);
-			return callback(null, data);
+		callback = callback || noop;
+		
+		Store.set(this.prefix + ':' + sid, sess, function(err, data) {
+			console.log(err, data);
 		});
 	};
 
@@ -118,17 +77,8 @@ module.exports = function (session) {
 	 * @api public
 	 */
 	DynamoSessionStore.prototype.destroy = function (sid, callback) {
-		var params = {
-			TableName: 'cache',
-			Key: {
-				Id:      {S: sid},
-				Section: {S: this.prefix},
-			}
-		};
-
-		this.db.deleteItem(params, function(err, data) {
-			if (err) return callback(err);
-			return callback();
+		Store.remove(this.prefix + ':' + sid, function(err, data) {
+			console.log(err, data);
 		});
 	};
 
