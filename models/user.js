@@ -49,7 +49,7 @@ User.prototype.toString = function() {
 
 User.find = function(provider, key, callback) {
 	callback = callback || noop;
-	
+
 	var params = {
 		TableName: settings.table,
 		ConditionExpression: 'attribute_exists(Id)',
@@ -58,7 +58,7 @@ User.find = function(provider, key, callback) {
 			Provider: {S: provider},
 		}
 	};
-	
+
 	dynamo.getItem(params, function(err, data) {
 		if(err) return callback(err);
 		return callback(null, new User(data.Item.Id.N));
@@ -71,26 +71,26 @@ User.prototype.load = function(callback) {
 
 	var params = {
 		Bucket: settings.bucket,
-		Key: hash.to(id) + '.json'
+		Key: hash.to(user.id) + '.json'
 	};
 
 	s3.getObject(params, function(err, data) {
 		if (err) return callback(err);
 		var json = JSON.parse(data.Body);
 		for(var i in json) user[i] = json[i];
-		callback(null, data);
+		callback(null, user);
 	});
 };
 
 User.prototype.save = function(callback) {
 	callback = callback || noop;
-	this.emit('saving', this);
 	var user = this;
-	
+	user.emit('saving', user);
+
 	async.series([
 		function(callback) {
 			if(user.id) return callback(null);
-			
+
 			Store.increment(settings.counter, function(err, id) {
 				if(err) return callback(err);
 				user.id = id;
@@ -98,25 +98,31 @@ User.prototype.save = function(callback) {
 			});
 		},
 		function(callback) {
-			var total = 0, index = 0;
-			for(var i in user._state.addedCredentials) total++;
+			var tasks = [];
 			for(var i in user._state.addedCredentials) {
-				var params = {
-					TableName: settings.table,
-					Item: {
-						Key: {S: user._state.addedCredentials[i].key},
-						Provider: {S: user._state.addedCredentials[i].provider},
-					}
-				};
-				
-				if(user._state.addedCredentials[i].password) params.Item.Password = bcrypt.hashSync(user._state.addedCredentials[i].password);
-				
-				dynamo.putItem(params, function(err, data) {
-					if(err) return callback(err);
-					delete user._state.addedCredentials[i];
-					if(++index >= total) callback(null);
+				tasks.push(function(callback) {
+					var params = {
+						TableName: settings.table,
+						Item: {
+							Key: {S: user._state.addedCredentials[i].key},
+							Provider: {S: user._state.addedCredentials[i].provider},
+							Id: {N: user.id.toString()}
+						}
+					};
+
+					if(user._state.addedCredentials[i].password) params.Item.Password = bcrypt.hashSync(user._state.addedCredentials[i].password);
+
+					dynamo.putItem(params, function(err, data) {
+						if(err) return callback(err);
+						delete user._state.addedCredentials[i];
+						callback(null);
+					});
 				});
 			}
+			async.parallel(tasks, function(err, results) {
+				if(err) return callback(err);
+				return callback(null);
+			});
 		},
 		function(callback) {
 			var params = {
@@ -125,7 +131,7 @@ User.prototype.save = function(callback) {
 				Body: String(user),
 				ContentType: 'application/json'
 			};
-			
+
 			s3.putObject(params, function(err, data) {
 				if (err) return callback(err);
 				user.emit('saved', user);
@@ -134,42 +140,77 @@ User.prototype.save = function(callback) {
 		}
 	],
 	function(err, data) {
+		user.emit('saved', user);
 		callback(err, user);
 	});
 };
 
 User.prototype.delete = function(callback) {
 	callback = callback || noop;
-	// TODO
+	var user = this;
+	user.emit('deleting', user);
+	async.parallel([
+		function(callback) {
+			var params = {
+				Bucket: settings.bucket,
+				Key: hash.to(user.id) + '.json'
+			};
+
+			s3.removeObject(params, function(err, data) {
+				if (err) return callback(err);
+				user.emit('saved', user);
+				callback(null, data);
+			});
+		},
+		function(callback) {
+			var params = {
+				TableName: settings.table,
+				Item: {
+					Key: {S: user._state.addedCredentials[i].key},
+					Provider: {S: user._state.addedCredentials[i].provider},
+				}
+			};
+
+			if(user._state.addedCredentials[i].password) params.Item.Password = bcrypt.hashSync(user._state.addedCredentials[i].password);
+
+			dynamo.putItem(params, function(err, data) {
+				if(err) return callback(err);
+				delete user._state.addedCredentials[i];
+				callback(null);
+			});
+		}
+	],
+	function(err, data) {
+		return callback(err, user);
+	})
 };
 
 User.prototype.link = function(provider, key, password) {
 	for(var i = 0; i < this.credentials.length; i++) {
-		if(this.credentials[i].provider == provider && this.credentials[i].key = key) {
+		if(this.credentials[i].provider == provider && this.credentials[i].key == key) {
 			return null; // already exists
 		}
 	}
-	
+
 	var creds = {
 		provider: provider,
 		key: key,
 		password: password
 	};
-	
+
 	this._state.addedCredentials[provider + ':' + key] = creds;
-	
+
 	return this.credentials.push(creds);
 };
 
 User.prototype.unlink = function(provider, key) {
-	callback = callback || noop;
 	// what if last account?
-	
+
 	delete this._state.addedCredentials[provider + ':' + key];
-	
+
 	for(var i = 0; i < this.credentials.length; i++) {
-		if(this.credentials[i].provider == provider && this.credentials[i].key = key) {
-			return credentials[i].splice(i, 1);
+		if(this.credentials[i].provider == provider && this.credentials[i].key == key) {
+			return this.credentials.splice(i, 1);
 		}
 	}
 };

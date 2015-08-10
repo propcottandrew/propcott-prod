@@ -3,6 +3,7 @@ var s3 = local('framework/S3');
 var Store = local('models/store');
 var Model = local('models/base');
 var util = require('util');
+var async = require('async');
 
 var settings = {
 	counter: 'counter:propcotts',
@@ -44,23 +45,7 @@ Propcott.prototype.toString = function() {
 	return str;
 };
 
-var save = function(callback) {
-	var propcott = this;
-	callback = callback || noop;
 
-	var params = {
-		Bucket: settings.bucket,
-		Key: hash.to(propcott.id) + '/data.json',
-		Body: String(propcott),
-		ContentType: 'application/json'
-	};
-	
-	s3.putObject(params, function(err, data) {
-		if (err) return callback(err);
-		propcott.emit('saved', propcott);
-		callback(null, data);
-	});
-};
 
 var index = function(callback) {
 	var propcott = this;
@@ -107,16 +92,34 @@ on save
 
 Propcott.prototype.save = function(callback) {
 	var propcott = this;
-	this.emit('saving', this);
+	propcott.emit('saving', propcott);
 
-	if(propcott.id === null) {
-		Store.increment(settings.counter, function(err, id) {
-			if(err) return callback(err);
+	async.series([
+		function(callback) {
+			if(!isNaN(propcott.id)) return callback(null);
+			Store.increment(settings.counter, function(err, id) {
+				if(err) return callback(err);
+				propcott.id = id;
 
-			propcott.id = id;
-			save.apply(propcott, arguments);
-		});
-	} else save.apply(propcott, arguments);
+				var params = {
+					Bucket: settings.bucket,
+					Key: hash.to(propcott.id) + '/data.json',
+					Body: String(propcott),
+					ContentType: 'application/json'
+				};
+
+				s3.putObject(params, function(err, data) {
+					if (err) return callback(err);
+					propcott.emit('saved', propcott);
+					return callback(null);
+				});
+			});
+		}
+	],
+	function(err, data) {
+		propcott.emit('saved', propcott);
+		callback(err, propcott);
+	});
 };
 
 Propcott.prototype.delete = function(callback) {

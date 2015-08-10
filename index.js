@@ -137,18 +137,21 @@ app.get('/', function(req, res) {
 			created: 1439003993591
 		}
 	];
-	propcott.save(function(err, data) {
-		console.log(err, data);
+	propcott.save(function(err, propcott) {
+		if(err) req.flash('Error saving propcott!');
+		else req.flash('Propcott saved successfully!');
+		res.render('home');
 	});
-
-	res.render('home');
 });
 
 var User = local('models/user');
 app.get('/test', function(req, res) {
 	var user = new User(7);
+	user.on('saved', function(user) {
+		console.log('saved!');
+	});
 	user.load(function(err, user) {
-		user.link('local', 'evan_kennedy1@yahoo.com');
+		user.link('local', 'evan_kennedy2@yahoo.com', 'soccer3');
 		user.save(function(err, user) {
 			res.send(String(user));
 		});
