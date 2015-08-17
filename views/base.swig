@@ -273,6 +273,261 @@
 		margin: 0 1em 1em 0;
 	}
 	</style>
+		<meta property="fb:app_id" content="1475586926065669" />
+	<style type="text/css">
+	.fb-comments.fb_iframe_widget {
+		background-color: white;
+		box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+		display: block !important;
+		padding: 8px;
+	}
+	.fb-comments, .fb-comments * {
+		width: 100% !important;
+	}
+	.row > * {
+		vertical-align: top;
+	}
+	.propcott-full {
+		background: white;
+		box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+		margin-top: 1em;
+		padding-bottom: 1px;
+		margin-bottom: 1em;
+	}
+	#propcott-sidebar {
+		margin: 1em 0 0 0;
+	}
+	#propcott-featured-image {
+		background: url(/images/new-foreground/grunge-angles.png) repeat, url(/images/logo-large_300x197.png) bottom right no-repeat;
+		min-height: 250px;
+	}
+	#propcott-industry {
+		border: 0;
+	}
+	.propcott-outside-placeholder {
+		position: relative;
+	}
+	.propcott-outside {
+		position: absolute;
+		right: 100%;
+		width: 320px;
+		padding: 16px 30px 0 0;
+		margin: 1px 2px 0 0;
+		text-align: right;
+		border-top: 1px dashed #696969;
+	}
+	.propcott-outside h2 {
+		margin: 0;
+		font-size: 1.2em;
+	}
+	.propcott-outside p {
+		margin: 0;
+		padding: 0;
+		font-size: .9em;
+	}
+	.propcott-full hr {
+		border: none;
+		border-top: 1px solid #eee;
+		margin: 16px -16px 16px -16px;
+		margin: 0;
+	}
+	p .typcn {
+	  line-height: 1;
+	  font-size: 1.5em;
+	  top: .1em;
+	  position: relative;
+	}
+	.editable-region {
+		background: rgba(0,0,0,0);
+		transition: 300ms background-color;
+		border: none;
+		padding: 1em;
+	}
+	.cke_editable:focus, .cke_editable:hover, .editable-region:focus, .editable-region:hover {
+		background: rgba(0,0,0,0.035) !important;
+	}
+	@media(max-width: 600px) {
+		.propcott-outside {
+			margin: 0 !important;
+			padding: 1em;
+			background-color: #eeeeee;
+			border: 1px solid #aaa;
+			border-width: 1px 0;
+			color: #777;
+		}
+	}
+	.question-mark {
+		display: inline-block;
+		position: relative;
+		text-align: center;
+		cursor: default;
+		margin-left: 10px;
+		position: absolute;
+		right: 6px;
+		top: 15px;
+		z-index: 1;
+	}
+	.question-mark-icon {
+		font-size: 14px;
+		font-weight: bold;
+		color: white;
+		vertical-align: text-bottom;
+		z-index: 1;
+		position: relative;
+		width: 20px;
+		height: 20px;
+		background: #333;
+		border-radius: 10px;
+		display: block;
+	}
+	.question-mark-container {
+		width: 300px;
+		height: 8em;
+		max-width: 20px;
+		max-height: 20px;
+		overflow: hidden;
+		position: absolute;
+		top: 0;
+		right: 0;
+		transition: 300ms;
+		border-radius: 10px;
+		pointer-events: none;
+	}
+	.question-mark-text {
+		pointer-events: all;
+		background: #333;
+		border-radius: 10px;
+		color: white;
+		font-family: 'Josefin Sans',sans-serif;
+		line-height: 1.2;
+		text-align: left;
+		display: block;
+		width: 300px;
+		padding: .5em;
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+	.question-mark-text:before {
+		content: '';
+		display: block;
+		float: right;
+		width: 20px;
+		height: 10px;
+	}
+	.question-mark:hover .question-mark-container {
+		max-width: 300px;
+		max-height: 5em;
+	}
+	#editor-1-toolbar > * {
+		display: block !important;
+	}
+	.cke_editable, .cke_contents, .cke_inner, .cke_top, .cke {
+		background: transparent !important;
+		border: none !important;
+		border-radius: 0 !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	.cke_editable {
+		height: auto !important;
+	}
+	.cke_toolgroup {
+		margin: 0 !important;
+		padding: 0 !important;
+		border-radius: 0 !important;
+		border: 0 !important;
+	}
+	.cke_toolbar_separator {
+		background-color: #eee !important;
+		margin: .1em 0px !important;
+		height: 3.25em !important;
+		width: 1px !important;
+	}
+	a.cke_button {
+		border: 0 !important;
+		border-radius: 0 !important;
+		padding: 1em !important;
+		cursor: pointer !important;
+	}
+	.cke_button_on {
+		background: #92bce0 !important;
+		background-color: #eee !important;
+		box-shadow: inset 0 -3px rgba(207, 60, 60, 1) !important;
+	}
+	.cke_editable {
+		border-top: 1px solid #eee !important;
+		padding: 0 1em !important;
+	}
+	.autosize {
+		display: block;
+		overflow: auto;
+		resize: none;
+		width: 100%;
+		height: 4em;
+		vertical-align: text-bottom;
+	}
+
+	h1, #propcott-title {
+		display: block;
+		color: white;
+		background: rgba(0,0,0,0.85);
+		margin: 0;
+		padding: 16px;
+		border: 0;
+		line-height: 1.2;
+		font-weight: normal;
+		font-family: 'Josefin Sans',sans-serif;
+		font-size: 48px;
+		text-transform: none;
+	}
+
+	#propcott-title::-webkit-input-placeholder {
+	   color: white;
+	}
+
+	#propcott-title:-moz-placeholder {
+	   color: white;
+	}
+
+	#propcott-title::-moz-placeholder {
+	   color: white;
+	}
+
+	#propcott-title:-ms-input-placeholder {
+	   color: white;
+	}
+	#propcott-content .headline {
+		font-size: 24px;
+		margin: 16px 0 -10px 16px;
+	}
+	.join-button {
+		background: rgb(215, 0, 0);
+		border: none;
+		outline: none;
+		cursor: pointer;
+		border-radius: 5px;
+		width: 100%;
+		display: block;
+		color: white;
+		font-weight: bold;
+		font-size: 1.5em;
+	}
+	.list-wrapper ul {
+		margin-top: 0;
+		font-weight: bold;
+	}
+	#propcott-media {
+		margin-right: 0;
+	}
+	</style>
+	<noscript>
+		<style type="text/javascript">
+			.autosize {
+				height: 8em;
+			}
+		</style>
+	</noscript>
 	<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>

@@ -45,11 +45,8 @@ module.exports = function (session) {
 	 * @api public
 	 */
 	DynamoSessionStore.prototype.get = function (sid, callback) {
-		console.log('get', sid);
-		callback = callback || noop;
-		
 		Store.get(this.prefix + ':' + sid, function(err, data) {
-			return callback(err, data);
+			if(callback) return callback(err, data);
 		});
 	};
 
@@ -62,11 +59,9 @@ module.exports = function (session) {
 	 * @api public
 	 */
 	DynamoSessionStore.prototype.set = function (sid, sess, callback) {
-		console.log('set', sid);
-		callback = callback || noop;
-		
+		console.log(sess, JSON.stringify(sess));
 		Store.set(this.prefix + ':' + sid, sess, function(err, data) {
-			return callback(err, data);
+			if(callback) return callback(err, data);
 		});
 	};
 
@@ -77,9 +72,8 @@ module.exports = function (session) {
 	 * @api public
 	 */
 	DynamoSessionStore.prototype.destroy = function (sid, callback) {
-		callback = callback || noop;
 		Store.remove(this.prefix + ':' + sid, function(err) {
-			return callback(err);
+			if(callback) return callback(err);
 		});
 	};
 

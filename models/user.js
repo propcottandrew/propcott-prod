@@ -25,13 +25,14 @@ var hash = {
 	}
 };
 
-function User(id) {
-	this.id = id;
+function User(object) {
 	this.credentials = [];
 	this._state = {
 		addedCredentials: {},
 		changedCredentials: {}
 	};
+	console.log(this._state);
+	for(var i in object) this[i] = object[i];
 }
 
 User.inherit(Model);
@@ -39,17 +40,6 @@ User.inherit(Model);
 // Todo: implement this
 // These will be put into their own file
 User.prototype.separate = ['propcotts'];
-
-User.prototype.toString = function() {
-	var state = this._state;
-	var password = this.password;
-	delete this._state;
-	delete this.password;
-	var str = JSON.stringify(this);
-	this._state = state;
-	this.password = password;
-	return str;
-};
 
 User.find = function(provider, key, callback) {
 	callback = callback || noop;
@@ -65,8 +55,19 @@ User.find = function(provider, key, callback) {
 	dynamo.getItem(params, function(err, data) {
 		if(err) return callback(err);
 		if(!data.Item) return callback('User not found');
-		return callback(null, new User(data.Item.Id.N));
+		return callback(null, new User({id: data.Item.Id.N}));
 	});
+};
+
+User.prototype.session = function() {
+	return {
+		id: this.id,
+		email: this.email,
+		displayName: this.displayName,
+		avatar: this.avatar,
+		notifications: this.notifications,
+		permissions: this.permissions
+	};
 };
 
 User.prototype.load = function(callback) {
@@ -134,7 +135,6 @@ User.prototype.save = function(callback) {
 						}
 					};
 					dynamo.updateItem(params, function(err, data) {
-						console.log(params, err, data);
 						if(err) return callback(err);
 						delete user._state.changedCredentials[i];
 						callback();
@@ -248,7 +248,7 @@ User.prototype.relink = function(provider, oldKey, newKey) {
 		oldKey: oldKey,
 		newKey: newKey
 	};
-	
+
 	for(var i = 0; i < this.credentials.length; i++) {
 		if(this.credentials[i].provider == provider && this.credentials[i].key == oldKey) {
 			this.credentials.key = newKey;

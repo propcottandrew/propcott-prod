@@ -6,30 +6,18 @@ Allow multiple constructors of the same name & anonymous named constructors
 
 function Base() {}
 
-var globalEvents = {};
+Base.use(local('framework/Traits/Events'));
 
-Base.prototype.emit = function(event) {
-	var events = (((this._state||{}).events||{})[event]||[])
-		.concat(((globalEvents[this.constructor.name]||{})[event]||[]));
-	for(var i = 0; i < events.length; i++) events[i](this);
+Base.prototype.toString = function() {
+	return JSON.stringify(this);
 };
 
-Base.prototype.on = function(event, callback) {
-	var events;
-	if(this == this.constructor.prototype) {
-		// called globally
-		if(!globalEvents[this.constructor.name]) globalEvents[this.constructor.name] = {};
-		if(!globalEvents[this.constructor.name][event]) globalEvents[this.constructor.name][event] = [];
-		events = globalEvents[this.constructor.name][event];
-	} else {
-		// called on single object
-		if(!this._state) this._state = {};
-		if(!this._state.events) this._state.events = {};
-		if(!this._state.events[event]) this._state.events[event] = [];
-		events = this._state.events[event];
-	}
-	
-	events.push(callback);
+Base.prototype.json = {
+	replacer: function(key, value) {
+		if(key[0] == '_') return;
+		return value;
+	},
+	space: 0
 };
 
 module.exports = Base;

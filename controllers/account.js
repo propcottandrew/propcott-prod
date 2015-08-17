@@ -4,15 +4,15 @@ var User = local('models/user');
 
 module.exports.updateGeneral = function(req, res, next) {
 	if(!req.session.user) return next();
-	
-	var user = new User(req.session.user.id);
+
+	var user = new User({id: req.session.user.id});
 	user.load(function(err, user) {
 		if(err) {
 			req.flash('Could not update account');
 			res.redirect('/account');
 			return;
 		}
-		
+
 		delete user['g-recaptcha-response'];
 		if(req.body.password && req.body.password != req.body.password_verify) {
 			req.flash('Passwords do not match');
@@ -25,12 +25,12 @@ module.exports.updateGeneral = function(req, res, next) {
 		} else if(req.body.email) {
 			user.relink('local', user.email, req.body.email);
 		}
-		
+
 		delete req.body.password;
 		delete req.body.password_verify;
-		
+
 		for(var i in req.body) user[i] = req.body[i];
-		
+
 		user.save(function(err, user) {
 			if(err)
 				req.flash('Could not update account');
@@ -42,7 +42,7 @@ module.exports.updateGeneral = function(req, res, next) {
 /*	$this->validate($request, [
 		'email' => 'email',
 	]);
-	
+
 	var user = req.session.user;
 
 	foreach(['name', 'display_name', 'email', 'zip', 'gender', 'org', 'org_link'] as $prop)
@@ -56,7 +56,7 @@ module.exports.updateGeneral = function(req, res, next) {
 
 module.exports.general = function(req, res) {
 	if(!req.session.user) return next();
-	
+
 	var user = new User(req.session.user.id);
 	user.load(function(err, user) {
 		if(err) {
@@ -69,14 +69,14 @@ module.exports.general = function(req, res) {
 };
 
 module.exports.propcotts = function() {
-	
+
 };
 
 module.exports.notifications = function() {
-	
+
 };
 
 module.exports.connections = function() {
-	
+
 };
 

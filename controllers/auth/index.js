@@ -10,9 +10,16 @@ module.exports.authenticate = function(req, res) {
 			req.flash('Invalid username or password');
 			return res.render('auth/login');
 		}
-		req.session.user = user;
-		req.flash('Successfully logged in');
-		return res.redirect('/');
+		user.load(function(err, user) {
+			if(err) {
+				req.flash('Could not load user');
+				return res.render('auth/login');
+			}
+			req.session.user = user;
+			req.flash('Successfully logged in');
+			user.emit('login');
+			res.redirect('/');
+		});
 	});
 };
 
@@ -26,34 +33,35 @@ module.exports.register = function(req, res) {
 		&& req.body.password == req.body.password_confirmation
 		&& req.body.name)) {
 		req.flash(MessageBag, 'input.incorrect');
-		res.render('auth/login');
-		return;
+		return res.redirect('/login');
 	}
-	
+
 	var user = new User();
 	user.link('local', req.body.email, req.body.password);
-	
+
 	delete req.body.password;
 	delete req.body.password_confirmation;
 	delete req.body['g-recaptcha-response'];
 	delete req.body.register;
-	
+
 	for(var i in req.body) user[i] = req.body[i];
 	user.displayName = req.body.name.split(' ')[0];
-	
+
 	user.save(function(err, user) {
 		if(err) {
 			req.flash(MessageBag, 'auth.registered.error');
-			res.render('auth/login');
-			return;
+			return res.redirect('/login');
 		}
-		req.flash(MessageBag, 'auth.registered');
 		req.session.user = user;
+		req.flash(MessageBag, 'auth.registered');
+		user.emit('register');
+		user.emit('login');
 		res.redirect('/');
 	});
 };
 
 module.exports.logout = function(req, res) {
+	var user = new User(req.session.user);
 	req.session.destroy(function(err) {
 		if(err) {
 			req.flash('Could not log out');
@@ -61,6 +69,7 @@ module.exports.logout = function(req, res) {
 			return;
 		}
 		res.clearCookie('sid');
+		user.emit('logout');
 		res.redirect('/');
 	});
 };

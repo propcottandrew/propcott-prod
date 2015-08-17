@@ -82,7 +82,7 @@ on save
 		index if changed
 	else
 		set draft flag in session
-		save to drafts/{this._state.req.sessionId}.json
+		save to {this._state.req.sessionId}:draft.json
 		flash "Please log in to save your draft."
 		redirect to login page
 */
@@ -93,7 +93,7 @@ Propcott.prototype.save = function(callback) {
 
 	async.series([
 		function(callback) {
-			if(!isNaN(propcott.id)) return callback(null);
+			if(!isNaN(propcott.id)) return callback();
 			Store.increment(settings.counter, function(err, id) {
 				if(err) return callback(err);
 				propcott.id = id;
@@ -108,7 +108,7 @@ Propcott.prototype.save = function(callback) {
 				s3.putObject(params, function(err, data) {
 					if (err) return callback(err);
 					propcott.emit('saved', propcott);
-					return callback(null);
+					return callback();
 				});
 			});
 		}
@@ -123,19 +123,19 @@ Propcott.prototype.delete = function(callback) {
 	if(this.id === null) return callback('Propcott not yet saved.');
 };
 
-Propcott.prototype.find = function(id, callback) {
-	propcott.indexedProperties.forEach(function(prop) {
-		propcott._state[prop] = propcott.prop;
-	});
-
+Propcott.find = function(id, callback) {
 	var params = {
 		Bucket: settings.bucket,
 		Key: hash.to(id) + '/data.json'
 	};
 
 	s3.getObject(params, function(err, data) {
-		if (err) return callback(err);
-		// should load all data into current propcott
+		if(err) return callback(err);
+		console.log(data);
+		return;
+
+		var propcott = new Propcott();
+		for(var i in data)
 		callback(null, data);
 	});
 };
