@@ -2,7 +2,6 @@ var dynamo = local('framework/DynamoDB');
 var s3 = local('framework/S3');
 var Store = local('models/store');
 var Model = local('models/base');
-var util = require('util');
 var passport = require('passport');
 var bcrypt = require('bcrypt-nodejs');
 var async = require('async');
@@ -30,11 +29,16 @@ function User(id) {
 	this.id = id;
 	this.credentials = [];
 	this._state = {
-		addedCredentials: {}
+		addedCredentials: {},
+		changedCredentials: {}
 	};
 }
 
-util.inherits(User, Model);
+User.inherit(Model);
+
+// Todo: implement this
+// These will be put into their own file
+User.prototype.separate = ['propcotts'];
 
 User.prototype.toString = function() {
 	var state = this._state;
@@ -52,15 +56,15 @@ User.find = function(provider, key, callback) {
 
 	var params = {
 		TableName: settings.table,
-		ConditionExpression: 'attribute_exists(Id)',
-		Item: {
-			Id: {S: key},
+		Key: {
+			Key: {S: key},
 			Provider: {S: provider},
 		}
 	};
 
 	dynamo.getItem(params, function(err, data) {
 		if(err) return callback(err);
+		if(!data.Item) return callback('User not found');
 		return callback(null, new User(data.Item.Id.N));
 	});
 };
@@ -71,7 +75,7 @@ User.prototype.load = function(callback) {
 
 	var params = {
 		Bucket: settings.bucket,
-		Key: hash.to(user.id) + '.json'
+		Key: hash.to(user.id) + '/index.json'
 	};
 
 	s3.getObject(params, function(err, data) {
@@ -89,17 +93,17 @@ User.prototype.save = function(callback) {
 
 	async.series([
 		function(callback) {
-			if(user.id) return callback(null);
+			if(user.id) return callback();
 
 			Store.increment(settings.counter, function(err, id) {
 				if(err) return callback(err);
 				user.id = id;
-				return callback(null);
+				return callback();
 			});
 		},
 		function(callback) {
 			var tasks = [];
-			for(var i in user._state.addedCredentials) {
+			for(var i in user._state.addedCredentials) (function(i) {
 				tasks.push(function(callback) {
 					var params = {
 						TableName: settings.table,
@@ -109,25 +113,43 @@ User.prototype.save = function(callback) {
 							Id: {N: user.id.toString()}
 						}
 					};
-
-					if(user._state.addedCredentials[i].password) params.Item.Password = bcrypt.hashSync(user._state.addedCredentials[i].password);
-
+					if(user._state.addedCredentials[i].password) params.Item.Password = {S: bcrypt.hashSync(user._state.addedCredentials[i].password)};
 					dynamo.putItem(params, function(err, data) {
 						if(err) return callback(err);
 						delete user._state.addedCredentials[i];
-						callback(null);
+						callback();
 					});
 				});
-			}
+			})(i);
+			for(var i in user._state.changedCredentials) (function(i) {
+				tasks.push(function(callback) {
+					var params = {
+						TableName: settings.table,
+						UpdateExpression: 'SET #key = :key',
+						ExpressionAttributeNames: {'#key': 'Key'},
+						ExpressionAttributeValues: {':key': {S: user._state.changedCredentials[i].newKey}},
+						Key: {
+							Key: {S: user._state.changedCredentials[i].oldKey},
+							Provider: {S: user._state.changedCredentials[i].provider}
+						}
+					};
+					dynamo.updateItem(params, function(err, data) {
+						console.log(params, err, data);
+						if(err) return callback(err);
+						delete user._state.changedCredentials[i];
+						callback();
+					});
+				});
+			})(i);
 			async.parallel(tasks, function(err, results) {
 				if(err) return callback(err);
-				return callback(null);
+				return callback();
 			});
 		},
 		function(callback) {
 			var params = {
 				Bucket: settings.bucket,
-				Key: hash.to(user.id) + '.json',
+				Key: hash.to(user.id) + '/index.json',
 				Body: String(user),
 				ContentType: 'application/json'
 			};
@@ -140,7 +162,7 @@ User.prototype.save = function(callback) {
 		}
 	],
 	function(err, data) {
-		user.emit('saved', user);
+		if(!err) user.emit('saved', user);
 		callback(err, user);
 	});
 };
@@ -192,21 +214,26 @@ User.prototype.link = function(provider, key, password) {
 		}
 	}
 
-	var creds = {
+	this._state.addedCredentials[provider + ':' + key] = {
 		provider: provider,
 		key: key,
 		password: password
 	};
 
-	this._state.addedCredentials[provider + ':' + key] = creds;
-
-	return this.credentials.push(creds);
+	return this.credentials.push({
+		provider: provider,
+		key: key
+	});
 };
 
 User.prototype.unlink = function(provider, key) {
 	// what if last account?
 
 	delete this._state.addedCredentials[provider + ':' + key];
+	this._state.removedCredentials[provider + ':' + key] = {
+		provider: provider,
+		key: key
+	};
 
 	for(var i = 0; i < this.credentials.length; i++) {
 		if(this.credentials[i].provider == provider && this.credentials[i].key == key) {
@@ -214,5 +241,19 @@ User.prototype.unlink = function(provider, key) {
 		}
 	}
 };
+
+User.prototype.relink = function(provider, oldKey, newKey) {
+	this._state.changedCredentials[provider + ':' + oldKey] = {
+		provider: provider,
+		oldKey: oldKey,
+		newKey: newKey
+	};
+	
+	for(var i = 0; i < this.credentials.length; i++) {
+		if(this.credentials[i].provider == provider && this.credentials[i].key == oldKey) {
+			this.credentials.key = newKey;
+		}
+	}
+}
 
 module.exports = User;

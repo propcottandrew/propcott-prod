@@ -27,6 +27,7 @@ Store.get = function(key, callback) {
 
 	dynamo.getItem(params, function(err, data) {
 		if (err) return callback(err);
+		if(!data.Item) return callback();
 
 		if(data.Item.Expires && data.Item.Expires.N < Date.now()) return callback(null, null);
 
@@ -59,13 +60,12 @@ Store.set = function(key, value, expires, callback) {
 
 Store.remove = function(key, callback) {
 	callback = callback || noop;
-	
 	var params = {
 		TableName: 'Store',
-		Key: {Key:   {S: sid}}
+		Key: {Key:   {S: key}}
 	};
 
-	this.db.deleteItem(params, function(err, data) {
+	dynamo.deleteItem(params, function(err, data) {
 		if (err) return callback(err);
 		return callback();
 	});

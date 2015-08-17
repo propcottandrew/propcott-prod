@@ -2,16 +2,18 @@ var passport = require('passport');
 var dynamo = local('framework/DynamoDB');
 var validator = require('validator');
 var bcrypt = require('bcrypt-nodejs');
+var User = local('models/user');
 
 module.exports.authenticate = function(req, res) {
-	return passport.authenticate('local', function(err, user) {
+	User.find('local', req.body.email, function(err, user) {
 		if(err) {
-			req.flash(err);
+			req.flash('Invalid username or password');
 			return res.render('auth/login');
 		}
 		req.session.user = user;
+		req.flash('Successfully logged in');
 		return res.redirect('/');
-	}).apply(this, arguments);
+	});
 };
 
 module.exports.login = function(req, res) {
@@ -27,48 +29,38 @@ module.exports.register = function(req, res) {
 		res.render('auth/login');
 		return;
 	}
-
-	var params = {
-		TableName: 'users',
-		ConditionExpression: 'attribute_not_exists(Id)',
-		Item: {
-			Id: {S: 'local:' + req.body.email},
-			Created: {N: Date.now().toString()},
-			Password: {S: bcrypt.hashSync(req.body.password)},
-			Info: {S: JSON.stringify({
-				name: req.body.name,
-				email: req.body.email,
-				org: req.body.org,
-				org_link: req.body.org_link
-			})}
-		}
-	};
-
-	dynamo.putItem(params, function(err, data) {
-		// should try autolooping in the future
+	
+	var user = new User();
+	user.link('local', req.body.email, req.body.password);
+	
+	delete req.body.password;
+	delete req.body.password_confirmation;
+	delete req.body['g-recaptcha-response'];
+	delete req.body.register;
+	
+	for(var i in req.body) user[i] = req.body[i];
+	user.displayName = req.body.name.split(' ')[0];
+	
+	user.save(function(err, user) {
 		if(err) {
-			console.log(err);
 			req.flash(MessageBag, 'auth.registered.error');
 			res.render('auth/login');
 			return;
 		}
-
 		req.flash(MessageBag, 'auth.registered');
-		req.session.user = {
-			provider: 'local',
-			name: req.body.name,
-			email: req.body.email
-		};
+		req.session.user = user;
 		res.redirect('/');
 	});
 };
 
 module.exports.logout = function(req, res) {
 	req.session.destroy(function(err) {
-		if(err) return err;
-
+		if(err) {
+			req.flash('Could not log out');
+			res.redirect('/');
+			return;
+		}
 		res.clearCookie('sid');
-
 		res.redirect('/');
 	});
 };

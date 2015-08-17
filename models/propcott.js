@@ -2,7 +2,6 @@ var dynamo = local('framework/DynamoDB');
 var s3 = local('framework/S3');
 var Store = local('models/store');
 var Model = local('models/base');
-var util = require('util');
 var async = require('async');
 
 var settings = {
@@ -24,13 +23,11 @@ var hash = {
 	}
 };
 
-function Propcott(req) {
-	this._state = {
-		req: req
-	};
+function Propcott() {
+	this._state = {};
 }
 
-util.inherits(Propcott, Model);
+Propcott.inherit(Model);
 
 Propcott.prototype.indexedProperties = [
 	'industry',

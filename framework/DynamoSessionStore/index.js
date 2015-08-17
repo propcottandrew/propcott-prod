@@ -49,7 +49,7 @@ module.exports = function (session) {
 		callback = callback || noop;
 		
 		Store.get(this.prefix + ':' + sid, function(err, data) {
-			console.log(err, data);
+			return callback(err, data);
 		});
 	};
 
@@ -66,7 +66,7 @@ module.exports = function (session) {
 		callback = callback || noop;
 		
 		Store.set(this.prefix + ':' + sid, sess, function(err, data) {
-			console.log(err, data);
+			return callback(err, data);
 		});
 	};
 
@@ -77,8 +77,9 @@ module.exports = function (session) {
 	 * @api public
 	 */
 	DynamoSessionStore.prototype.destroy = function (sid, callback) {
-		Store.remove(this.prefix + ':' + sid, function(err, data) {
-			console.log(err, data);
+		callback = callback || noop;
+		Store.remove(this.prefix + ':' + sid, function(err) {
+			return callback(err);
 		});
 	};
 
