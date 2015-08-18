@@ -3,6 +3,7 @@ var s3 = local('framework/S3');
 var Store = local('models/store');
 var Model = local('models/base');
 var async = require('async');
+var User = local('models/user');
 
 var settings = {
 	counter: 'counter:propcotts',
@@ -25,24 +26,17 @@ var hash = {
 
 function Propcott() {
 	this._state = {};
+	this.status = 'draft';
+	this.created = Date.now();
 }
 
 Propcott.inherit(Model);
+
 
 Propcott.prototype.indexedProperties = [
 	'industry',
 	'target'
 ];
-
-Propcott.prototype.toString = function() {
-	var state = this._state;
-	delete this._state;
-	var str = JSON.stringify(this);
-	this._state = state;
-	return str;
-};
-
-
 
 var index = function(callback) {
 	var propcott = this;
@@ -69,54 +63,103 @@ var index = function(callback) {
 	});
 };
 
-/*
-on save
-	if logged in
-		if published
-			if !id, get id
-			index if changed
-			save to {hash.to(propcott.id)}/data.json
-		else
-			save to {hash.to(req.user.id)}/{Date.now()}.json
-		if !id, get id
-		index if changed
-	else
-		set draft flag in session
-		save to {this._state.req.sessionId}:draft.json
-		flash "Please log in to save your draft."
-		redirect to login page
-*/
+// Use middleware so we have acesss to req & res
+Propcott.listeners = function(req, res, next) {
+	Propcott.saveListener(req, res, next);
+	next();
+};
 
 Propcott.prototype.save = function(callback) {
 	var propcott = this;
-	propcott.emit('saving', propcott);
+	propcott.emit('saving', function(err) {
+		if(err) return callback(err, propcott);
+		propcott.emit('saved', function(err) {
+			return callback(err, propcott);
+		});
+	});
+};
 
-	async.series([
-		function(callback) {
-			if(!isNaN(propcott.id)) return callback();
-			Store.increment(settings.counter, function(err, id) {
-				if(err) return callback(err);
-				propcott.id = id;
-
-				var params = {
-					Bucket: settings.bucket,
-					Key: hash.to(propcott.id) + '/data.json',
-					Body: String(propcott),
-					ContentType: 'application/json'
-				};
-
-				s3.putObject(params, function(err, data) {
-					if (err) return callback(err);
-					propcott.emit('saved', propcott);
-					return callback();
+// still need to save propcott info to user
+// maybe do that on saved?
+Propcott.saveListener = function(req, res, next) {
+	User.prototype.on('login', function(next) {
+		if(req.session.draft) {
+			s3.getObject({
+				Bucket: 'drafts.data.propcott.com',
+				Key: req.sessionID + '.json'
+			}, function(err, data) {
+				if(err) return next(err);
+				if(!data.Item) return next('Could not find propcott draft.');
+				var propcott = new Propcott(data);
+				propcott.creator = req.session.user;
+				propcott.save(function(err) {
+					if(err) return next(err);
+					return next();
 				});
 			});
 		}
-	],
-	function(err, data) {
-		propcott.emit('saved', propcott);
-		callback(err, propcott);
 	});
+
+	Propcott.prototype.on('saving', function(next) {
+		var propcott = this;
+
+		if(!req.session.user) {
+			req.session.draft = true;
+
+			s3.putObject({
+				Bucket: 'drafts.data.propcott.com',
+				Key: req.sessionID + '.json',
+				Body: propcott,
+				ContentType: 'application/json'
+			}, function(err, data) {
+				if(err) {
+					req.flash('An error occured when saving your propcott draft.');
+					return res.redirect('back');
+				}
+				req.flash('Please log in to save your propcott.');
+				res.redirect('/login');
+			});
+		}
+
+		switch(propcott.status) {
+			case 'unpublished':
+				s3.putObject({
+					Bucket: 'drafts.data.propcott.com',
+					Key: hash.to(req.session.user.id) + '/' + propcott.created + '.json',
+					Body: propcott,
+					ContentType: 'application/json'
+				}, function(err, data) {
+					if(err) return next(err);
+					return next();
+				});
+			break;
+
+			case 'published':
+				async.series([
+					function(next) {
+						if(propcott.id) return next();
+						Store.increment('counter:propcotts', function(err, id) {
+							if(err) return next(err);
+							propcott.id = id;
+							return next();
+						});
+					}
+				], function(err) {
+					if(err) return next(err);
+					s3.putObject({
+						Bucket: 'propcotts.data.propcott.com',
+						Key: hash.to(propcott.id) + '/data.json',
+						Body: propcott,
+						ContentType: 'application/json'
+					}, function(err, data) {
+						if(err) return next(err);
+						return next();
+					});
+				});
+			break;
+		}
+	});
+	next();
 };
 
 Propcott.prototype.delete = function(callback) {
@@ -124,12 +167,10 @@ Propcott.prototype.delete = function(callback) {
 };
 
 Propcott.find = function(id, callback) {
-	var params = {
+	s3.getObject({
 		Bucket: settings.bucket,
 		Key: hash.to(id) + '/data.json'
-	};
-
-	s3.getObject(params, function(err, data) {
+	}, function(err, data) {
 		if(err) return callback(err);
 		console.log(data);
 		return;

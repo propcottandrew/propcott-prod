@@ -1,23 +1,38 @@
-module.exports = function(value) {
-	value.prototype.emit = function(event) {
+var async = require('async');
+
+module.exports = function(emitter) {
+	emitter.prototype.emit = function(event, callback) {
+		var emitter = this == this.constructor.prototype ? this.constructor : this;
 		var events = (this.constructor._events||[])[event]||[];
 		if(this != this.constructor.prototype) events = events.concat((this._events||[])[event]||[]);
 		events.sort(function(a, b) { return a[0] - b[0] });
-		for(var i = 0; i < events.length; i++) events[i][1](this != this.constructor.prototype && this || null, this.constructor);
+		async.series(events.map(function(event) {
+			return event[1].bind(emitter);
+		}), function(err) {
+			if(callback) return callback(err);
+		});
 	};
 
-	value.prototype.on = function(event, callback) {
+	emitter.prototype.on = function(event, callback) {
 		var emitter = this == this.constructor.prototype ? this.constructor : this;
 		if(!emitter._events) emitter._events = {};
 		if(!emitter._events[event]) emitter._events[event] = [];
 		emitter._events[event].push([Date.now(), callback]);
 	};
 
-	value.prototype.off = function(event, callback) {
+	emitter.prototype.off = function(event, callback) {
 		var emitter = this == this.constructor.prototype ? this.constructor : this;
 		if(!(emitter._events||{})[event]) return;
 		var list = (emitter._events[event]||[]);
 		for(var i = 0; i < list.length; i++)
 			if(list[i][1] == callback) list.splice(i--, 1);
+	};
+
+	emitter.prototype.once = function(event, callback) {
+		var emitter = this;
+		emitter.on(event, function self() {
+			callback.apply(null, arguments);
+			emitter.off(event, self);
+		});
 	};
 };

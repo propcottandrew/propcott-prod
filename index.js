@@ -12,6 +12,7 @@ var DynamoSessionStore = local('framework/DynamoSessionStore')(session);
 var controllers = local('controllers');
 var middleware = local('middleware');
 var passport = require('passport');
+var Propcott = local('models/propcott');
 
 var app = express();
 
@@ -41,6 +42,7 @@ app.use(function(req, res, next) {
 	res.locals.session = req.session;
 	next();
 });
+app.use(Propcott.listeners);
 
 swig.setDefaults({ cache: false });
 //swig.setDefaults({
@@ -127,7 +129,6 @@ app.use(function(req, res, next) {
 	});
 	next();
 });
-
 
 app.get('/login', middleware.guest, controllers.auth.login)
 app.post('/login', middleware.guest, controllers.auth.authenticate);
