@@ -22,6 +22,7 @@
     "passport-facebook": "^2.0.0",
     "passport-local": "^1.0.0",
     "swig": "^1.4.2",
-    "validator": "^4.0.1"
+    "validator": "^4.0.1",
+    "uuid": "^2.0.1"
   }
 }

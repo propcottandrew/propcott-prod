@@ -25,6 +25,7 @@ var hash = {
 	}
 };
 
+module.exports = User;
 function User(object) {
 	this.credentials = [];
 	this._state = {
@@ -255,5 +256,3 @@ User.prototype.relink = function(provider, oldKey, newKey) {
 		}
 	}
 }
-
-module.exports = User;
