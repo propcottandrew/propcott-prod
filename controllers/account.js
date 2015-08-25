@@ -1,7 +1,5 @@
 var User = local('models/user');
 
-
-
 module.exports.updateGeneral = function(req, res, next) {
 	if(!req.session.user) return next();
 

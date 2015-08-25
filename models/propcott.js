@@ -6,30 +6,24 @@ var fs = require('fs');
 var uuid = require('uuid');
 var hasher = local('framework/hasher');
 
-var settings = {
-	counter: 'counter:propcotts',
-	table: 'Propcotts',
-	bucket: 'propcotts.data.propcott.com'
-};
-
 exports = module.exports = Propcott;
 Propcott.inherit(Model);
-function Propcott() {
-	this._state = {};
-	this.status = 'draft';
+function Propcott(data) {
+	this._saved = false;
+	this._indexed = false;
+	this.published = false;
 	this.created = Date.now();
+	if(data) this.import(data);
 }
 
-Propcott.prototype.indexedProperties = [
-	'industry',
-	'target'
-];
-
-// Use middleware so we have acesss to req & res
-Propcott.listeners = function(req, res, next) {
-	next();
+Propcott.prototype.import = function(data) {
+	// make more efficient. only use json if string data type
+	if(typeof data == 'object') data = JSON.stringify(data);
+	data = JSON.parse(data);
+	for(var i in data) this[i] = data[i];
 };
 
+/*
 propcott.save(function(err, propcott) {
 	if(err) {
 		if(err.SavedAsDraft) {
@@ -42,87 +36,47 @@ propcott.save(function(err, propcott) {
 	}
 	// continue
 });
+*/
 
-Propcott.getDraft = function(callback) {
-	s3.getObject({
-		Bucket: 'drafts.data.propcott.com',
-		Key: req.sessionID + '.json'
-	}, function(err, data) {
+Propcott.prototype.saveData = function(callback) {
+	var propcott = this;
+	propcott.generateId(function(err) {
 		if(err) return callback(err);
-		if(!data.Item) return callback('Could not find propcott draft.');
-		var propcott = new Propcott(data);
-		propcott.creator = req.session.user;
-		propcott.save(function(err) {
+		s3.putObject({
+			Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
+			Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json',
+			Body: propcott,
+			COntentType: 'application/json'
+		}, function(err) {
 			if(err) return callback(err);
-			return callback();
+			if(!propcott.creator) return callback({SavedAsDraft: propcott.draftId});
+			callback();
 		});
 	});
 };
 
-Propcott.prototype.save = function(callback) {
+Propcott.prototype.saveIndex = function(callback) {
 	var propcott = this;
-	propcott.emit('saving', function(err) {
-		if(err) return callback(err, propcott);
-		if(!propcott.creator) {
-			var id = uuid.v4();
-			s3.putObject({
-				Bucket: 'drafts.data.propcott.com',
-				Key: id + '.json',
-				Body: propcott,
-				ContentType: 'application/json'
-			}, function(err, data) {
-				if(err) return callback(err);
-				return callback({SavedAsDraft: id}, propcott);
-			});
-		}
-
-		if(propcott.published) {
-			async.series([
-				function(callback) {
-					if(propcott.id) return callback();
-					Store.increment('counter:propcotts', function(err, id) {
-						if(err) return callback(err);
-						propcott.id = id;
-						return callback();
-					});
-				}
-			], function(err) {
-				if(err) return callback(err);
-				s3.putObject({
-					Bucket: 'propcotts.data.propcott.com',
-					Key: hasher.to(propcott.id) + '/data.json',
-					Body: propcott,
-					ContentType: 'application/json'
-				}, function(err, data) {
-					if(err) return callback(err);
-					if(this._state.)
-					dynamo.putItem({
-						TableName: 'Propcotts',
-						Item: {
-							Status: {S: propcott.status},
-							Id: {N: propcott.id},
-							SDay: {N: 1},
-							SWeek: {N: 1},
-							SMonth: {N: 1},
-							SAll: {N: 1},
-							SPrevious: {N: 1},
-							Industry: {S: propcott.industry},
-							Target: {S: propcott.target}
-						}
-					}, function(err, data) {
-						if(err) return callback(err);
-						propcott.emit('saved', function(err) {
-							return callback(err, propcott);
-						});
-					});
-				});
-			});
+	propcott.generateId(function(err) {
+		if(err) return callback(err);
+		if(!propcott.id) return callback({NotYetPublished:1});
+		if(propcott._indexed) {
+			// check for change to indexed properties
+			return callback();
 		} else {
-			s3.putObject({
-				Bucket: 'drafts.data.propcott.com',
-				Key: hasher.to(propcott.creator.id) + '/' + propcott.created + '.json',
-				Body: propcott,
-				ContentType: 'application/json'
+			dynamo.putItem({
+				TableName: 'Propcotts',
+				Item: {
+					Status: {S: 'published'},
+					Id: {N: propcott.id},
+					SDay: {N: 1},
+					SWeek: {N: 1},
+					SMonth: {N: 1},
+					SAll: {N: 1},
+					SPrevious: {N: 1},
+					Industry: {S: propcott.industry},
+					Target: {S: propcott.target}
+				}
 			}, function(err, data) {
 				if(err) return callback(err);
 				propcott.emit('saved', function(err) {
@@ -133,34 +87,88 @@ Propcott.prototype.save = function(callback) {
 	});
 };
 
-Propcott.prototype.delete = function(callback) {
-	// Todo
-	propcott.emit('deleting', function(err) {
-		if(err) return callback(err, propcott);
-		propcott.emit('deleted', function(err) {
-			return callback(err, propcott);
+Propcott.prototype.generateId = function(callback) {
+	if(propcott.id || propcott.draftId && !propcott.published) return callback();
+	if(propcott.published) {
+		Store.increment('counter:propcotts', function(err, id) {
+			if(err) return callback(err);
+			propcott.id = id;
+			return callback();
 		});
+	} else {
+		if(propcott.creator) propcott.draftId = hasher.to(propcott.creator.id) + '/' + uuid.v4();
+		else propcott.draftId = uuid.v4();
+	}
+};
+
+Propcott.prototype.save = function(callback) {
+	var propcott = this;
+	async.series([
+		function(callback) { propcott.emit('saving', callback); },
+		propcott.saveData,
+		propcott.saveIndex,
+		function(callback) { propcott.emit('saved', callback); }
+	], function(err) {
+		return callback(err);
 	});
 };
 
-Propcott.find = function(id, callback) {
+Propcott.prototype.load = function(callback) {
+	var propcott = this;
+	async.series([
+		function(callback) { propcott.emit('loading', callback); },
+		propcott.loadIndex,
+		propcott.loadData,
+		function(callback) { propcott.emit('loaded', callback); }
+	], function(err) {
+		return callback(err);
+	});
+};
+
+Propcott.prototype.loadData = function(callback) {
+	var propcott = this;
+	if(!(propcott.id || propcott.draftId)) return callback({NotYetSaved:1});
 	s3.getObject({
-		Bucket: settings.bucket,
-		Key: hasher.to(id) + '/data.json'
+		Bucket: (this.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
+		Key: (this.id || this.draftId) + (this.id ? '/data' : '') + '.json'
 	}, function(err, data) {
 		if(err) return callback(err);
-		console.log(data);
-		return;
-
-		var propcott = new Propcott();
-		for(var i in data)
-		callback(null, data);
+		if(!data.Body) return callback({PropcottNotFound:1});
+		propcott.import(data.Body);
+		propcott._saved = true;
+		return callback();
 	});
 };
 
-Propcott.each = function(id, callback) {};
-Propcott.eachByCreated = function(options, callback) {};
-Propcott.eachBySupport = function(options, callback) {};
-Propcott.eachByDailySupport = function(options, callback) {};
-Propcott.eachByWeeklySupport = function(options, callback) {};
-Propcott.eachByMonthlySupport = function(options, callback) {};
+Propcott.prototype.loadIndex = function(callback) {
+	var propcott = this;
+	if(!propcott.id) return callback();
+	dynamo.getItem({
+		TableName: 'Propcotts',
+		Key: {
+			Status: {S: 'published'},
+			Id: {N: propcott.id}
+		}
+	}, function(err, data) {
+		if(err) return callback(err);
+		if(!data.Item) return callback({PropcottNotFound:1});
+		propcott.support = {
+			all: data.Item.SAll.N,
+			monthly: data.Item.SMonth.N,
+			weekly: data.Item.SWeek.N,
+			daily: data.Item.SDay.N,
+			previous: data.Item.SPrevious.N
+		};
+		propcott.industry = data.Item.Industry.S;
+		propcott.target = data.Item.Target.S;
+		propcott._indexed = true;
+		return callback();
+	});
+};
+
+Propcott.list = function(id, callback) {};
+Propcott.listByCreated = function(options, callback) {};
+Propcott.listBySupport = function(options, callback) {};
+Propcott.listByDailySupport = function(options, callback) {};
+Propcott.listByWeeklySupport = function(options, callback) {};
+Propcott.listByMonthlySupport = function(options, callback) {};

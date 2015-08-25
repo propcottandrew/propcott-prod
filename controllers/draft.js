@@ -2,13 +2,16 @@ var Propcott = local('models/propcott');
 var User = local('models/user');
 
 module.exports.fresh = function(req, res) {
-	Draft.clear(req, function(err, data) {
-		res.redirect('/editor');
-	});
+	if(req.session.draft) {
+		var propcott = new Propcott({draftId: req.session.draft});
+		delete req.session.draft;
+		propcott.delete();
+	}
+	res.redirect('/editor');
 };
 
 module.exports.edit = function(req, res) {
-	Draft.get(req, function(err, draft) {
+	Propcott.get(req.session.draftId, function(err, draft) {
 		res.render('propcott/create', {propcott: draft});
 	});
 };
