@@ -11,8 +11,8 @@ Function.prototype.inherit = function(parent) {
 	util.inherits(this, parent);
 };
 
-Function.prototype.use = function(trait) {
-	trait(this);
+Function.prototype.trait = function(trait) {
+	return local('framework/Traits/' + trait).bind(this);
 };
 
 // need to make this recurse better

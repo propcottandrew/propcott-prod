@@ -5,9 +5,18 @@ var Model = local('models/base');
 var fs = require('fs');
 var uuid = require('uuid');
 var hasher = local('framework/hasher');
+var autoIncrement = local('framework/Traits/AutoIncrement');
 
 exports = module.exports = Propcott;
 Propcott.inherit(Model);
+Propcott.trait('AutoIncrement')('propcotts');
+Propcott.trait('Stored', {
+	Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
+	Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json'
+});
+//Propcott.trait('Indexed', 0);
+//Propcott.trait('Json');
+
 function Propcott(data) {
 	this._saved = false;
 	this._indexed = false;
@@ -40,13 +49,13 @@ propcott.save(function(err, propcott) {
 
 Propcott.prototype.saveData = function(callback) {
 	var propcott = this;
-	propcott.generateId(function(err) {
+	propcott.ensureId(function(err) {
 		if(err) return callback(err);
 		s3.putObject({
 			Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
 			Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json',
 			Body: propcott,
-			COntentType: 'application/json'
+			ContentType: 'application/json'
 		}, function(err) {
 			if(err) return callback(err);
 			if(!propcott.creator) return callback({SavedAsDraft: propcott.draftId});
@@ -57,7 +66,7 @@ Propcott.prototype.saveData = function(callback) {
 
 Propcott.prototype.saveIndex = function(callback) {
 	var propcott = this;
-	propcott.generateId(function(err) {
+	propcott.ensureId(function(err) {
 		if(err) return callback(err);
 		if(!propcott.id) return callback({NotYetPublished:1});
 		if(propcott._indexed) {
@@ -87,18 +96,16 @@ Propcott.prototype.saveIndex = function(callback) {
 	});
 };
 
-Propcott.prototype.generateId = function(callback) {
+Propcott.prototype.ensureId = function(callback) {
+	var propcott = this;
 	if(propcott.id || propcott.draftId && !propcott.published) return callback();
 	if(propcott.published) {
-		Store.increment('counter:propcotts', function(err, id) {
-			if(err) return callback(err);
-			propcott.id = id;
-			return callback();
-		});
+		if(!propcott.id) return propcott.genId(callback);
 	} else {
 		if(propcott.creator) propcott.draftId = hasher.to(propcott.creator.id) + '/' + uuid.v4();
 		else propcott.draftId = uuid.v4();
 	}
+	return callback();
 };
 
 Propcott.prototype.save = function(callback) {

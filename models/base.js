@@ -6,7 +6,7 @@ Allow multiple constructors of the same name & anonymous named constructors
 
 function Base() {}
 
-Base.use(local('framework/Traits/Events'));
+Base.trait('Events')();
 
 Base.prototype.toString = function() {
 	return JSON.stringify(this);

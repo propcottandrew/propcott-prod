@@ -108,7 +108,12 @@ app.use(function(req, res, next) {
 	})(res.render);
 
 	next();
-})
+});
+
+var p1 = new Propcott();
+var p2 = new Propcott();
+console.log(p1, p2);
+console.log(p1.id);
 
 app.engine('swig', swig.renderFile);
 app.set('view engine', 'swig');
