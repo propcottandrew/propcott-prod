@@ -4,15 +4,16 @@ local('config');
 
 var express = require('express');
 var session = require('express-session');
-var flash = local('framework/Messaging');
+var flash = local('framework/messaging');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var swig = require('swig');
-var DynamoSessionStore = local('framework/DynamoSessionStore')(session);
+var DynamoSessionStore = local('framework/dynamoSessionStore')(session);
 var controllers = local('controllers');
 var middleware = local('middleware');
 var passport = require('passport');
 var Propcott = local('models/propcott');
+var traits = local('framework/traits');
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.use(bodyParser());
 app.use(cookieParser(process.env.APP_SECRET));
 app.use(flash());
 app.use(passport.initialize());
+app.use(traits());
 app.use(session({
 	store: new DynamoSessionStore(),
 	secret: process.env.APP_SECRET,

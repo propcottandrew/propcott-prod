@@ -11,10 +11,6 @@ Function.prototype.inherit = function(parent) {
 	util.inherits(this, parent);
 };
 
-Function.prototype.trait = function(trait) {
-	return local('framework/Traits/' + trait).bind(this);
-};
-
 // need to make this recurse better
 // when we reach something with a replacer, add value to array and continue
 

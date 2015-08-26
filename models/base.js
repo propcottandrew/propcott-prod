@@ -6,7 +6,7 @@ Allow multiple constructors of the same name & anonymous named constructors
 
 function Base() {}
 
-Base.trait('Events')();
+Base.trait('events')();
 
 Base.prototype.toString = function() {
 	return JSON.stringify(this);

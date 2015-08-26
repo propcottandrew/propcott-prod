@@ -1,37 +1,50 @@
-var s3 = local('framework/S3');
+var s3 = local('framework/s3');
 
-Propcott.prototype.on('saving', function(callback) {
-	var propcott = this;
-	propcott.ensureId(function(err) {
-		propcott._Stored.Key = (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json'
-		callback(err);
-	});
-});
+module.exports = function stored(options) {
+	this.prototype._stored = {
+		options: options,
+		saved: false
+	};
 
-module.exports = function Stored(options) {
-	this.prototype._Stored = options;
+	this.prototype.importData = function(data) {
+		// make more efficient. only use json if string data type
+		if(typeof data == 'object') data = JSON.stringify(data);
+		data = JSON.parse(data);
+		for(var i in data) this[i] = data[i];
+	};
 
 	this.prototype.saveData = function(callback) {
 		var $this = this;
-		$this.emit('saving', function(err) {
+		$this.emit('savingData', function(err) {
 			s3.putObject({
-				Bucket: $this._Stored.Bucket,
-				Key: $this._Stored.Key,
+				Bucket: $this._stored.Bucket,
+				Key: $this._stored.Key + '.json',
 				Body: $this,
-				ContentType: 'application/json'
-			}, callback);
-		});
-		propcott.ensureId(function(err) {
-			if(err) return callback(err);
-			s3.putObject({
-				Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
-				Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json',
-				Body: propcott,
 				ContentType: 'application/json'
 			}, function(err) {
 				if(err) return callback(err);
-				if(!propcott.creator) return callback({SavedAsDraft: propcott.draftId});
-				callback();
+				$this._stored.saved = true;
+				$this.emit('savedData', callback);
+			});
+		});
+	};
+
+	this.prototype.loadData = function(callback) {
+		var $this = this;
+		$this.emit('loadingData', function(err) {
+			// handle errors
+			s3.getObject({
+				Bucket: $this._stored.Bucket,
+				Key: $this._stored.Key + '.json'
+			}, function(err, data) {
+				if(err) return callback(err);
+				if(!data.Body) return callback.error('PropcottNotFound');
+				$this.importData(data.Body);
+				$this.emit('loadedData', function(err) {
+					if(err) return callback(err);
+					$this._stored.saved = true;
+					return callback();
+				});
 			});
 		});
 	};

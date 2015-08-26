@@ -1,4 +1,4 @@
-var dynamo = local('framework/DynamoDB');
+var dynamo = local('framework/dynamo');
 
 function Store() {}
 

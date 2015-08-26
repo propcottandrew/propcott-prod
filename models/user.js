@@ -1,5 +1,5 @@
-var dynamo = local('framework/DynamoDB');
-var s3 = local('framework/S3');
+var dynamo = local('framework/dynamo');
+var s3 = local('framework/s3');
 var Store = local('models/store');
 var Model = local('models/base');
 var passport = require('passport');

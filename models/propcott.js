@@ -1,21 +1,22 @@
-var dynamo = local('framework/DynamoDB');
-var s3 = local('framework/S3');
+var dynamo = local('framework/dynamo');
+var s3 = local('framework/s3');
 var Store = local('models/store');
 var Model = local('models/base');
 var fs = require('fs');
 var uuid = require('uuid');
 var hasher = local('framework/hasher');
-var autoIncrement = local('framework/Traits/AutoIncrement');
 
 exports = module.exports = Propcott;
 Propcott.inherit(Model);
-Propcott.trait('AutoIncrement')('propcotts');
-Propcott.trait('Stored', {
+Propcott.trait('id')('propcotts');
+Propcott.trait('stored', {
 	Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
 	Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json'
 });
-//Propcott.trait('Indexed', 0);
-//Propcott.trait('Json');
+Propcott.trait('indexed', {
+	TableName: 'Propcotts'
+});
+//Propcott.trait('json');
 
 function Propcott(data) {
 	this._saved = false;
@@ -47,28 +48,57 @@ propcott.save(function(err, propcott) {
 });
 */
 
-Propcott.prototype.saveData = function(callback) {
+Propcott.prototype.on('savingData', function(callback) {
+	var propcott = this;
+	propcott.ensureId(function(err) {
+		propcott._stored.Key = (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '');
+		callback(err);
+	});
+});
+
+Propcott.prototype.on('savedData', function(callback) {
+	if(!this.creator && this.draftId) return callback.error('SavedAsDraft');
+	callback();
+});
+
+Propcott.prototype.on('loadingData', function(callback) {
+	if(!(this.id || this.draftId)) return callback.error('NotYetSaved');
+	this._stored.Key = ($this.id || $this.draftId) + ($this.id ? '/data' : '');
+	callback();
+});
+
+Propcott.prototype.on('savingIndex', function(callback) {
 	var propcott = this;
 	propcott.ensureId(function(err) {
 		if(err) return callback(err);
-		s3.putObject({
-			Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
-			Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json',
-			Body: propcott,
-			ContentType: 'application/json'
-		}, function(err) {
-			if(err) return callback(err);
-			if(!propcott.creator) return callback({SavedAsDraft: propcott.draftId});
+		if(!propcott.id) return callback.error('NotYetPublished');
+		if(propcott._indexed) {
+			// check for change to indexed properties
+			return callback();
+		} else {
 			callback();
-		});
+		}
+		//propcott._stored.Key = (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '');
 	});
+});
+
+Propcott.prototype.ensureId = function(callback) {
+	var propcott = this;
+	if(propcott.id || propcott.draftId && !propcott.published) return callback();
+	if(propcott.published) {
+		if(!propcott.id) return propcott.genId(callback);
+	} else {
+		if(propcott.creator) propcott.draftId = hasher.to(propcott.creator.id) + '/' + uuid.v4();
+		else propcott.draftId = uuid.v4();
+	}
+	return callback();
 };
 
 Propcott.prototype.saveIndex = function(callback) {
 	var propcott = this;
 	propcott.ensureId(function(err) {
 		if(err) return callback(err);
-		if(!propcott.id) return callback({NotYetPublished:1});
+		if(!propcott.id) return callback.error('NotYetPublished');
 		if(propcott._indexed) {
 			// check for change to indexed properties
 			return callback();
@@ -96,18 +126,10 @@ Propcott.prototype.saveIndex = function(callback) {
 	});
 };
 
-Propcott.prototype.ensureId = function(callback) {
-	var propcott = this;
-	if(propcott.id || propcott.draftId && !propcott.published) return callback();
-	if(propcott.published) {
-		if(!propcott.id) return propcott.genId(callback);
-	} else {
-		if(propcott.creator) propcott.draftId = hasher.to(propcott.creator.id) + '/' + uuid.v4();
-		else propcott.draftId = uuid.v4();
-	}
-	return callback();
-};
-
+// move these to base model
+// should check if stored and if indexed and call each
+// possibly check for id and ensure id there to?
+// if no savable traits then return an error
 Propcott.prototype.save = function(callback) {
 	var propcott = this;
 	async.series([
@@ -129,21 +151,6 @@ Propcott.prototype.load = function(callback) {
 		function(callback) { propcott.emit('loaded', callback); }
 	], function(err) {
 		return callback(err);
-	});
-};
-
-Propcott.prototype.loadData = function(callback) {
-	var propcott = this;
-	if(!(propcott.id || propcott.draftId)) return callback({NotYetSaved:1});
-	s3.getObject({
-		Bucket: (this.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
-		Key: (this.id || this.draftId) + (this.id ? '/data' : '') + '.json'
-	}, function(err, data) {
-		if(err) return callback(err);
-		if(!data.Body) return callback({PropcottNotFound:1});
-		propcott.import(data.Body);
-		propcott._saved = true;
-		return callback();
 	});
 };
 

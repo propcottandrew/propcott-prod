@@ -1,7 +1,7 @@
 var Store = local('models/store');
 
-module.exports = function AutoIncrement(counter) {
-	this.prototype._AutoIncrement = {
+module.exports = function id(counter) {
+	this.prototype._id = {
 		counter: counter || 'default'
 	};
 

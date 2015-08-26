@@ -1,5 +1,5 @@
 var passport = require('passport');
-var dynamo = local('framework/DynamoDB');
+var dynamo = local('framework/dynamo');
 var validator = require('validator');
 
 module.exports.connect = function(req, res) {
