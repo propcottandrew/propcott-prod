@@ -1,3 +1,50 @@
+import fs from 'fs';
+
+fs.readdir('.', function(err, files) {
+	console.log(files);
+});
+
+@decoratethis
+class abc {
+
+}
+
+function decoratethis() {
+	console.log(arguments);
+}
+
+
+function abc() {
+    var p = new PromiseThingy();
+    setTimeout(function() {
+    	console.log('3');
+        p.resolve();
+    }, 1000);
+
+    return p.promise(); // Note we're not returning `p` directly
+}
+
+async function foo() {
+	console.log('2');
+    var resultA = await abc();
+	console.log('3');
+	return;
+};
+
+console.log('1');
+foo();
+console.log('4');
+setTimeout(function(){}, 5000);
+//console.log(app.models);
+
+/*var server = app.listen(3000, function () {
+	var host = server.address().address;
+	var port = server.address().port;
+
+	console.log('Example app listening at http://%s:%s', host, port);
+});*/
+
+/*
 require('./init');
 require('dotenv').load();
 local('config');
@@ -172,10 +219,3 @@ app.post('/editor/handle', controllers.draft.handle);
 | cancel	cancel current draft
 | 			redirect to (id) ? propcott : homepage
 */
-
-var server = app.listen(3000, function () {
-	var host = server.address().address;
-	var port = server.address().port;
-
-	console.log('Example app listening at http://%s:%s', host, port);
-});
