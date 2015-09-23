@@ -6,17 +6,24 @@ var fs = require('fs');
 var uuid = require('uuid');
 var hasher = local('framework/hasher');*/
 
-import Base from app.models.base;
 
-@stored({
-	Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
-	Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json'
-})
-@indexed({TableName: 'Propcotts'})
-@id('propcotts')
-@json()
-@timestamp()
-export class Propcott extends Base {
+
+
+/*
+take save and load out of base and move into stored decorator
+make a required decorator system to check for event decorator in indexed
+in indexed, hook into the saving/saved event to index before/after saving
+*/
+
+
+
+
+
+
+var Base   = require(app.models.base);
+var aws    = require(app.aws);
+
+class Propcott extends Base {
 	constructor(data) {
 		this._saved = false;
 		this._indexed = false;
@@ -26,47 +33,87 @@ export class Propcott extends Base {
 	}
 
 	ensureId(callback) {
-		var propcott = this;
-		if(propcott.id || propcott.draftId && !propcott.published) return callback();
-		if(propcott.published) {
-			if(!propcott.id) return propcott.genId(callback);
+		if(this.id || this.draftId && !this.published) return callback();
+		if(this.published) {
+			if(!this.id) return this.genId(callback);
 		} else {
-			if(propcott.creator) propcott.draftId = hasher.to(propcott.creator.id) + '/' + uuid.v4();
-			else propcott.draftId = uuid.v4();
+			if(this.creator) this.draftId = hasher.to(this.creator.id) + '/' + uuid.v4();
+			else this.draftId = uuid.v4();
 		}
 		return callback();
 	}
 
-	// Iterate through a list of IDs of matching propcotts
+	// Iterate through matching propcott ids
 	static list(options, iterator, callback) {
 
 	}
 
-	// Iterate through matching propcotts
+	// Iterate through matching propcott objects
 	static each(options, iterator, callback) {
 		// should utilize list
 	}
-
-	static gen*(options) {
-
-	}
 }
 
+// Decorators
+/*
+Propcott.decorate(stored({
+	Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
+	Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json'
+}));
+Propcott.decorate(indexed({TableName: 'Propcotts'}));
+Propcott.decorate(id('propcotts'));
+Propcott.decorate(json());
+Propcott.decorate(timestamp());
+Propcott.decorate(cache());
+*/
 
+// Events
+Propcott.on('data.saving', function(callback) {
+	this.ensureId(function(err) {
+		this._stored.Key = (this.id || this.draftId) + (this.id ? '/data' : '');
+		callback(err);
+	}.bind(this));
+});
 
-Propcott.query(null, function(propcott) {
+Propcott.on('data.saved', function(callback) {
+	if(!this.creator && this.draftId) return callback.error('SavedAsDraft');
+	callback();
+});
 
+Propcott.on('data.loading', function(callback) {
+	if(!(this.id || this.draftId)) return callback.error('NotYetSaved');
+	this._stored.Key = ($this.id || $this.draftId) + ($this.id ? '/data' : '');
+	callback();
+});
+
+Propcott.on('index.saving', function(callback) {
+	this.ensureId(function(err) {
+		if(err) return callback(err);
+		if(!this.id) return callback.error('NotYetPublished');
+		if(this._indexed) {
+			// check for change to indexed properties
+			return callback();
+		} else {
+			callback();
+		}
+		//this._stored.Key = (this.id || this.draftId) + (this.id ? '/data' : '');
+	}.bind(this));
+});
+
+// Export
+module.exports = Propcott;
+
+/*
+Propcott.each({
+	option: 1
+}, function(propcott) {
+	// iterator
 }, function(err) {
-
+	// callback
 });
 
 
-for (let propcott of Propcott.gen()) {
 
-}
-
-
-/*
 propcott.save(function(err, propcott) {
 	if(err) {
 		if(err.SavedAsDraft) {
@@ -78,41 +125,6 @@ propcott.save(function(err, propcott) {
 		return res.redirect('back');
 	}
 	// continue
-});
-
-
-Propcott.prototype.on('savingData', function(callback) {
-	var propcott = this;
-	propcott.ensureId(function(err) {
-		propcott._stored.Key = (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '');
-		callback(err);
-	});
-});
-
-Propcott.prototype.on('savedData', function(callback) {
-	if(!this.creator && this.draftId) return callback.error('SavedAsDraft');
-	callback();
-});
-
-Propcott.prototype.on('loadingData', function(callback) {
-	if(!(this.id || this.draftId)) return callback.error('NotYetSaved');
-	this._stored.Key = ($this.id || $this.draftId) + ($this.id ? '/data' : '');
-	callback();
-});
-
-Propcott.prototype.on('savingIndex', function(callback) {
-	var propcott = this;
-	propcott.ensureId(function(err) {
-		if(err) return callback(err);
-		if(!propcott.id) return callback.error('NotYetPublished');
-		if(propcott._indexed) {
-			// check for change to indexed properties
-			return callback();
-		} else {
-			callback();
-		}
-		//propcott._stored.Key = (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '');
-	});
 });
 
 Propcott.prototype.saveIndex = function(callback) {

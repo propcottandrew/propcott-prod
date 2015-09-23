@@ -1,19 +1,15 @@
+global.app = require('./app');
+
 var util = require('util');
 
-global.__base = __dirname + '/';
 global.noop = function() {};
 
-global.local = function(file) {
-	return require(__base + file);
-};
-
-Function.prototype.inherit = function(parent) {
-	util.inherits(this, parent);
+Function.prototype.decorate = function(decorator) {
+	decorator(this);
 };
 
 // need to make this recurse better
 // when we reach something with a replacer, add value to array and continue
-
 JSON.stringify = (function(original) {
 	var replacerMerge = function(replacer1, replacer2) {
 		return function(key, value) {

@@ -1,40 +1,7 @@
-import fs from 'fs';
-
-fs.readdir('.', function(err, files) {
-	console.log(files);
-});
-
-@decoratethis
-class abc {
-
-}
-
-function decoratethis() {
-	console.log(arguments);
-}
+require('./init');
+require(app.models.store);
 
 
-function abc() {
-    var p = new PromiseThingy();
-    setTimeout(function() {
-    	console.log('3');
-        p.resolve();
-    }, 1000);
-
-    return p.promise(); // Note we're not returning `p` directly
-}
-
-async function foo() {
-	console.log('2');
-    var resultA = await abc();
-	console.log('3');
-	return;
-};
-
-console.log('1');
-foo();
-console.log('4');
-setTimeout(function(){}, 5000);
 //console.log(app.models);
 
 /*var server = app.listen(3000, function () {

@@ -1,8 +1,7 @@
-import app.models.base;
-import app.dynamo
+var Base = require(app.models.base);
+var aws  = require(app.aws);
 
-module.exports =
-class store extends app.models.base {
+class Store extends Base {
 	get(key, callback) {
 		callback = callback || noop;
 
@@ -12,13 +11,13 @@ class store extends app.models.base {
 			ConsistentRead: false
 		};
 
-		app.aws.dynamo.getItem(params, function(err, data) {
+		aws.dynamo.getItem(params, function(err, data) {
 			if (err) return callback(err);
 			if(!data.Item) return callback();
 
 			if(data.Item.Expires && data.Item.Expires.N < Date.now()) return callback(null, null);
 
-			return callback(null, app.aws.data.from(data.Item.Value));
+			return callback(null, aws.from(data.Item.Value));
 		});
 	}
 
@@ -33,13 +32,13 @@ class store extends app.models.base {
 			TableName: 'Store',
 			Item: {
 				Key: {S: key},
-				Value: app.aws.data.to(value)
+				Value: aws.to(value)
 			}
 		};
 
 		if(typeof expires == 'number') params.Item.Expires = {N: expires.toString()};
 
-		app.aws.dynamo.putItem(params, function(err, data) {
+		aws.dynamo.putItem(params, function(err, data) {
 			if (err) return callback(err);
 			return callback(null, data);
 		});
@@ -52,7 +51,7 @@ class store extends app.models.base {
 			Key: {Key:   {S: key}}
 		};
 
-		app.aws.dynamo.deleteItem(params, function(err, data) {
+		aws.dynamo.deleteItem(params, function(err, data) {
 			if (err) return callback(err);
 			return callback();
 		});
@@ -74,7 +73,7 @@ class store extends app.models.base {
 			ReturnValues: 'UPDATED_NEW'
 		};
 
-		app.aws.dynamo.updateItem(params, function(err, data) {
+		aws.dynamo.updateItem(params, function(err, data) {
 			if (err) return callback(err);
 			return callback(null, Number(data.Attributes.Value.N));
 		});
@@ -85,3 +84,4 @@ class store extends app.models.base {
 	};
 }
 
+module.exports = Store;

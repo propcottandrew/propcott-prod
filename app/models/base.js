@@ -1,13 +1,7 @@
-import events from app.decorators.events;
-import json   from app.decorators.json;
-import async  from 'async';
+var async  = require('async');
+var events = require(app.decorators.events);
 
-@events()
-@json({
-	replacer: (key, value) => key[0] === '_' && value,
-	space: 0
-})
-export class Base {
+class Base {
 	toString() {
 		return JSON.stringify(this);
 	}
@@ -41,3 +35,11 @@ export class Base {
 		for(var i in data) this[i] = data[i];
 	}
 }
+
+Base.decorate(events());
+/*Base.decorate(json({
+	replacer: (key, value) => key[0] === '_' && value,
+	space: 0
+}));*/
+
+module.exports = Base;

@@ -1,6 +1,6 @@
-import async from 'async';
+var async = require('async');
 
-export function(options) {
+module.exports = function(options) {
 	return function EventDecorator(target) {
 		target.emit = () => target.prototypte.emit.apply(null, arguments);
 		target.on   = () => target.prototypte.on  .apply(null, arguments);
