@@ -1,3 +1,10 @@
+/*
+
+this shouldn't be a model...
+
+*/
+
+
 var Base = require(app.models.base);
 var aws  = require(app.aws);
 
@@ -84,4 +91,4 @@ class Store extends Base {
 	};
 }
 
-module.exports = Store;
+module.exports = new Store();

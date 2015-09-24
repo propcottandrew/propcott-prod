@@ -1,10 +1,23 @@
 require('./init');
-require(app.models.store);
+try {
+var express = require('express');
+var Store = require(app.models.store);
+var Propcott = require(app.models.propcott);
+}catch(e){console.error(e.stack);}
 
+(function(app) {
 
-//console.log(app.models);
+	// app.use(...);
 
-/*var server = app.listen(3000, function () {
+	var server = app.listen(3000, function() {
+		var host = server.address().address;
+		var port = server.address().port;
+		console.info('Node running at http://%s:%s', host, port);
+	});
+})(express());
+
+/*
+var server = app.listen(3000, function () {
 	var host = server.address().address;
 	var port = server.address().port;
 

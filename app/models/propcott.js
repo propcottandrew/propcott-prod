@@ -1,35 +1,29 @@
-/*var dynamo = local('framework/dynamo');
+/*
+var dynamo = local('framework/dynamo');
 var s3 = local('framework/s3');
 var Store = local('models/store');
 var Model = local('models/base');
 var fs = require('fs');
 var uuid = require('uuid');
-var hasher = local('framework/hasher');*/
-
-
-
-
-/*
-take save and load out of base and move into stored decorator
-make a required decorator system to check for event decorator in indexed
-in indexed, hook into the saving/saved event to index before/after saving
+var hasher = local('framework/hasher');
 */
 
+// initially make prototype Draft
+// once saved or loaded, make prototype Propcott
 
-
-
-
-
-var Base   = require(app.models.base);
+var Draft  = require(app.models.draft);
 var aws    = require(app.aws);
+var stored = require(app.decorators.stored);
+var id     = require(app.decorators.id);
+var hasher = require(app.util.hasher);
 
-class Propcott extends Base {
+class Propcott extends Draft {
 	constructor(data) {
-		this._saved = false;
 		this._indexed = false;
 		this.published = false;
 		this.created = Date.now();
 		if(data) this.import(data);
+		//Object.setPrototypeOf(this, Draft.prototype);
 	}
 
 	ensureId(callback) {
@@ -55,17 +49,14 @@ class Propcott extends Base {
 }
 
 // Decorators
-/*
-Propcott.decorate(stored({
-	Bucket: (propcott.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
-	Key: (propcott.id || propcott.draftId) + (propcott.id ? '/data' : '') + '.json'
+//Propcott.prototype.decorate(indexed({TableName: 'Propcotts'}));
+//Propcott.prototype.decorate(timestamp());
+//Propcott.prototype.decorate(cache());
+Propcott.prototype.decorate(id({counter: 'propcotts'}));
+Propcott.prototype.decorate(stored({
+	bucket: () => 'propcotts.data.propcott.com',
+	key:    () => hasher.to(this.id) + '/data.json'
 }));
-Propcott.decorate(indexed({TableName: 'Propcotts'}));
-Propcott.decorate(id('propcotts'));
-Propcott.decorate(json());
-Propcott.decorate(timestamp());
-Propcott.decorate(cache());
-*/
 
 // Events
 Propcott.on('data.saving', function(callback) {
