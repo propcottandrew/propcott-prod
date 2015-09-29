@@ -57,6 +57,7 @@ Propcott.prototype.decorate(stored({
 	bucket: () => 'propcotts.data.propcott.com',
 	key:    () => hasher.to(this.id) + '/data.json'
 }));
+Propcott.prototype.decorate(indexed(require(app.models.indexes.propcott)));
 
 // Events
 Propcott.on('data.saving', function(callback) {
