@@ -1,18 +1,18 @@
 var Store = require(app.models.store);
 
-module.exports = function(options) {
+module.exports = options => {
 
 	// Set defaults
 	options = options || {};
-	options.counter = options.counter || 'default';
+	options.counter = 'counter:' + (options.counter || 'default');
 
 	// Return decorator
-	return function IdDecorator(target) {
-		target.genId = function(callback, attempt) {
-			Store.increment('counter:' + options.counter, function(err, id) {
+	return target => {
+		target.prototype.genId = function(callback) {
+			Store.increment(options.counter, (err, id) => {
 				if(!err) this.id = id;
-				callback(err);
-			}.bind(this));
+				if(callback) callback(err);
+			});
 		};
 	};
 };

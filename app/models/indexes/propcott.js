@@ -5,7 +5,7 @@ use a WeakSet to hold this information so we don't hold references to objects in
 implement these in the future: BS, NS, SS, NULL, L, M
 also add a Function type and make sure to handle native functions
 check how that would be for generators
-*/
+
 
 var Query  = require('./dynamoQuery.js');
 var Mapper = require('./dynamoMapper.js');
@@ -46,12 +46,10 @@ Mapper.addType(Buffer, {
 	to:   val => ({B: val.toString('base64')}),
 	from: val => new Buffer(String(val.B), 'base64')
 });
-
-
-
+*/
 
 module.exports = {
-	table: 'Propcotts'
+	table: 'Propcotts',
 	read: 3,
 	write: 6,
 	schema: {

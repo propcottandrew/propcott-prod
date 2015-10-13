@@ -1,9 +1,8 @@
 /*
 
 this shouldn't be a model...
-
+...or should it?
 */
-
 
 var Base = require(app.models.base);
 var aws  = require(app.aws);
@@ -84,11 +83,11 @@ class Store extends Base {
 			if (err) return callback(err);
 			return callback(null, Number(data.Attributes.Value.N));
 		});
-	};
+	}
 
 	decrement(key, amount, callback) {
 		return this.increment(key, -amount, callback);
-	};
+	}
 }
 
 module.exports = new Store();

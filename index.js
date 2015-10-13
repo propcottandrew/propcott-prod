@@ -1,15 +1,167 @@
+require('dotenv').load();
 require('./init');
-try {
+
 var express = require('express');
-var Store = require(app.models.store);
+
+//var Store = require(app.models.store);
 var Propcott = require(app.models.propcott);
-}catch(e){console.error(e.stack);}
+var User = require(app.models.user);
 
-(function(app) {
+//var u = new User();
+//u.link('local', 'evan_kennedy@yahoo.com', 'soccer');
 
-	// app.use(...);
+var p = new Propcott();
+p.title = 'My First Propcott';
+console.log(p);
+p.save(err => console.log(err, p));
 
-	var server = app.listen(3000, function() {
+(function(serv) {
+	var session       = require('express-session');
+	var passport      = require('passport');
+	var bodyParser    = require('body-parser');
+	var cookieParser  = require('cookie-parser');
+	var mustache      = require('mustache-express');
+	var nunjucks      = require('nunjucks');
+
+	var flash         = require(app.express.messaging);
+	var dynamoSession = require(app.express.dynamoSessionStore)(session);
+
+	serv.use(express.static('public'));
+	serv.use(bodyParser());
+	serv.use(cookieParser(process.env.APP_SECRET));
+	serv.use(flash());
+	serv.use(passport.initialize());
+	serv.use(session({
+		store: new dynamoSession(),
+		secret: process.env.APP_SECRET,
+		name: 'sid',
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			secure: false,
+			maxAge: 2700000000
+		}
+	}));
+	serv.use(function(req, res, next) {
+		res.render = (function(render) {
+			return function() {
+				res.locals.user = req.session.user;
+				render.apply(this, arguments);
+			};
+		})(res.render);
+		res.locals.session = req.session;
+		next();
+	});
+	
+	nunjucks.configure('app/views', {
+		autoescape: true,
+		express   : serv,
+		watch     : true
+	});
+	
+	// Test data for homepage
+	serv.use(function(req, res, next) {
+		res.render = (function(render) {
+			return function() {
+				res.locals.tabs = [
+					{
+						name: 'Hot',
+						link: '/explore',
+						data: [
+							{
+								id: 1,
+								slug: '1-urging-reddit-not-to-censor-content-or-else-there-will-be-a-huge-loss-of-users',
+								media_type: 'image',
+								media_link: 'uploads/55ae9cc633f5f.png',
+								title: 'Urging Reddit not to censor content or else there will be a huge loss of users!!',
+								target: 'Reddit',
+								supporters: 4
+							}
+						],
+					},
+					{
+						name: 'New',
+						link: '/explore/new',
+						data: [
+							{
+								id: 2,
+								slug: '2-save-your-health-stop-eating-at-mcdonalds',
+								media_type: 'image',
+								media_link: 'uploads/55b96432378c3.jpg',
+								title: 'Save your health. Stop Eating at McDonald\'s!!',
+								target: 'McDonald\'s',
+								supporters: 2
+							}
+						]
+					},
+					{
+						name: 'Featured',
+						data: [
+							{
+								id: 3,
+								slug: '3-dont-watch-any-ncaa-or-college-sports-until-ncaa-pledges-to-pay-a-decent-wage-to-student-athletes',
+								media_type: 'video',
+								media_link: 'pX8BXH3SJn0',
+								title: 'Don\'t watch ANY NCAA or college sports until NCAA pledges to pay a decent wage to student athletes',
+								target: 'NCAA',
+								supporters: 3
+							}
+						]
+					}
+				];
+				res.locals.crsf_field = function() {
+					return '<input type="hidden" name="_token" value="">';
+				};
+				render.apply(this, arguments);
+			};
+		})(res.render);
+	
+		next();
+	});
+
+
+	serv.get('/', function(req, res) {
+		res.render('home.swig');
+	});
+	/*
+	serv.get ('/login', app.middleware.guest, app.controllers.auth.login);
+	serv.post('/login', app.middleware.guest, app.controllers.auth.authenticate);
+	
+	serv.post('/register', app.middleware.guest, app.controllers.auth.register);
+	serv.get ('/logout',   app.middleware.user,  app.controllers.auth.logout);
+	
+	serv.get ('/oauth/facebook',          app.controllers.oauth.connect);
+	serv.get ('/oauth/facebook/callback', app.controllers.oauth.callback);
+	
+	serv.get ('/account', app.middleware.user, app.controllers.account.general);
+	serv.post('/account', app.middleware.user, app.controllers.account.updateGeneral);
+	
+	serv.get ('/p/:slug',        app.controllers.propcott.view);
+	serv.get ('/p/:slug/delete', app.controllers.propcott.remove);
+	serv.get ('/p/:slug/join',   app.controllers.propcott.join);
+	serv.get ('/p/:slug/edit',   app.controllers.draft.load);
+	
+	serv.get ('/new',            app.controllers.draft.fresh);
+	serv.get ('/editor',         app.controllers.draft.edit);
+	serv.get ('/editor/preview', app.controllers.draft.preview);
+	serv.get ('/editor/save',    app.controllers.draft.save);
+	serv.post('/editor/handle',  app.controllers.draft.handle);
+	/*
+	|--------------------------------------------------------------------------
+	| Handle Actions
+	|--------------------------------------------------------------------------
+	|
+	| save		(id) ? update propcott : create propcott from draft
+	| 			redirect to draft or published propcott
+	|
+	| preview	update draft
+	| 			redirect to preview
+	|
+	| cancel	cancel current draft
+	| 			redirect to (id) ? propcott : homepage
+	*/
+
+	var server = serv.listen(3000, function() {
 		var host = server.address().address;
 		var port = server.address().port;
 		console.info('Node running at http://%s:%s', host, port);

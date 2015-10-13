@@ -4,92 +4,91 @@ var s3 = local('framework/s3');
 var Store = local('models/store');
 var Model = local('models/base');
 var fs = require('fs');
-var uuid = require('uuid');
 var hasher = local('framework/hasher');
 */
 
-// initially make prototype Draft
-// once saved or loaded, make prototype Propcott
-
-var Draft  = require(app.models.draft);
+var Base   = require(app.models.base);
 var aws    = require(app.aws);
 var stored = require(app.decorators.stored);
 var id     = require(app.decorators.id);
 var hasher = require(app.util.hasher);
+var uuid   = require('uuid');
 
-class Propcott extends Draft {
+class Propcott extends Base {
 	constructor(data) {
-		this._indexed = false;
-		this.published = false;
-		this.created = Date.now();
-		if(data) this.import(data);
-		//Object.setPrototypeOf(this, Draft.prototype);
+		super(data);
+		var t = Date.now();
+		this.defaults({
+			published: false,
+			created  : t,
+			modified : t,
+		});
 	}
-
-	ensureId(callback) {
-		if(this.id || this.draftId && !this.published) return callback();
-		if(this.published) {
-			if(!this.id) return this.genId(callback);
-		} else {
-			if(this.creator) this.draftId = hasher.to(this.creator.id) + '/' + uuid.v4();
-			else this.draftId = uuid.v4();
-		}
-		return callback();
+	
+	// if query is null, get all supporters
+	supporters(query, callback) {
+		
 	}
-
+	
 	// Iterate through matching propcott ids
-	static list(options, iterator, callback) {
-
-	}
-
-	// Iterate through matching propcott objects
 	static each(options, iterator, callback) {
-		// should utilize list
+		
+	}
+	
+	static find(id, callback) {
+		
 	}
 }
 
 // Decorators
-//Propcott.prototype.decorate(indexed({TableName: 'Propcotts'}));
-//Propcott.prototype.decorate(timestamp());
-//Propcott.prototype.decorate(cache());
-Propcott.prototype.decorate(id({counter: 'propcotts'}));
-Propcott.prototype.decorate(stored({
-	bucket: () => 'propcotts.data.propcott.com',
-	key:    () => hasher.to(this.id) + '/data.json'
+Propcott.decorate(id({counter: 'propcotts'}));
+Propcott.decorate(stored({
+	bucket  : p => (p.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
+	key     : p => (p.id ? hasher.to(p.id) : p.draftId) + '/index.json',
+	separate: ['updates']
 }));
-Propcott.prototype.decorate(indexed(require(app.models.indexes.propcott)));
 
 // Events
-Propcott.on('data.saving', function(callback) {
-	this.ensureId(function(err) {
-		this._stored.Key = (this.id || this.draftId) + (this.id ? '/data' : '');
-		callback(err);
-	}.bind(this));
-});
-
-Propcott.on('data.saved', function(callback) {
-	if(!this.creator && this.draftId) return callback.error('SavedAsDraft');
+Propcott.prototype.on('saving', (p, callback) => {
+	if(p.id || p.draftId && !p.published) return callback();
+	if(p.published) return p.genId(callback);
+	else if(p.creator) p.draftId = hasher.to(p.creator.id) + '-drafts/' + uuid.v4();
+	else               p.draftId = uuid.v4();
 	callback();
 });
 
-Propcott.on('data.loading', function(callback) {
-	if(!(this.id || this.draftId)) return callback.error('NotYetSaved');
-	this._stored.Key = ($this.id || $this.draftId) + ($this.id ? '/data' : '');
+Propcott.prototype.on('saved', (p, callback) => {
+	p._saved = true;
+	if(!p.creator && p.draftId) callback('SavedAsDraft');
+	else                        callback();
+});
+
+Propcott.prototype.on('saved', (p, callback) => {
+	callback(); // defer
+	
+	// Save successful, index that shit
+	/*
+	Status		String	Primary Hash
+	Id			Number	Primary Range
+						Global 1 Hash (SAll, SPrevious)
+	SDay		Number	Local Range
+	SWeek		Number	Local Range
+	SMonth		Number	Local Range
+	SAll		Number	Local Range
+	SPrevious	Number
+	Industry	String
+	Target		String
+	*/
+});
+
+Propcott.prototype.on('loading', (p, callback) => {
+	if(!(p.id || p.draftId)) return callback('NotYetSaved');
 	callback();
 });
 
-Propcott.on('index.saving', function(callback) {
-	this.ensureId(function(err) {
-		if(err) return callback(err);
-		if(!this.id) return callback.error('NotYetPublished');
-		if(this._indexed) {
-			// check for change to indexed properties
-			return callback();
-		} else {
-			callback();
-		}
-		//this._stored.Key = (this.id || this.draftId) + (this.id ? '/data' : '');
-	}.bind(this));
+Propcott.prototype.on('loaded', (p, callback) => {
+	p.loaded = true;
+	callback();
 });
 
 // Export
@@ -103,8 +102,6 @@ Propcott.each({
 }, function(err) {
 	// callback
 });
-
-
 
 propcott.save(function(err, propcott) {
 	if(err) {
