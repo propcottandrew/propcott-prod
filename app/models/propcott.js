@@ -21,7 +21,7 @@ class Propcott extends Base {
 		this.defaults({
 			published: false,
 			created  : t,
-			modified : t,
+			modified : t
 		});
 	}
 	
@@ -38,14 +38,82 @@ class Propcott extends Base {
 	static find(id, callback) {
 		
 	}
+	
+	genIndex() {
+		return Propcott.index.watch.map(v => {
+			var prop = p, path = v.split('.');
+			while(prop && path.length) prop = prop[path.shift()];
+			return prop;
+		});
+	}
 }
+
+var compare = (a, b) =>
+	a instanceof Array &&
+	b instanceof Array &&
+	a.length == b.length &&
+	a.every((v, i) => v == b[i]);
+
+Propcott.schema = {
+	id: Number,
+	industry: String,
+	target: String,
+	support: {
+		daily: Number,
+		Weekly: Number,
+		monthly: Number,
+		all: Number
+	}
+};
+
+/*
+translates to...
+Item: {
+	0: {N: null}
+}
+*/
+
+Propcott.index = {
+	hash : p => '0',
+	range: p => p.id,
+	watch: ['id', 'industry', 'target']
+};
+
+Propcott.prototype.on('loaded', (p, callback) => {
+	p._index = p.genIndex();
+	callback();
+});
+
+Propcott.prototype.on('saving', (p, callback) => {
+	// Nothing has changed
+	if(compare(p._index, p.genIndex())) return callback();
+	
+	dynamo.putItem({
+		TableName: 'Propcotts',
+		Item: {
+			Status: {S: 'published'},
+			Id: {N: p.id},
+			SDay: {N: 1},
+			SWeek: {N: 1},
+			SMonth: {N: 1},
+			SAll: {N: 1},
+			SPrevious: {N: 1},
+			Industry: {S: p.industry},
+			Target: {S: p.target}
+		}
+	}, err => {
+		if(err) console.error(err);
+		else    p._index = p.genIndex();
+		callback();
+	});
+});
 
 // Decorators
 Propcott.decorate(id({counter: 'propcotts'}));
 Propcott.decorate(stored({
 	bucket  : p => (p.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
 	key     : p => (p.id ? hasher.to(p.id) : p.draftId) + '/index.json',
-	separate: ['updates']
+	separate : ['updates']
 }));
 
 // Events
