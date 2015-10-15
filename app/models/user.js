@@ -18,17 +18,26 @@ class User extends Base {
 	// List all propcotts they support
 	supporting(callback) {
 		//aws.dynamo.query();
-		
+
 	}
 
 	// Add support for a propcott
 	support(id, callback) {
-		
+		dynamo.putItem({
+			TableName: 'Support',
+			Item: {
+
+			}
+		}, err => {
+			if(err) console.error(err);
+			else    p._index = p.genIndex();
+			callback();
+		});
 	}
 
 	// Do they support a propcott?
 	supports(id, callback) {
-		
+
 	}
 
 	authenticate(password) {
@@ -53,7 +62,7 @@ class User extends Base {
 		for(var c, i = 0; i < this.credentials.length; i++) {
 			c = this.credentials[i];
 			if(c.provider != provider || c.key != key) continue;
-			
+
 			if(!c._state || c._state != 'added') {
 				this.credentials.removed = this.credentials.removed || [];
 				this.credentials.removed.push(c);
@@ -66,7 +75,7 @@ class User extends Base {
 		for(var c, i = 0; i < this.credentials.length; i++) {
 			c = this.credentials[i];
 			if(c.provider != provider || c.key != oldKey) continue;
-			
+
 			if(c._state && c._state == 'added') {
 				c.key = newKey;
 			} else {
@@ -124,7 +133,7 @@ User.prototype.on('saving', (user, callback) => {
 
 User.prototype.on('saved', (user, callback) => {
 	callback();
-	
+
 	(user.credentials.removed||[]).forEach(c => {
 		dynamo.deleteItem({
 			TableName: User.table,
@@ -134,10 +143,10 @@ User.prototype.on('saved', (user, callback) => {
 			}
 		}, err => console.log(err));
 	});
-	
+
 	user.credentials.forEach(c => {
 		if(!c._state) return;
-		
+
 		if(c._state == 'changed') {
 			dynamo.updateItem({
 				TableName: User.table,
@@ -153,7 +162,7 @@ User.prototype.on('saved', (user, callback) => {
 				console.log(err);
 			});
 		}
-		
+
 		if(c._state == 'added') {
 			var params = {
 				TableName: User.table,
@@ -163,9 +172,9 @@ User.prototype.on('saved', (user, callback) => {
 					Id      : {N: String(user.id)}
 				}
 			};
-			
+
 			if(c._password) params.Item.Password = {S: bcrypt.hashSync(c._password)};
-			
+
 			dynamo.putItem(params, function(err, data) {
 				if(!err) delete c._state;
 				console.log(err);

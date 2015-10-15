@@ -24,21 +24,25 @@ class Propcott extends Base {
 			modified : t
 		});
 	}
-	
+
 	// if query is null, get all supporters
 	supporters(query, callback) {
-		
+
 	}
-	
+
 	// Iterate through matching propcott ids
 	static each(options, iterator, callback) {
-		
+
 	}
-	
+
 	static find(id, callback) {
-		
+
 	}
-	
+
+	static query(options, iterator /* (propcott, next) */, callback) {
+
+	}
+
 	genIndex() {
 		return Propcott.index.watch.map(v => {
 			var prop = p, path = v.split('.');
@@ -46,7 +50,57 @@ class Propcott extends Base {
 			return prop;
 		});
 	}
+
+	toSchema() {
+		var i = 0, item = {}, val;
+
+		return (function recurse(p, schema) {
+			for(var prop in schema) if(schema.hasOwnProperty(prop)) {
+				if(typeof schema[prop] == 'object')
+					recurse(p[prop], schema[prop]);
+				else switch((val = (i++).toString(36)), schema[prop]) {
+					case String : item[val] = {S   : String (p[prop])}; break;
+					case Number : item[val] = {N   : String (p[prop])}; break;
+					case Boolean: item[val] = {BOOL: Boolean(p[prop])}; break;
+					case Date   : item[val] = {N   : String (p[prop].getTime())}; break;
+					case Buffer : item[val] = {B   : String (p[prop].toString('base64'))}; break;
+					case Array  : item[val] = {S   : JSON.stringify(p[prop])}; break;
+					case Object : item[val] = {S   : JSON.stringify(p[prop])}; break;
+					default     : item[val] = {S   : JSON.stringify(p[prop])};
+				}
+			}
+		})(this, Propcott.schema), item;
+	}
+
+	fromSchema(item) {
+		var i = 0, val;
+
+		(function recurse(r, schema) {
+			for(var prop in schema) if(schema.hasOwnProperty(prop)) {
+				if(typeof schema[prop] == 'object')
+					recurse(r[prop] = {}, schema[prop]);
+				else switch((val = item[(i++).toString(36)]), schema[prop]) {
+					case String : r[prop] = val.S; break;
+					case Number : r[prop] = Number(val.N); break;
+					case Boolean: r[prop] = Boolean(val.BOOL); break;
+					case Date   : r[prop] = new Date(Number(val.N)); break;
+					case Buffer : r[prop] = new Buffer(String(val.B), 'base64'); break;
+					case Array  : r[prop] = JSON.parse(val.S); break;
+					case Object : r[prop] = JSON.parse(val.S); break;
+					default     : r[prop] = JSON.parse(val.S);
+				}
+			}
+		})(this, Propcott.schema);
+	}
 }
+
+/*
+only put if not indexed already, otherwise update.
+if update, only update changed properties to allow for better parallel processing
+
+to do this, make the compare function actually spit out a difference between the arrays.
+then build an update statement based on that difference
+*/
 
 var compare = (a, b) =>
 	a instanceof Array &&
@@ -60,18 +114,12 @@ Propcott.schema = {
 	target: String,
 	support: {
 		daily: Number,
-		Weekly: Number,
+		weekly: Number,
 		monthly: Number,
-		all: Number
+		all: Number,
+		previous: Number
 	}
 };
-
-/*
-translates to...
-Item: {
-	0: {N: null}
-}
-*/
 
 Propcott.index = {
 	hash : p => '0',
@@ -87,20 +135,11 @@ Propcott.prototype.on('loaded', (p, callback) => {
 Propcott.prototype.on('saving', (p, callback) => {
 	// Nothing has changed
 	if(compare(p._index, p.genIndex())) return callback();
-	
+
+	// update watched
 	dynamo.putItem({
 		TableName: 'Propcotts',
-		Item: {
-			Status: {S: 'published'},
-			Id: {N: p.id},
-			SDay: {N: 1},
-			SWeek: {N: 1},
-			SMonth: {N: 1},
-			SAll: {N: 1},
-			SPrevious: {N: 1},
-			Industry: {S: p.industry},
-			Target: {S: p.target}
-		}
+		Item: p.toSchema()
 	}, err => {
 		if(err) console.error(err);
 		else    p._index = p.genIndex();
@@ -133,7 +172,7 @@ Propcott.prototype.on('saved', (p, callback) => {
 
 Propcott.prototype.on('saved', (p, callback) => {
 	callback(); // defer
-	
+
 	// Save successful, index that shit
 	/*
 	Status		String	Primary Hash
