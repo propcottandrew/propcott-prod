@@ -7,21 +7,21 @@ var fs = require('fs');
 var hasher = local('framework/hasher');
 */
 
-var Base   = require(app.models.base);
-var aws    = require(app.aws);
-var stored = require(app.decorators.stored);
-var id     = require(app.decorators.id);
-var hasher = require(app.util.hasher);
-var uuid   = require('uuid');
+var Base    = require(app.models.base);
+var aws     = require(app.aws);
+var stored  = require(app.decorators.stored);
+var indexed = require(app.decorators.indexed);
+var id      = require(app.decorators.id);
+var hasher  = require(app.util.hasher);
+var uuid    = require('uuid');
 
 class Propcott extends Base {
 	constructor(data) {
 		super(data);
-		var t = Date.now();
 		this.defaults({
 			published: false,
-			created  : t,
-			modified : t
+			created  : new Date(),
+			modified : new Date()
 		});
 	}
 
@@ -30,67 +30,12 @@ class Propcott extends Base {
 
 	}
 
-	// Iterate through matching propcott ids
-	static each(options, iterator, callback) {
-
-	}
-
 	static find(id, callback) {
-
+		Propcott.index.find({hash: '0', range: id}, callback);
 	}
 
-	static query(options, iterator /* (propcott, next) */, callback) {
-
-	}
-
-	genIndex() {
-		return Propcott.index.watch.map(v => {
-			var prop = p, path = v.split('.');
-			while(prop && path.length) prop = prop[path.shift()];
-			return prop;
-		});
-	}
-
-	toSchema() {
-		var i = 0, item = {}, val;
-
-		return (function recurse(p, schema) {
-			for(var prop in schema) if(schema.hasOwnProperty(prop)) {
-				if(typeof schema[prop] == 'object')
-					recurse(p[prop], schema[prop]);
-				else switch((val = (i++).toString(36)), schema[prop]) {
-					case String : item[val] = {S   : String (p[prop])}; break;
-					case Number : item[val] = {N   : String (p[prop])}; break;
-					case Boolean: item[val] = {BOOL: Boolean(p[prop])}; break;
-					case Date   : item[val] = {N   : String (p[prop].getTime())}; break;
-					case Buffer : item[val] = {B   : String (p[prop].toString('base64'))}; break;
-					case Array  : item[val] = {S   : JSON.stringify(p[prop])}; break;
-					case Object : item[val] = {S   : JSON.stringify(p[prop])}; break;
-					default     : item[val] = {S   : JSON.stringify(p[prop])};
-				}
-			}
-		})(this, Propcott.schema), item;
-	}
-
-	fromSchema(item) {
-		var i = 0, val;
-
-		(function recurse(r, schema) {
-			for(var prop in schema) if(schema.hasOwnProperty(prop)) {
-				if(typeof schema[prop] == 'object')
-					recurse(r[prop] = {}, schema[prop]);
-				else switch((val = item[(i++).toString(36)]), schema[prop]) {
-					case String : r[prop] = val.S; break;
-					case Number : r[prop] = Number(val.N); break;
-					case Boolean: r[prop] = Boolean(val.BOOL); break;
-					case Date   : r[prop] = new Date(Number(val.N)); break;
-					case Buffer : r[prop] = new Buffer(String(val.B), 'base64'); break;
-					case Array  : r[prop] = JSON.parse(val.S); break;
-					case Object : r[prop] = JSON.parse(val.S); break;
-					default     : r[prop] = JSON.parse(val.S);
-				}
-			}
-		})(this, Propcott.schema);
+	static each(options, iterator /* (propcott, control) */, callback /* (err, ...) */) {
+		
 	}
 }
 
@@ -102,53 +47,25 @@ to do this, make the compare function actually spit out a difference between the
 then build an update statement based on that difference
 */
 
-var compare = (a, b) =>
-	a instanceof Array &&
-	b instanceof Array &&
-	a.length == b.length &&
-	a.every((v, i) => v == b[i]);
+Propcott.prototype.status = '0';
 
-Propcott.schema = {
-	id: Number,
-	industry: String,
-	target: String,
-	support: {
-		daily: Number,
-		weekly: Number,
-		monthly: Number,
-		all: Number,
-		previous: Number
-	}
-};
-
-Propcott.index = {
-	hash : p => '0',
-	range: p => p.id,
-	watch: ['id', 'industry', 'target']
-};
-
-Propcott.prototype.on('loaded', (p, callback) => {
-	p._index = p.genIndex();
-	callback();
-});
-
-Propcott.prototype.on('saving', (p, callback) => {
-	// Nothing has changed
-	if(compare(p._index, p.genIndex())) return callback();
-
-	// update watched
-	dynamo.putItem({
-		TableName: 'Propcotts',
-		Item: p.toSchema()
-	}, err => {
-		if(err) console.error(err);
-		else    p._index = p.genIndex();
-		callback();
-	});
+Propcott.each({
+	hash: {type: '0'},
+	range: {created: {between: [0, Date.now()]}},
+	forward: true,
+	filter: '',
+	skip: 10 // start returning the 11th item
+}, (p, control) => {
+	control.stop();
+	// or...
+	control.wait();
+	setTimeout((() => control.next()), 500);
+	
 });
 
 // Decorators
 Propcott.decorate(id({counter: 'propcotts'}));
+Propcott.decorate(indexed(require(app.models.indexes.propcott)));
 Propcott.decorate(stored({
 	bucket  : p => (p.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
 	key     : p => (p.id ? hasher.to(p.id) : p.draftId) + '/index.json',

@@ -9,11 +9,64 @@ var User = require(app.models.user);
 
 //var u = new User();
 //u.link('local', 'evan_kennedy@yahoo.com', 'soccer');
-
+/*
 var p = new Propcott();
 p.title = 'My First Propcott';
 console.log(p);
 p.save(err => console.log(err, p));
+*/
+
+/*
+
+var p = new Propcott();
+p.title = 'My First Propcott';
+p.target = 'Vons';
+p.published = true;
+p.industry = 'Grocery';
+p.support = {
+	daily: 1,
+	weekly: 5,
+	monthly: 21,
+	all: 51,
+	previous: 20
+};
+p.save(err => console.log(err, p));
+
+/*/
+
+
+
+Propcott.query({
+	
+	{status: '0', created: {between: [0, Date.now()]}},
+	forward: true,
+	limit: 10,
+	filter: '',
+	skip: 10 // start returning the 11th item (inefficient)
+}, (obj, control) => {
+	control.stop();
+	// or...
+	control.wait();
+	setTimeout((() => control.next()), 500);
+	
+});
+
+
+
+/*
+Propcott.find(5, (err, p) => {
+	console.log(err, p);
+});
+
+Propcott.index.update({hash: 0, range: 5}, {
+	support: {daily: '#+2'},
+	industry: 'Stores'
+}, (err, p) => {
+	console.log(err, p);
+});
+*/
+
+//*/
 
 (function(serv) {
 	var session       = require('express-session');
@@ -160,12 +213,13 @@ p.save(err => console.log(err, p));
 	| cancel	cancel current draft
 	| 			redirect to (id) ? propcott : homepage
 	*/
-
+/*
 	var server = serv.listen(3000, function() {
 		var host = server.address().address;
 		var port = server.address().port;
 		console.info('Node running at http://%s:%s', host, port);
 	});
+*/
 })(express());
 
 /*

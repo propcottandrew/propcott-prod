@@ -39,8 +39,8 @@ JSON.stringify = (function(original) {
 	return function stringify(value, replacer, space) {
 		return original.apply(JSON, [
 			value,
-			(value.json && value.json.replacer) ? (replacer ? replacerMerge(replacer, value.json.replacer) : value.json.replacer) : replacer,
-			value.json && value.json.space || space
+			(value && value.json && value.json.replacer) ? (replacer ? replacerMerge(replacer, value.json.replacer) : value.json.replacer) : replacer,
+			value && value.json && value.json.space || space
 		]);
 	};
 })(JSON.stringify);

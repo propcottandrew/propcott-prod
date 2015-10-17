@@ -16,9 +16,8 @@ class Base {
 	}
 
 	import(data) {
-		// make more efficient. only use json if string data type
-		if(typeof data == 'object') data = JSON.stringify(data);
-		data = JSON.parse(data);
+		// should we make a deep copy?
+		if(typeof data == 'string') data = JSON.parse(data);
 		for(var i in data) if(data.hasOwnProperty(i)) this[i] = data[i];
 	}
 }
