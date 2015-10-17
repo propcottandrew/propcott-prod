@@ -63,16 +63,16 @@ var compare = (a, b) =>
 	a.length == b.length &&
 	a.every((v, i) => v == b[i]);
 
-var to = (item, schema, awsFormat) => {
+var to = (item, schema, skipFormat) => {
 	var index = [];
 
 	for(var prop in schema)
 		if(!schema.hasOwnProperty(prop))
 			continue;
 		else if(typeof schema[prop] == 'object')
-			index = index.concat(to((item || {})[prop], schema[prop], awsFormat));
-		else if(awsFormat)
-			index.push(item[prop]);
+			index = index.concat(to((item || {})[prop], schema[prop], skipFormat));
+		else if(skipFormat)
+			index.push(item && item[prop]);
 		else if(!item || !item[prop])
 			index.push(undefined);
 		else if(types.has(schema[prop]))
@@ -83,7 +83,7 @@ var to = (item, schema, awsFormat) => {
 	return index;
 };
 
-var from = (index, schema) => {
+var from = (index, schema, skipFormat) => {
 	var item = {}, i = 0;
 
 	for(var prop in schema)
@@ -93,7 +93,7 @@ var from = (index, schema) => {
 			item[prop] = from(index, schema[prop]);
 		else if(!index[0])
 			{ index.shift(); continue; }
-		else if(types.has(schema[prop]))
+		else if(!skipFormat && types.has(schema[prop]))
 			item[prop] = types.get(schema[prop]).from(index.shift());
 		else
 			item[prop] = index.shift();
@@ -101,7 +101,7 @@ var from = (index, schema) => {
 	return item;
 };
 
-var appendUpdateExpression = (params, diff) => {
+var appendAttributes = (params, diff) => {
 	// {"#P":"Percentile"}
 	params.ExpressionAttributeNames = diff.reduce((o, v, i) => {
 		if(v) o[`#${i.toString(36)}`] = i.toString(36);
@@ -115,7 +115,9 @@ var appendUpdateExpression = (params, diff) => {
 		} else if(v) o[`:${i.toString(36)}`] = v;
 		return o;
 	}, {});
-	
+};
+
+var appendUpdateExpression = (params, diff) => {
 	// build update expression
 	params.UpdateExpression = 'SET ' + diff.map((v, i) => {
 		if(typeof v == 'object' && v.N) {
@@ -171,6 +173,9 @@ module.exports = (options) => {
 					item.Key[options.keys.range.toString(36)] = {N: String(key.range)};
 				
 				aws.dynamo.getItem(item, (err, data) => {
+					if(err) return callback(err);
+					if(!data.Item) return callback();
+					
 					var index = [];
 					for(var prop in data.Item)
 						index[parseInt(prop, 36)] = data.Item[prop];
@@ -193,6 +198,7 @@ module.exports = (options) => {
 				if(typeof options.keys.range != 'undefined')
 					params.Key[options.keys.range.toString(36)] = {N: String(key.range)};
 				
+				appendAttributes(params, to(properties, options.schema));
 				appendUpdateExpression(params, to(properties, options.schema));
 				
 				params.ReturnValues = 'ALL_NEW';
@@ -204,7 +210,6 @@ module.exports = (options) => {
 					
 					callback(err, new target(from(index, options.schema)));
 				});
-				//return new target();
 			},
 			
 			// write / batch write
@@ -213,7 +218,7 @@ module.exports = (options) => {
 			/*
 			Iterate through matching items
 			target.index.each({
-				{status: '0', created: {between: [0, Date.now()]}},
+				key: {status: '0', created: {between: [0, Date.now()]}},
 				forward: true,
 				limit: 10,
 				filter: '',
@@ -223,17 +228,56 @@ module.exports = (options) => {
 				// or...
 				control.wait();
 				setTimeout((() => control.next()), 500);
-				
 			});
 			*/
-			query: (options, iterator, callback) => {
+			query: (opt, iterator, callback) => {
+				aws.dynamo.query(opt, (err, data) => {
+					if(err) return callback(err);
+					// todo: control (wait/next/stop)
+					
+					data.Items.forEach(item => {
+						var index = [];
+						for(var prop in item)
+							index[parseInt(prop, 36)] = item[prop];
+						
+						iterator(new target(from(index, options.schema)));
+					});
+										
+					if(data.LastEvaluatedKey) {
+						opt.ExclusiveStartKey = data.LastEvaluatedKey;
+						target.index.query(opt, iterator, callback);
+					}
+				});
+				
+				/*
+				var find = to(opt.key, options.schema, true)
+					.map((v, i) => v && i)
+					.filter(v => typeof v != 'undefined');
+				
+				var params = {TableName: options.table};
+				
+				appendAttributes(params, to(opt.key, options.schema, true));
+				
+				console.log(JSON.stringify(params, null, 4));
+				if(compare(find, [options.keys.hash, options.keys.range])) {
+					// primary key
+					params.KeyConditionExpression = ''
+				} else {
+					for(var k in options.keys.local) {
+						if(compare(find, [options.keys.hash, options.keys.local[k].range]))
+							console.log('local', k);
+					}
+					// todo: check global
+				}*/
+				
+				//console.log(options.keys);
 				
 			},
 			
 			/*
-			
+			todo
 			*/
-			scan: (options, iterator, callback) => {
+			scan: (opt, iterator, callback) => {
 				
 			}
 		};
@@ -268,6 +312,7 @@ module.exports = (options) => {
 					if(typeof options.keys.range != 'undefined')
 						item.Key[options.keys.range.toString(36)] = index[options.keys.range];
 					
+					appendAttributes(item, index.map((v, i) => diff[i] && v));
 					appendUpdateExpression(item, index.map((v, i) => diff[i] && v));
 					
 					aws.dynamo.updateItem(item, err => {

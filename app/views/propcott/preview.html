@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+	<title>{{title}}{{^title}}Propcott{{/title}}</title>
+
+	<link href="/css/style.css" rel="stylesheet">
+	<link href="/css/temp.css" rel="stylesheet">
+	<link href="/css/home.css" rel="stylesheet">
+	<link href="http://fonts.googleapis.com/css?family=Josefin+Sans:400,700,400italic,700italic|Merriweather:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+	<noscript><style type="text/javascript">.autosize {height: 8em;}</style></noscript>
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+	{{#alert}}
+	<div class="alert-container">
+		<div class="container" style="text-align: center;">
+			{{#messages}}<div class="alert-{{type}}">{{content}}</div>{{/messages}}
+		</div>
+	</div>
+	{{/alert}}
+	
+	<div id="navigation">
+		<div class="container">
+			<a href="/"><div id="navigation-logo"></div></a>
+			<a class="block round navigation-item" href="/search">
+				<span class="navigation-text">Search</span>
+				<span class="typcn typcn-zoom"></span>
+			</a>
+			<a class="block round navigation-item" href="/explore">
+				<span class="navigation-text">Explore</span>
+				<span class="typcn typcn-news"></span>
+			</a>
+			<a class="block round navigation-item" href="/new">
+				<span class="navigation-text">Start a Propcott</span>
+				<span class="typcn typcn-edit"></span>
+			</a>
+		<div class="navigation-right">
+			{{#user}}
+				<span class="dropdown">
+					<a href="/account" class="block round navigation-item">
+						<span class="navigation-text">{{name}}</span>
+						{{#avatar}}
+							<span class="navigation-avatar" style="background-image: url('{{url}}');"></span>
+						{{/avatar}}
+						{{^avatar}}
+							<span class="typcn typcn-user"></span>
+						{{/avatar}}
+					</a>
+					<ul class="dropdown-content">
+						<li><a href="/account">Account</a></li>
+						<li><a href="/account/propcotts">My Propcotts</a></li>
+						<li><a href="/logout">Log out</a></li>
+					</ul>
+				</span>
+			{{/user}}
+			{{^user}}
+				<a class="block round navigation-item" href="/login">
+					<span class="navigation-text">Log In</span>
+					<span class="typcn typcn-user"></span>
+				</a>
+			{{/user}}
+			</div>
+		</div>
+	</div>
+	
+	<form action="/editor/handle" method="POST">
+		<div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
+			<div class="container">
+				<button class="block round navigation-item" type="submit" name="action" value="cancel" style="margin-left: -.75em;">
+					<span class="navigation-text">Cancel</span>
+					<span class="typcn typcn-times"></span>
+				</button>
+				<a class="block round navigation-item" href="/editor">
+					<span class="navigation-text">Edit</span>
+					<span class="typcn typcn-pencil"></span>
+				</a>
+				<button class="block round navigation-item" type="submit" name="action" value="save">
+					<span class="navigation-text">Save Propcott</span>
+					<span class="typcn typcn-pin"></span>
+				</button>
+			</div>
+		</div>
+
+		{{#propcott}}
+		<div class="container">
+			<div class="row">
+				<div class="col-7 push-5">
+					<div id="propcott" class="propcott-full">
+						<div id="propcott-featured-image">
+							<h1 style="font-size: {{title_size}}">{{title}}</h1>
+						</div>
+						<div id="propcott-content">
+							<p style="margin: 1em;">Propcotting <span style="color: rgb(215,0,0);">{{target}}</span></p>
+
+							<hr />
+
+							<h2 class="headline">Goal</h2>
+							<p style="margin: 1em;">{{what}}</p>
+
+							<hr />
+
+							<h2 class="headline">Why</h2>
+							<div style="margin: 0 1em;">{{why}}</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-5 pull-7">
+					<div id="propcott-sidebar">
+						{% if propcott.media_type == 'image' %}
+						<div id="propcott-media" style="background-image: url('http://static.propcott.com/{{ propcott.media_link }}');"></div>
+						{% elseif propcott.media_type == 'video' %}
+						<div id="propcott-media">
+							<iframe style="width: 100%; height: 250px;" src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe>
+						</div>
+						{% else %}
+						<div id="propcott-media"></div>
+						{% endif %}
+
+						<div style="margin: .5em 1em 1em 0">
+
+							<p style="margin-bottom: 0;">What to do:</p>
+
+							{{#how.length}}
+							<ul>
+								{{how}}
+									<li>{{.}}</li>
+								{{/how}}
+							</ul>
+							{{/how.length}}
+
+							{{#alt.length}}
+							<ul>
+								{{alt}}
+									<li>{{.}}</li>
+								{{/alt}}
+							</ul>
+							{{/alt.length}}
+
+							<p><button type="button" class="block join-button">Join!</button></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="clearfix"></div>
+	<div id="footer" class="container">
+		<p>Copyright &copy; 2015 Propcott</p>
+		<p>
+			<a href="/about">About</a> &bull;
+			<a href="/contact">Contact</a> &bull;
+			<a href="/help">Help</a> &bull;
+			<a href="/privacy">Privacy Policy</a> &bull;
+			<a href="/terms">Terms of Service</a>
+		</p>
+	</div>
+</body>
+</html>

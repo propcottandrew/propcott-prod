@@ -1,10 +1,11 @@
-var Base   = require(app.models.base);
-var aws    = require(app.aws);
-var stored = require(app.decorators.stored);
-var id     = require(app.decorators.id);
-var hasher = require(app.util.hasher);
-var dynamo = require(app.aws).dynamo;
-var bcrypt = require('bcryptjs');
+var Base     = require(app.models.base);
+var Propcott = require(app.models.propcott);
+var aws      = require(app.aws);
+var stored   = require(app.decorators.stored);
+var id       = require(app.decorators.id);
+var hasher   = require(app.util.hasher);
+var dynamo   = require(app.aws).dynamo;
+var bcrypt   = require('bcryptjs');
 
 class User extends Base {
 	constructor(data) {
@@ -18,32 +19,58 @@ class User extends Base {
 	// List all propcotts they support
 	supporting(callback) {
 		//aws.dynamo.query();
-
+		/*dynamo.query({
+			TableName: 'Supporters',
+			Item: {
+				PropcottId: {N: String(id)},
+				UserId: {N: String(this.id)},
+				Created: {N: String(Date.now())}
+			}
+		});*/
 	}
 
 	// Add support for a propcott
 	support(id, callback) {
 		dynamo.putItem({
-			TableName: 'Support',
+			TableName: 'Supporters',
 			Item: {
-
+				PropcottId: {N: String(id)},
+				UserId: {N: String(this.id)},
+				Created: {N: String(Date.now())}
 			}
 		}, err => {
 			if(err) console.error(err);
-			else    p._index = p.genIndex();
+			else {
+				Propcott.index.update({hash: 0, range: id}, {
+					support: {
+						daily: '#+1',
+						weekly: '#+1',
+						monthly: '#+1',
+						all: '#+1'
+					}
+				}, (err, p) => {
+					console.log(err, p);
+				});
+			}
 			callback();
 		});
 	}
 
 	// Do they support a propcott?
 	supports(id, callback) {
-
+		dynamo.getItem({
+			TableName: 'Supporters',
+			Key: {
+				PropcottId: {N: String(id)},
+				UserId: {N: String(this.id)}
+			}
+		}, (err, data) => {
+			callback(err, !!data.Item);
+		});
 	}
 
 	authenticate(password) {
-		return this.credentials
-			.filter(c => (c.provider  == 'local'))
-			.some  (c => (c._password == password));
+		return this.credentials.some(v => bcrypt.compareSync(password, v._password));
 	}
 
 	link(provider, key, password) {
@@ -94,7 +121,7 @@ class User extends Base {
 			id           : this.id,
 			email        : this.email,
 			displayName  : this.displayName,
-			avatar       : this.avatar,
+			avatar       : this.avatar && {url: this.avatar},
 			notifications: this.notifications,
 			permissions  : this.permissions
 		};
@@ -104,15 +131,21 @@ class User extends Base {
 		callback = callback || noop;
 
 		dynamo.getItem({
-			TableName: settings.table,
+			TableName: User.table,
 			Key: {
 				Key: {S: key},
 				Provider: {S: provider},
 			}
 		}, function(err, data) {
-			if(err)             callback(err);
-			else if(!data.Item) callback('User not found');
-			else                callback(null, new User({id: data.Item.Id.N}));
+			if(err)             return callback(err);
+			else if(!data.Item) return callback('User not found');
+			var user = new User({id: data.Item.Id.N});
+			user.credentials.push({
+				provider: provider,
+				key: key,
+				_password: data.Item.Password.S
+			});
+			callback(null, user);
 		});
 	}
 }

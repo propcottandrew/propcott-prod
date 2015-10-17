@@ -27,7 +27,7 @@ module.exports = options => {
 					});
 				},
 				callback => this.emit('saved', callback)
-			], err => callback && callback(err));
+			], err => callback && callback(err, this));
 		};
 		
 		target.prototype.load = function(callback) {
@@ -35,19 +35,17 @@ module.exports = options => {
 				callback => this.emit('loading', callback),
 				callback => {
 					s3.getObject({
-						Bucket: options.bucket.bind(this)(),
-						Key: options.key.bind(this)() + '.json'
+						Bucket: options.bucket(this),
+						Key: options.key(this) + '.json'
 					}, (err, data) => {
 						if(err)        return callback(err);
 						if(!data.Body) return callback('UserNotFound');
+						this._saved = true;
 						this.importData(data.Body);
 					});
 				},
 				callback => this.emit('loaded', callback)
-			], err => {
-				this._saved = true; // should this only be if !err?
-				callback(err);
-			});
+			], err => callback && callback(err, this));
 		};
 	};
 };

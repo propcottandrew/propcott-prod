@@ -1,22 +1,29 @@
 require('dotenv').load();
-require('./init');
+global.app  = require('./app');
+require(app.init);
 
 var express = require('express');
 
+/*
 //var Store = require(app.models.store);
 var Propcott = require(app.models.propcott);
 var User = require(app.models.user);
 
-//var u = new User();
+var u = new User({id: 83});
 //u.link('local', 'evan_kennedy@yahoo.com', 'soccer');
-/*
+u.supports(12, (err, supports) => {
+	console.log(err, supports);
+});
+
+u.save((err, ud) => {
+	console.log(err, ud);
+	u.support(13, err => err && console.error(err));
+});
+
 var p = new Propcott();
 p.title = 'My First Propcott';
 console.log(p);
 p.save(err => console.log(err, p));
-*/
-
-/*
 
 var p = new Propcott();
 p.title = 'My First Propcott';
@@ -32,28 +39,24 @@ p.support = {
 };
 p.save(err => console.log(err, p));
 
-/*/
+Propcott.index.query({
+	TableName: 'Propcotts',
+	IndexName: '5-index',
+	ScanIndexForward: true,
+	ExpressionAttributeNames: {
+		'#0': '0',
+		'#2': '2'
+	},
+	ExpressionAttributeValues: {
+		':0': {S: '0'},
+		':2': {S: 'Grocery'}
+	},
+	KeyConditionExpression: '#0=:0',
+	FilterExpression: '#2=:2'
+}, obj => {
+	console.log(obj);
+}, err => err && console.error(err));
 
-
-
-Propcott.query({
-	
-	{status: '0', created: {between: [0, Date.now()]}},
-	forward: true,
-	limit: 10,
-	filter: '',
-	skip: 10 // start returning the 11th item (inefficient)
-}, (obj, control) => {
-	control.stop();
-	// or...
-	control.wait();
-	setTimeout((() => control.next()), 500);
-	
-});
-
-
-
-/*
 Propcott.find(5, (err, p) => {
 	console.log(err, p);
 });
@@ -66,20 +69,20 @@ Propcott.index.update({hash: 0, range: 5}, {
 });
 */
 
-//*/
-
 (function(serv) {
 	var session       = require('express-session');
 	var passport      = require('passport');
 	var bodyParser    = require('body-parser');
 	var cookieParser  = require('cookie-parser');
 	var mustache      = require('mustache-express');
-	var nunjucks      = require('nunjucks');
 
 	var flash         = require(app.express.messaging);
 	var dynamoSession = require(app.express.dynamoSessionStore)(session);
+	var controllers   = require(app.controllers.index);
+	var middleware    = require(app.middleware.index);
 
 	serv.use(express.static('public'));
+	
 	serv.use(bodyParser());
 	serv.use(cookieParser(process.env.APP_SECRET));
 	serv.use(flash());
@@ -106,11 +109,9 @@ Propcott.index.update({hash: 0, range: 5}, {
 		next();
 	});
 	
-	nunjucks.configure('app/views', {
-		autoescape: true,
-		express   : serv,
-		watch     : true
-	});
+	serv.engine('html', mustache());
+	serv.set('view engine', 'mustache');
+	serv.set('views', __dirname + '/app/views');
 	
 	// Test data for homepage
 	serv.use(function(req, res, next) {
@@ -162,9 +163,8 @@ Propcott.index.update({hash: 0, range: 5}, {
 						]
 					}
 				];
-				res.locals.crsf_field = function() {
-					return '<input type="hidden" name="_token" value="">';
-				};
+				res.locals.crsf_field = '<input type="hidden" name="_token" value="">';
+				
 				render.apply(this, arguments);
 			};
 		})(res.render);
@@ -172,33 +172,32 @@ Propcott.index.update({hash: 0, range: 5}, {
 		next();
 	});
 
-
 	serv.get('/', function(req, res) {
-		res.render('home.swig');
+		res.render('home.html');
 	});
-	/*
-	serv.get ('/login', app.middleware.guest, app.controllers.auth.login);
-	serv.post('/login', app.middleware.guest, app.controllers.auth.authenticate);
+
+	serv.get ('/login', middleware.guest, controllers.auth.login);
+	serv.post('/login', middleware.guest, controllers.auth.authenticate);
 	
-	serv.post('/register', app.middleware.guest, app.controllers.auth.register);
-	serv.get ('/logout',   app.middleware.user,  app.controllers.auth.logout);
+	serv.post('/register', middleware.guest, controllers.auth.register);
+	serv.get ('/logout',   middleware.user,  controllers.auth.logout);
 	
-	serv.get ('/oauth/facebook',          app.controllers.oauth.connect);
-	serv.get ('/oauth/facebook/callback', app.controllers.oauth.callback);
+	serv.get ('/oauth/facebook',          controllers.oauth.connect);
+	serv.get ('/oauth/facebook/callback', controllers.oauth.callback);
 	
-	serv.get ('/account', app.middleware.user, app.controllers.account.general);
-	serv.post('/account', app.middleware.user, app.controllers.account.updateGeneral);
+	serv.get ('/account', middleware.user, controllers.account.general);
+	serv.post('/account', middleware.user, controllers.account.updateGeneral);
 	
-	serv.get ('/p/:slug',        app.controllers.propcott.view);
-	serv.get ('/p/:slug/delete', app.controllers.propcott.remove);
-	serv.get ('/p/:slug/join',   app.controllers.propcott.join);
-	serv.get ('/p/:slug/edit',   app.controllers.draft.load);
+	serv.get ('/p/:slug',        controllers.propcott.view);
+	serv.get ('/p/:slug/delete', controllers.propcott.remove);
+	serv.get ('/p/:slug/join',   controllers.propcott.join);
+	serv.get ('/p/:slug/edit',   controllers.draft.load);
 	
-	serv.get ('/new',            app.controllers.draft.fresh);
-	serv.get ('/editor',         app.controllers.draft.edit);
-	serv.get ('/editor/preview', app.controllers.draft.preview);
-	serv.get ('/editor/save',    app.controllers.draft.save);
-	serv.post('/editor/handle',  app.controllers.draft.handle);
+	serv.get ('/new',            controllers.draft.fresh);
+	serv.get ('/editor',         controllers.draft.edit);
+	serv.get ('/editor/preview', controllers.draft.preview);
+	serv.get ('/editor/save',    controllers.draft.save);
+	serv.post('/editor/handle',  controllers.draft.handle);
 	/*
 	|--------------------------------------------------------------------------
 	| Handle Actions
@@ -213,13 +212,12 @@ Propcott.index.update({hash: 0, range: 5}, {
 	| cancel	cancel current draft
 	| 			redirect to (id) ? propcott : homepage
 	*/
-/*
+
 	var server = serv.listen(3000, function() {
 		var host = server.address().address;
 		var port = server.address().port;
 		console.info('Node running at http://%s:%s', host, port);
 	});
-*/
 })(express());
 
 /*

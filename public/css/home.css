@@ -1,0 +1,74 @@
+#featured {
+	position: relative;
+	padding: 1em;
+	height: 400px;
+	background-image: url('http://static.propcott.com/images/logo-email-footer.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+#featured, #rightbar {
+	border-radius: 10px;
+	background-color: white;
+}
+#rightbar {
+	padding: 1em;
+}
+#featured .buttons {
+	position: absolute;
+	bottom: 16px;
+	right: 16px;
+}
+#featured a {
+	border: 0px solid white;
+	color: white;
+	background: #B51010;
+	font-family: 'Josefin Sans',sans-serif;
+	border-radius: 5px;
+	font-weight: bold;
+	padding: .75em 1em;
+	font-size: 1.4em;
+	line-height: 1;
+	display: inline-block;
+}
+#featured a:hover {
+	text-decoration: none;
+}
+#featured h2 {
+	margin: 0;
+}
+.tabs {
+	margin-bottom: 16px;
+}
+.tabs button {
+	font-size: 1.2em;
+	font-weight: bold;
+	color: #777;
+	display: inline-block;
+	margin: 0;
+	padding: .5em;
+	line-height: 1;
+	border-radius: 4px;
+	background: #eee;
+	border: 0;
+	font-family: 'Josefin Sans',sans-serif;
+	transition: 300ms;
+}
+.tabs button:hover {
+	background: #ccc;
+	color: #555;
+}
+.tabs button.active {
+	background: #B51010;
+	color: white;
+}
+.tablist a {
+	display: inline-block;
+	line-height: 1.4;
+}
+.tablist p {
+	margin: 0;
+	line-height: 1.4;
+}
+.propcott-media {
+	float: left; width: 120px; height: 90px;
+}
