@@ -10,7 +10,7 @@ var hasher = local('framework/hasher');
 var Base    = require(app.models.base);
 var aws     = require(app.aws);
 var stored  = require(app.decorators.stored);
-var indexed = require(app.decorators.indexed);
+var indexed = require(app.decorators.indexed.toString());
 var id      = require(app.decorators.id);
 var hasher  = require(app.util.hasher);
 var uuid    = require('uuid');
@@ -26,8 +26,38 @@ class Propcott extends Base {
 	}
 
 	// if query is null, get all supporters
-	supporters(query, callback) {
+	supporters(params, callback) {
+		params = params || {};
+		params.Item = params.Item || {};
+		params.TableName = 'Supporters';
+		//params.ExpressionAttributeValues = {
+		//	':0': {S: }
+		//}
+		params.KeyConditionExpression = 'PropcottId='
 
+		dynamo.query({
+			TableName: 'Supporters',
+			Item: {
+				PropcottId: {N: String(id)},
+				UserId: {N: String(this.id)},
+				Created: {N: String(Date.now())}
+			}
+		}, err => {
+			if(err) console.error(err);
+			else {
+				Propcott.index.update({hash: 0, range: id}, {
+					support: {
+						daily: '#+1',
+						weekly: '#+1',
+						monthly: '#+1',
+						all: '#+1'
+					}
+				}, (err, p) => {
+					console.log(err, p);
+				});
+			}
+			callback();
+		});
 	}
 
 	static find(id, callback) {
@@ -35,7 +65,7 @@ class Propcott extends Base {
 	}
 
 	static each(options, iterator /* (propcott, control) */, callback /* (err, ...) */) {
-		
+
 	}
 }
 
