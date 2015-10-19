@@ -1,16 +1,18 @@
 var fs = require('fs');
 
-var app = new (class Application {})();
-(function read(path, app) {
-	var files = fs.readdirSync(path);
+module.exports = (function read(path) {
+	var dir = String(path.endsWith('index.js') ? path.slice(0, -'index.js'.length) : path);
+	var files = fs.readdirSync(dir);
 	for(var file of files) {
-		if(file[0] == '.' || file == 'node_modules' && path == './') continue;
-		var stats = fs.statSync(path + file);
+		if(file[0] == '.') continue;
+		var stats = fs.statSync(dir + file);
 		if(stats.isDirectory())
-			read(path + file + '/', app[file] = {});
+			if(fs.existsSync(dir + file + '/index.js'))
+				path[file] = read(new String(dir + file + '/index.js'));
+			else
+				path[file] = read(new String(dir + file + '/'));
 		if(stats.isFile())
-			app[file.replace(/\.[^.]+$/, '')] = path + file;
+			path[file.replace(/\.[^.]+$/, '')] = dir + file;
 	}
-})(__dirname + '/', app);
-
-module.exports = app;
+	return path;
+})(new String(__dirname + '/'));

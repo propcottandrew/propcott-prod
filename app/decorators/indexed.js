@@ -8,48 +8,7 @@ check how that would be for generators
 no type means it cannot be a primary key
 */
 
-var types = new WeakMap();
-
-types.set(Object, {
-	to:   val => ({S: JSON.stringify(val)}),
-	from: val => JSON.parse(val),
-	type: 'S'
-});
-
-types.set(Array, {
-	to:   val => ({S: JSON.stringify(val)}),
-	from: val => JSON.parse(val),
-	type: 'S'
-});
-
-types.set(String, {
-	to:   val => ({'S': String(val)}),
-	from: val => val.S,
-	type: 'S'
-});
-
-types.set(Number, {
-	to:   val => ({N: String(val)}),
-	from: val => Number(val.N),
-	type: 'N'
-});
-
-types.set(Boolean, {
-	to:   val => ({BOOL: Boolean(val)}),
-	from: val => Boolean(val.BOOL)
-});
-
-types.set(Date, {
-	to:   val => ({N: String(val.getTime())}),
-	from: val => new Date(Number(val.N)),
-	type: 'N'
-});
-
-types.set(Buffer, {
-	to:   val => ({B: val.toString('base64')}),
-	from: val => new Buffer(String(val.B), 'base64'),
-	type: 'B'
-});
+var types = require(app.decorators.indexed.types);
 
 var subtract = (a, b) => {
 	if(!(a instanceof Array)) return [];
@@ -231,6 +190,33 @@ module.exports = (options) => {
 			});
 			*/
 			query: (opt, iterator, callback) => {
+				// find index name from key attribute
+				// always build attributes incrementally rather than a 1:1 mapping
+				
+				
+				
+				
+Propcott.index.query({
+	TableName: 'Propcotts',
+	IndexName: '5-index',
+	ScanIndexForward: true,
+	ExpressionAttributeNames: {
+		'#0': '0',
+		'#2': '2'
+	},
+	ExpressionAttributeValues: {
+		':0': {S: '0'},
+		':2': {S: 'Grocery'}
+	},
+	KeyConditionExpression: '#0=:0',
+	FilterExpression: '#2=:2'
+});
+				
+				
+				
+				
+				
+				
 				aws.dynamo.query(opt, (err, data) => {
 					if(err) return callback(err);
 					// todo: control (wait/next/stop)

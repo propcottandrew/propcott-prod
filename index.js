@@ -2,6 +2,9 @@ require('dotenv').load();
 global.app  = require('./app');
 require(app.init);
 
+// Make sure we transform these buggers into strings before requiring them
+global.require = require = (r => path => r(String(path)))(require);
+
 var express = require('express');
 
 /*
@@ -78,8 +81,8 @@ Propcott.index.update({hash: 0, range: 5}, {
 
 	var flash         = require(app.express.messaging);
 	var dynamoSession = require(app.express.dynamoSessionStore)(session);
-	var controllers   = require(app.controllers.index);
-	var middleware    = require(app.middleware.index);
+	var controllers   = require(app.controllers);
+	var middleware    = require(app.middleware);
 
 	serv.use(express.static('public'));
 	
@@ -98,6 +101,7 @@ Propcott.index.update({hash: 0, range: 5}, {
 			maxAge: 2700000000
 		}
 	}));
+	
 	serv.use(function(req, res, next) {
 		res.render = (function(render) {
 			return function() {
@@ -198,6 +202,7 @@ Propcott.index.update({hash: 0, range: 5}, {
 	serv.get ('/editor/preview', controllers.draft.preview);
 	serv.get ('/editor/save',    controllers.draft.save);
 	serv.post('/editor/handle',  controllers.draft.handle);
+	
 	/*
 	|--------------------------------------------------------------------------
 	| Handle Actions

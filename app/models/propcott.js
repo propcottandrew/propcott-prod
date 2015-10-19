@@ -60,7 +60,6 @@ Propcott.each({
 	// or...
 	control.wait();
 	setTimeout((() => control.next()), 500);
-	
 });
 
 // Decorators
