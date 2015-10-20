@@ -1,168 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+{{#partial "title"}}General Settings{{/partial}}
 
-	<title>General Settings{{#user}} - {{displayName}}{{/user}}</title>
+{{#partial "content"}}
+<div class="account-block">
+	<h2>General <small>settings</small></h2>
+	<p style="margin: 0;">&nbsp;</p>
+	<form role="form" method="POST" action="account">
+		{{csrf_field}}
 
-	<link href="/css/style.css" rel="stylesheet">
-	<link href="/css/temp.css" rel="stylesheet">
-	<link href="/css/home.css" rel="stylesheet">
-	<link href="http://fonts.googleapis.com/css?family=Josefin+Sans:400,700,400italic,700italic|Merriweather:400,400italic,700,700italic" rel="stylesheet" type="text/css">
-	<noscript><style type="text/javascript">.autosize {height: 8em;}</style></noscript>
-	<script src='https://www.google.com/recaptcha/api.js'></script>
-	<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-</head>
-<body>
-	{{#alert}}
-	<div class="alert-container">
-		<div class="container" style="text-align: center;">
-			{{#messages}}<div class="alert-{{type}}">{{content}}</div>{{/messages}}
-		</div>
-	</div>
-	{{/alert}}
-	
-	<div id="navigation">
-		<div class="container">
-			<a href="/"><div id="navigation-logo"></div></a>
-			<a class="block round navigation-item" href="/search">
-				<span class="navigation-text">Search</span>
-				<span class="typcn typcn-zoom"></span>
-			</a>
-			<a class="block round navigation-item" href="/explore">
-				<span class="navigation-text">Explore</span>
-				<span class="typcn typcn-news"></span>
-			</a>
-			<a class="block round navigation-item" href="/new">
-				<span class="navigation-text">Start a Propcott</span>
-				<span class="typcn typcn-edit"></span>
-			</a>
-		<div class="navigation-right">
-			{{#user}}
-				<span class="dropdown">
-					<a href="/account" class="block round navigation-item">
-						<span class="navigation-text">{{name}}</span>
-						{{#avatar}}
-							<span class="navigation-avatar" style="background-image: url('{{url}}');"></span>
-						{{/avatar}}
-						{{^avatar}}
-							<span class="typcn typcn-user"></span>
-						{{/avatar}}
-					</a>
-					<ul class="dropdown-content">
-						<li><a href="/account">Account</a></li>
-						<li><a href="/account/propcotts">My Propcotts</a></li>
-						<li><a href="/logout">Log out</a></li>
-					</ul>
-				</span>
-			{{/user}}
-			{{^user}}
-				<a class="block round navigation-item" href="/login">
-					<span class="navigation-text">Log In</span>
-					<span class="typcn typcn-user"></span>
-				</a>
-			{{/user}}
-			</div>
-		</div>
-	</div>
+<table>
+	<tr>
+		<th>Name</th>
+		<td><input type="text" name="name" value="{{ user.name }}"></td>
+	</tr>
+	<tr>
+		<th>Display Name</th>
+		<td><input type="text" name="display_name" value="{{ user.display_name }}"></td>
+	</tr>
+	<tr>
+		<th>Email address</th>
+		<td><input type="email" name="email" value="{{ user.email }}"></td>
+	</tr>
+	<tr>
+		<th>Password</th>
+		<td><input type="password" name="password"></td>
+	</tr>
+	<tr>
+		<th>Repeat</th>
+		<td><input type="password" name="password_verify"></td>
+	</tr>
+	<tr>
+		<th>Zip Code</th>
+		<td><input type="text" name="zip" value="{{ user.zip }}"></td>
+	</tr>
+	<tr>
+		<th>Organization</th>
+		<td><input type="text" name="org" value="{{ user.org }}"></td>
+	</tr>
+	<tr>
+		<th>Organization Website</th>
+		<td><input type="text" name="org_link" value="{{ user.org_link }}"></td>
+	</tr>
+	<tr>
+		<th>Birthday</th>
+		<td>
+		<select name="birth-month">
+			<option value="1"{% if user.birth_month == 1 %} selected="true"{% endif %}>January</option>
+			<option value="2"{% if user.birth_month == 2 %} selected="true"{% endif %}>February</option>
+			<option value="3"{% if user.birth_month == 3 %} selected="true"{% endif %}>March</option>
+			<option value="4"{% if user.birth_month == 4 %} selected="true"{% endif %}>April</option>
+			<option value="5"{% if user.birth_month == 5 %} selected="true"{% endif %}>May</option>
+			<option value="6"{% if user.birth_month == 6 %} selected="true"{% endif %}>June</option>
+			<option value="7"{% if user.birth_month == 7 %} selected="true"{% endif %}>July</option>
+			<option value="8"{% if user.birth_month == 8 %} selected="true"{% endif %}>August</option>
+			<option value="9"{% if user.birth_month == 9 %} selected="true"{% endif %}>September</option>
+			<option value="10"{% if user.birth_month == 10 %} selected="true"{% endif %}>October</option>
+			<option value="11"{% if user.birth_month == 11 %} selected="true"{% endif %}>November</option>
+			<option value="12"{% if user.birth_month == 12 %} selected="true"{% endif %}>December</option>
+		</select>
+		<input name="birth-year" placeholder="Year" maxlength="4" style="width: 6ex;" onchange="if(/[^d]/.test(this.value)) this.value=this.value.replace(/[^\d]/g,'')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="{{ user.birth_year || '' }}">
+		</td>
+	</tr>
+	<tr>
+		<th>Gender</th>
+		<td><select name="gender">
+			<option value="1"{% if user.gender == 1 %} selected="true"{% endif %}>Male</option>
+			<option value="0"{% if user.gender == 0 %} selected="true"{% endif %}>Female</option>
+		</select></td>
+	</tr>
+</table>
+		<!--p>Avatar: <img src="{{ user.avatar }}" style="max-width:80px; max-height:80px; margin-right:10px; border-radius:8px;" /> <input name="avatar" type="file" style="display:inline;" /></p-->
+		<p><input type="submit" value="Update"></p>
+	</form>
+</div>
 
-	<div class="account-block">
-		<h2>General <small>settings</small></h2>
-		<p style="margin: 0;">&nbsp;</p>
-		<form role="form" method="POST" action="account">
-			{{csrf_field}}
-			{{#user}}
-			<table>
-				<tr>
-					<th>Name</th>
-					<td><input type="text" name="name" value="{{name}}"></td>
-				</tr>
-				<tr>
-					<th>Display Name</th>
-					<td><input type="text" name="display_name" value="{{displayName}}"></td>
-				</tr>
-				<tr>
-					<th>Email address</th>
-					<td><input type="email" name="email" value="{{email}}"></td>
-				</tr>
-				<tr>
-					<th>Password</th>
-					<td><input type="password" name="password"></td>
-				</tr>
-				<tr>
-					<th>Repeat</th>
-					<td><input type="password" name="password_verify"></td>
-				</tr>
-				<tr>
-					<th>Zip Code</th>
-					<td><input type="text" name="zip" value="{{zip}}"></td>
-				</tr>
-				{{#org}}
-				<tr>
-					<th>Organization</th>
-					<td><input type="text" name="org" value="{{name}}"></td>
-				</tr>
-				<tr>
-					<th>Organization Website</th>
-					<td><input type="text" name="org_link" value="{{link}}"></td>
-				</tr>
-				{{/org}}
-				<tr>
-					<th>Birthday</th>
-					<td>
-					<select name="birth-month">
-						<option value="1">January</option>
-						<option value="2">February</option>
-						<option value="3">March</option>
-						<option value="4">April</option>
-						<option value="5">May</option>
-						<option value="6">June</option>
-						<option value="7">July</option>
-						<option value="8">August</option>
-						<option value="9">September</option>
-						<option value="10">October</option>
-						<option value="11">November</option>
-						<option value="12">December</option>
-					</select>
-					<input name="birth-year" placeholder="Year" maxlength="4" style="width: 6ex;" onchange="if(/[^d]/.test(this.value)) this.value=this.value.replace(/[^\d]/g,'')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="{{birth_year}}">
-					</td>
-				</tr>
-				<tr>
-					<th>Gender</th>
-					<td><select name="gender">
-						<option value="1"{% if user.gender == 1 %} selected="true"{% endif %}>Male</option>
-						<option value="0"{% if user.gender == 0 %} selected="true"{% endif %}>Female</option>
-					</select></td>
-				</tr>
-			</table>
-			<!--p>Avatar: <img src="{{ user.avatar }}" style="max-width:80px; max-height:80px; margin-right:10px; border-radius:8px;" /> <input name="avatar" type="file" style="display:inline;" /></p-->
-			<p><input type="submit" value="Update"></p>
-		</form>
-	</div>
-
-	<div class="account-block">
-		<h2>Close <small>your account</small></h2>
-		<p><a href="/account/merge">Merge</a> with another Propcott account.</p>
-		<p><a href="/account/close">Close</a> your Propcott account.</p>
-	</div>
-
-
-	<div class="clearfix"></div>
-	<div id="footer" class="container">
-		<p>Copyright &copy; 2015 Propcott</p>
-		<p>
-			<a href="/about">About</a> &bull;
-			<a href="/contact">Contact</a> &bull;
-			<a href="/help">Help</a> &bull;
-			<a href="/privacy">Privacy Policy</a> &bull;
-			<a href="/terms">Terms of Service</a>
-		</p>
-	</div>
-</body>
-</html>
+<div class="account-block">
+	<h2>Close <small>your account</small></h2>
+	<p><a href="/account/merge">Merge</a> with another Propcott account.</p>
+	<p><a href="/account/close">Close</a> your Propcott account.</p>
+</div>
+{{/partial}}

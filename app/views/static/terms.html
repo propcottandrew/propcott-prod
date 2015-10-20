@@ -1,6 +1,6 @@
-{% extends '../base.swig' %}
+{{#partial "title"}}Terms and Conditions{{/partial}}
 
-{% block content %}
+{{#partial "content"}}
 <div class="container">
 	<h1>Web Site Terms and Conditions of Use</h1>
 
@@ -58,4 +58,6 @@
 	<p>We are not responsible for the campaigns against you, but we will try to help you resolve the issue with the moderator of the propcott.</p>
 
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

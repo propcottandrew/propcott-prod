@@ -1,6 +1,6 @@
-{% extends '../base.swig' %}
+{{#partial "title"}}Help{{/partial}}
 
-{% block content %}
+{{#partial "content"}}
 <div class="container">
 <h1>Help</h1>
 
@@ -57,4 +57,6 @@ Do not lie about your personal information. We won’t disclose your information
 
 Commonly Asked Questions
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

@@ -1,6 +1,6 @@
-{% extends '../base.swig' %}
+{{#partial "content"}}Privacy Policy{{/partial}}
 
-{% block content %}
+{{#partial "content"}}
 <div class="container">
 	<h1>Privacy <small>Policy</small></h1>
 
@@ -163,4 +163,6 @@ If there are any questions regarding this privacy policy you may contact us supp
 
 
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}
