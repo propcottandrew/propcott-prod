@@ -81,19 +81,6 @@ then build an update statement based on that difference
 
 Propcott.prototype.status = '0';
 
-Propcott.each({
-	hash: {type: '0'},
-	range: {created: {between: [0, Date.now()]}},
-	forward: true,
-	filter: '',
-	skip: 10 // start returning the 11th item
-}, (p, control) => {
-	control.stop();
-	// or...
-	control.wait();
-	setTimeout((() => control.next()), 500);
-});
-
 // Decorators
 Propcott.decorate(id({counter: 'propcotts'}));
 Propcott.decorate(indexed(require(app.models.indexes.propcott)));

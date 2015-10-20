@@ -1,36 +1,36 @@
-var controllers = require(app.http.controllers.index);
-var middleware  = require(app.http.middleware.index);
+var c = require(app.http.controllers.index);
+var m = require(app.http.middleware.index);
 
 module.exports = function(app) {
 	app.get('/', function(req, res) {
 		res.render('home');
 	});
-	
+
 	['about', 'contact', 'help', 'privacy', 'terms'].forEach(page => {
 		app.get(`/${page}`, (req, res) => res.render(`static/${page}`));
 	});
-	
-	app.get ('/login',    middleware.guest, controllers.auth.form);
-	app.post('/login',    middleware.guest, controllers.auth.login);
-	app.post('/register', middleware.guest, controllers.auth.register);
-	app.get ('/logout',   middleware.user,  controllers.auth.logout);
 
-	app.get ('/oauth/facebook',          controllers.oauth.connect);
-	app.get ('/oauth/facebook/callback', controllers.oauth.callback);
+	app.get ('/login',    m.guest, c.auth.form);
+	app.post('/login',    m.user,  c.auth.login);
+	app.post('/register', m.guest, c.auth.register);
+	app.get ('/logout',   m.user,  c.auth.logout);
 
-	app.get ('/account', middleware.user, controllers.account.general);
-	app.post('/account', middleware.user, controllers.account.updateGeneral);
+	app.get ('/oauth/facebook',          c.oauth.connect);
+	app.get ('/oauth/facebook/callback', c.oauth.callback);
 
-	app.get ('/p/:slug',        controllers.propcott.view);
-	app.get ('/p/:slug/delete', controllers.propcott.remove);
-	app.get ('/p/:slug/join',   controllers.propcott.join);
-	app.get ('/p/:slug/edit',   controllers.draft.load);
+	app.get ('/account', m.user, c.account.general);
+	app.post('/account', m.user, c.account.updateGeneral);
 
-	app.get ('/new',            controllers.draft.fresh);
-	app.get ('/editor',         controllers.draft.edit);
-	app.get ('/editor/preview', controllers.draft.preview);
-	app.get ('/editor/save',    controllers.draft.save);
-	app.post('/editor/handle',  controllers.draft.handle);
+	app.get ('/p/:slug',                m.slugToId,    c.propcott.view);
+	app.get ('/p/:slug/join',   m.user, m.slugToId,    c.propcott.join);
+	app.get ('/p/:slug/delete', m.user, m.ownPropcott, c.propcott.remove);
+	app.get ('/p/:slug/edit',   m.user, m.ownPropcott, c.draft.load);
+
+	app.get ('/new',            c.draft.fresh);
+	app.get ('/editor',         c.draft.edit);
+	app.get ('/editor/preview', c.draft.preview);
+	app.get ('/editor/save',    c.draft.save);
+	app.post('/editor/handle',  c.draft.handle);
 
 	/*
 	|--------------------------------------------------------------------------

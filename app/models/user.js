@@ -32,25 +32,31 @@ class User extends Base {
 	}
 
 	// Add support for a propcott
-	support(id, callback) {
+	support(id, previous, callback) {
 		dynamo.putItem({
 			TableName: 'Supporters',
+			ConditionExpression: 'attribute_not_exists(PropcottId)',
 			Item: {
 				PropcottId: {N: String(id)},
 				UserId: {N: String(this.id)},
-				Created: {N: String(Date.now())}
+				Created: {N: String(Date.now())},
+				Previous: {BOOL: !!previous}
 			}
 		}, err => {
-			if(err) console.error(err);
+			if(err) console.error(err); // todo
 			else {
-				Propcott.index.update({hash: 0, range: id}, {
+				var params = {
 					support: {
 						daily: '#+1',
 						weekly: '#+1',
 						monthly: '#+1',
 						all: '#+1'
 					}
-				}, (err, p) => {
+				};
+
+				if(previous) params.support.previous = '#+1';
+
+				Propcott.index.update({hash: 0, range: id}, params, (err, p) => {
 					console.log(err, p);
 				});
 			}

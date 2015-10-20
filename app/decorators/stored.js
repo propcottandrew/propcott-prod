@@ -11,7 +11,7 @@ module.exports = options => {
 	// Return decorator
 	return function StoredDecorator(target) {
 		target._saved = false;
-		
+
 		target.prototype.save = function(callback) {
 			async.series([
 				callback => this.emit('saving', callback),
@@ -29,7 +29,7 @@ module.exports = options => {
 				callback => this.emit('saved', callback)
 			], err => callback && callback(err, this));
 		};
-		
+
 		target.prototype.load = function(callback) {
 			async.series([
 				callback => this.emit('loading', callback),
@@ -39,7 +39,7 @@ module.exports = options => {
 						Key: options.key(this) + '.json'
 					}, (err, data) => {
 						if(err)        return callback(err);
-						if(!data.Body) return callback('UserNotFound');
+						if(!data.Body) return callback('NotFound');
 						this._saved = true;
 						this.importData(data.Body);
 					});
