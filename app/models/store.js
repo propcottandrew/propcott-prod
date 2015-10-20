@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 
 this shouldn't be a model...

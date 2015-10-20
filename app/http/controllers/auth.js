@@ -4,7 +4,9 @@ var bcrypt    = require('bcryptjs');
 var dynamo    = require(app.aws).dynamo;
 var User      = require(app.models.user);
 
-module.exports.authenticate = function(req, res) {
+module.exports.form = (req, res) => res.render('auth/login.html');
+
+module.exports.login = (req, res) => {
 	User.find('local', req.body.email, (err, user) => {
 		if(err || !user.authenticate(req.body.password)) {
 			req.flash('Invalid username or password');
@@ -15,16 +17,14 @@ module.exports.authenticate = function(req, res) {
 				return res.render('auth/login.html');
 			}
 			
-			req.session.user = user;
+			req.session.user = user.session();
 			req.flash('Successfully logged in');
-			user.emit('login');
-			res.redirect('/');
+			user.emit('login', err => {
+				// make sure err isn't that they have a draft
+				res.redirect('/');
+			});
 		});
 	});
-};
-
-module.exports.login = function(req, res) {
-	res.render('auth/login.html');
 };
 
 module.exports.register = function(req, res) {

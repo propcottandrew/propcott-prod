@@ -1,3 +1,5 @@
+'use strict';
+
 var Base     = require(app.models.base);
 var Propcott = require(app.models.propcott);
 var aws      = require(app.aws);

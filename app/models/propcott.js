@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 var dynamo = local('framework/dynamo');
 var s3 = local('framework/s3');

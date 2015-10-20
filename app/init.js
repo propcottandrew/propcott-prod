@@ -12,7 +12,6 @@ for(var key in prefixes) (function(fn, prefix) {
 })(console[key], '[' + prefixes[key] + ']');
 
 global.noop = function() {};
-require(app.config.index);
 
 Object.prototype.decorate = function(property, decorator) { // decorate([property,] decorator)
 	if(!decorator && typeof property == 'function') {

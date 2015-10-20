@@ -5,10 +5,13 @@ module.exports = function(app) {
 	app.get('/', function(req, res) {
 		res.render('home');
 	});
-
-	app.get ('/login', middleware.guest, controllers.auth.login);
-	app.post('/login', middleware.guest, controllers.auth.authenticate);
-
+	
+	['about', 'contact', 'help', 'privacy', 'terms'].forEach(page => {
+		app.get(`/${page}`, (req, res) => res.render(`static/${page}`));
+	});
+	
+	app.get ('/login',    middleware.guest, controllers.auth.form);
+	app.post('/login',    middleware.guest, controllers.auth.login);
 	app.post('/register', middleware.guest, controllers.auth.register);
 	app.get ('/logout',   middleware.user,  controllers.auth.logout);
 
