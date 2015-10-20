@@ -4,13 +4,39 @@ var bodyParser    = require('body-parser');
 var cookieParser  = require('cookie-parser');
 var cons          = require('consolidate');
 var express       = require('express');
+var handlebars    = require('handlebars');
+var fs            = require('fs');
 
-var router        = require(app.router);
+var router        = require(app.http.router);
 var flash         = require(app.express.messaging);
 var dynamoSession = require(app.express.dynamoSessionStore)(session);
 
-module.exports = function(app) {
+var template = fs.readFileSync(__dirname + '/views/base.html', 'utf8');
+handlebars.registerPartial('base', template);
 
+handlebars.loadPartial = function (name) {
+  var partial = handlebars.partials[name];
+  if (typeof partial === "string") {
+    partial = handlebars.compile(partial);
+    handlebars.partials[name] = partial;
+  }
+  return partial;
+};
+
+handlebars.registerHelper("block",
+  function (name, options) {
+    /* Look for partial by name. */
+    var partial
+      = handlebars.loadPartial(name) || options.fn;
+    return partial(this, { data : options.hash });
+  });
+
+handlebars.registerHelper("partial",
+  function (name, options) {
+    handlebars.registerPartial(name, options.fn);
+  });
+
+module.exports = (function(app) {
 	app.use(express.static('public'));
 
 	app.use(bodyParser());
@@ -40,9 +66,10 @@ module.exports = function(app) {
 		next();
 	});
 
-	app.engine('html', cons.hogan);
+	app.engine('html', cons.handlebars);
 	app.set('view engine', 'html');
-	app.set('views', __dirname + '/app/views');
+	app.disable('view cache');
+	app.set('views', __dirname + '/views');
 
 /*
 	app.set('view engine', 'html');
@@ -73,4 +100,4 @@ module.exports = function(app) {
 		var port = server.address().port;
 		console.info('Node running at http://%s:%s', host, port);
 	});
-};
+})(express());

@@ -1,9 +1,9 @@
-var controllers = require(app.controllers.index);
-var middleware  = require(app.middleware.index);
+var controllers = require(app.http.controllers.index);
+var middleware  = require(app.http.middleware.index);
 
 module.exports = function(app) {
 	app.get('/', function(req, res) {
-		res.render('home.html');
+		res.render('home');
 	});
 
 	app.get ('/login', middleware.guest, controllers.auth.login);

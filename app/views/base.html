@@ -1,4 +1,88 @@
-<p>
-  <strong>Message Layout</strong>
-  {{{ yield }}}
-</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+	<title>{{#block "title"}}Propcott{{/block}}</title>
+
+	<link href="/css/style.css" rel="stylesheet">
+	<link href="/css/temp.css" rel="stylesheet">
+	<link href="/css/home.css" rel="stylesheet">
+	<link href="http://fonts.googleapis.com/css?family=Josefin+Sans:400,700,400italic,700italic|Merriweather:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+	<noscript><style type="text/javascript">.autosize {height: 8em;}</style></noscript>
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+	{{#alert}}
+	<div class="alert-container">
+		<div class="container" style="text-align: center;">
+			{{#messages}}<div class="alert-{{type}}">{{content}}</div>{{/messages}}
+		</div>
+	</div>
+	{{/alert}}
+	
+	<div id="navigation">
+		<div class="container">
+			<a href="/"><div id="navigation-logo"></div></a>
+			<a class="block round navigation-item" href="/search">
+				<span class="navigation-text">Search</span>
+				<span class="typcn typcn-zoom"></span>
+			</a>
+			<a class="block round navigation-item" href="/explore">
+				<span class="navigation-text">Explore</span>
+				<span class="typcn typcn-news"></span>
+			</a>
+			<a class="block round navigation-item" href="/new">
+				<span class="navigation-text">Start a Propcott</span>
+				<span class="typcn typcn-edit"></span>
+			</a>
+		<div class="navigation-right">
+			{{#user}}
+				<span class="dropdown">
+					<a href="/account" class="block round navigation-item">
+						<span class="navigation-text">{{displayName}}</span>
+						{{#avatar}}
+							<span class="navigation-avatar" style="background-image: url('{{url}}');"></span>
+						{{/avatar}}
+						{{^avatar}}
+							<span class="typcn typcn-user"></span>
+						{{/avatar}}
+					</a>
+					<ul class="dropdown-content">
+						<li><a href="/account">Account</a></li>
+						<li><a href="/account/propcotts">My Propcotts</a></li>
+						<li><a href="/logout">Log out</a></li>
+					</ul>
+				</span>
+			{{/user}}
+			{{^user}}
+				<a class="block round navigation-item" href="/login">
+					<span class="navigation-text">Log In</span>
+					<span class="typcn typcn-user"></span>
+				</a>
+			{{/user}}
+			</div>
+		</div>
+	</div>
+
+	{{#block "content"}}{{/block}}
+
+	<div class="clearfix"></div>
+	<div id="footer" class="container">
+		<p>Copyright &copy; 2015 Propcott</p>
+		<p>
+			<a href="/about">About</a> &bull;
+			<a href="/contact">Contact</a> &bull;
+			<a href="/help">Help</a> &bull;
+			<a href="/privacy">Privacy Policy</a> &bull;
+			<a href="/terms">Terms of Service</a>
+		</p>
+	</div>
+</body>
+</html>

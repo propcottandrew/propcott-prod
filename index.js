@@ -1,9 +1,8 @@
 global.app     = require('./app');
-global.require = require = (r => path => r(String(path)))(require);
 
 require('dotenv').load();
 require(app.init);
-require(app.boot)(require('express')());
+require(app.boot)
 
 /*
 //var Store = require(app.models.store);
