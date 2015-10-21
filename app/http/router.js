@@ -22,12 +22,16 @@ module.exports = function(app) {
 	app.post('/account', m.user, c.account.updateGeneral);
 	app.get ('/account/propcotts', m.user, c.account.propcotts);
 
-	app.get ('/d/:draftId',     m.userR, m.ownDraft,    c.propcott.viewDraft);
+	app.get ('/d/:draftId',         m.userR, m.ownDraft, c.draft.view);
+	app.get ('/d/:draftId/edit',    m.userR, m.ownDraft, c.draft.edit);
+	app.get ('/d/:draftId/delete',  m.userR, m.ownDraft, c.draft.remove);
+	app.get ('/d/:draftId/publish', m.userR, m.ownDraft, c.draft.publish);
+
 //	app.get ('/v/:slug',                 m.ownDraft,    c.propcott.view);
 	app.get ('/p/:slug',                 m.slugToId,    c.propcott.view);
 	app.get ('/p/:slug/join',   m.userR, m.slugToId,    c.propcott.join);
 	app.get ('/p/:slug/delete', m.userR, m.ownPropcott, c.propcott.remove);
-	app.get ('/p/:slug/edit',   m.userR, m.ownPropcott, c.editor.load);
+	app.get ('/p/:slug/edit',   m.userR, m.ownPropcott, c.propcott.edit);
 
 	app.get ('/new',                     c.editor.fresh);
 	app.get ('/editor',                  c.editor.edit);

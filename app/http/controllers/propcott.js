@@ -5,12 +5,6 @@ module.exports.view = (req, res) => {
 	res.send('');
 };
 
-module.exports.viewDraft = (req, res) => {
-	new Propcott({draftId: req.params.draftId}).load((err, propcott) => {
-		res.render('propcott/view', {propcott: propcott});
-	});
-};
-
 module.exports.remove = (req, res) => {
 	res.send('');
 };
