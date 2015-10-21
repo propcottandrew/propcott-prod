@@ -59,7 +59,6 @@ module.exports = function (session) {
 	 * @api public
 	 */
 	DynamoSessionStore.prototype.set = function (sid, sess, callback) {
-		console.log(sess, JSON.stringify(sess));
 		Store.set(this.prefix + ':' + sid, sess, function(err, data) {
 			if(callback) return callback(err, data);
 		});

@@ -62,12 +62,17 @@ class Propcott extends Base {
 		});
 	}
 	
-	slug() {
-		return this.id + '-todo';
+	setCreator(user) {
+		this.creator = {
+			id      : user.id,
+			name    : user.displayName,
+			org     : user.org,
+			org_link: user.org_link
+		};
 	}
-
-	canIndex() {
-		return typeof this.id != 'undefined';
+	
+	slug() {
+		return `${this.id}-${this.title.toLowerCase().trim().replace(/\s+/g, '-').substr(0,75)}`;
 	}
 
 	static find(id, callback) {
@@ -93,51 +98,35 @@ Propcott.prototype.status = '0';
 Propcott.decorate(id({counter: 'propcotts'}));
 Propcott.decorate(indexed(require(app.models.indexes.propcott)));
 Propcott.decorate(stored({
-	bucket  : p => (p.id ? 'propcotts' : 'drafts') + '.data.propcott.com',
-	key     : p => (p.id ? hasher.to(p.id) : p.draftId) + '/index.json',
-	separate : ['updates']
+	bucket  : p => (p.published ? 'propcotts' : 'drafts') + '.data.propcott.com',
+	key     : p => (p.published ? hasher.to(p.id) : p.draftId) + '/index.json'
 }));
 
 // Events
 Propcott.prototype.on('deleting', (p, callback) => {
-	if(!p.published) return callback();
-	callback('AlreadyPublished');
+	if(!p.published) callback();
+	else callback('AlreadyPublished');
 });
+
 Propcott.prototype.on('saving', (p, callback) => {
-	if(p.id || p.draftId && !p.published) return callback();
-	if(p.published) return p.genId(callback);
-	else if(p.creator) p.draftId = hasher.to(p.creator.id) + '/' + uuid.v4();
-	else               p.draftId = uuid.v4();
-	callback();
+	if(!p.puslished) {
+		if(!p.draftId) p.draftId = uuid.v4();
+		return callback();
+	}
+	
+	if(!p.id) p.genId(callback);
+	else callback();
 });
 
 Propcott.prototype.on('saved', (p, callback) => {
 	p._saved = true;
-	if(!p.creator && p.draftId) callback('SavedAsDraft');
-	else                        callback();
-});
-
-Propcott.prototype.on('saved', (p, callback) => {
-	callback(); // defer
-
-	// Save successful, index that shit
-	/*
-	Status		String	Primary Hash
-	Id			Number	Primary Range
-						Global 1 Hash (SAll, SPrevious)
-	SDay		Number	Local Range
-	SWeek		Number	Local Range
-	SMonth		Number	Local Range
-	SAll		Number	Local Range
-	SPrevious	Number
-	Industry	String
-	Target		String
-	*/
+	if(p.draftId) callback('SavedAsDraft');
+	else callback();
 });
 
 Propcott.prototype.on('loading', (p, callback) => {
-	if(!(p.id || p.draftId)) return callback('NotYetSaved');
-	callback();
+	if(!(p.id || p.draftId)) callback('NoIdFound');
+	else callback();
 });
 
 Propcott.prototype.on('loaded', (p, callback) => {

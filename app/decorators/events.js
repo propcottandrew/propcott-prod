@@ -13,7 +13,7 @@ module.exports = options => {
 				events.concat((this.constructor.prototype._events||{})[event]||[]);
 			
 			events.sort(function(a, b) { return a[0] - b[0] });
-			async.series(events.map(event => c => event[1](this, c)), err => {
+			async.series(events.map(event => c => event[1].apply(null, [this, c].concat([].slice.call(arguments, 2)))), err => {
 				if(callback) return callback(err);
 			});
 		};

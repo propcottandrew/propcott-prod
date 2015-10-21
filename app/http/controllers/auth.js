@@ -3,8 +3,9 @@ var validator = require('validator');
 var bcrypt    = require('bcryptjs');
 var dynamo    = require(app.aws).dynamo;
 var User      = require(app.models.user);
+var Propcott  = require(app.models.propcott);
 
-module.exports.form = (req, res) => res.render('auth/login.html');
+module.exports.form = (req, res) => res.render('auth/login');
 
 module.exports.login = (req, res) => {
 	User.find('local', req.body.email, (err, user) => {
@@ -14,14 +15,14 @@ module.exports.login = (req, res) => {
 		} else user.load((err, user) => {
 			if(err) {
 				req.flash('Could not load user');
-				return res.render('auth/login.html');
+				return res.render('auth/login');
 			}
 			
 			req.session.user = user.session();
 			req.flash('Successfully logged in');
 			user.emit('login', err => {
-				// make sure err isn't that they have a draft
-				res.redirect('/');
+				if(err) console.info(err);
+				res.redirect(req.session.afterLogin || '/');
 			});
 		});
 	});
@@ -53,21 +54,29 @@ module.exports.register = function(req, res) {
 		}
 		req.session.user = user.session();
 		req.flash(MessageBag, 'auth.registered');
-		user.emit('register');
-		user.emit('login');
-		res.redirect('/');
+		user.emit('register', err => {
+			if(err) console.info(err);
+			user.emit('login', err => {
+				if(err) console.info(err);
+				res.redirect(req.session.afterLogin || '/');
+			});
+		});
 	});
 };
 
 module.exports.logout = function(req, res) {
 	var user = new User(req.session.user);
+	new Propcott({draftId: req.session.draftId}).delete();
+	
 	req.session.destroy(err => {
 		if(err) {
 			req.flash('Could not log out');
 			return res.redirect('/');
 		}
 		res.clearCookie('sid');
-		user.emit('logout');
-		res.redirect('/');
+		user.emit('logout', err => {
+			if(err) console.info(err);
+			if(!req.headersSent) res.redirect('/');
+		});
 	});
 };

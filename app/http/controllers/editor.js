@@ -1,6 +1,18 @@
 var Propcott = require(app.models.propcott);
 var User     = require(app.models.user);
 
+var editable = [
+	'title',
+	'who',
+	'what',
+	'why',
+	'how',
+	'alt',
+	'industry',
+	'media',
+	'media_type'
+];
+
 module.exports.fresh = function(req, res) {
 	var draftId = req.session.draftId;
 	delete req.session.draftId;
@@ -12,7 +24,11 @@ module.exports.fresh = function(req, res) {
 
 module.exports.edit = function(req, res) {
 	new Propcott({draftId: req.session.draftId}).load((err, draft) => {
-		if(err) console.error(err);
+		if(err) console.info(err);
+		
+		if(req.session.user)
+			draft.setCreator(req.session.user);
+		
 		res.render('propcott/create', {propcott: draft});
 	});
 };
@@ -25,11 +41,7 @@ module.exports.preview = function(req, res) {
 };
 
 module.exports.save = function(req, res) {
-	if(!req.session.user) {
-		req.flash('Please log in to save your draft.');
-		return res.redirect('/login');
-	}
-
+	
 	Draft.get(req, function(err, draft) {
 		var propcott = new Propcott(draft);
 		propcott.save(function(err, propcott) {
@@ -39,57 +51,84 @@ module.exports.save = function(req, res) {
 };
 
 module.exports.load = function(req, res) {
-	Propcott.find(id, function(err, propcott) {
-		Draft.set(propcott, function(err, draft) {
+	Propcott.find(id, (err, propcott) => {
+		if(err) return console.error(err);
+		
+		var draft = new Propcott(propcott);
+		draft.published = false;
+		
+		draft.setCreator(req.session.user);
+		
+		draft.save(propcott, err => {
+			if(err) console.error(err);
 			res.redirect('/editor');
 		});
 	});
 };
 
 var update = function(req, callback) {
-	var propcott = new Propcott({draftId: req.session.draftId});
-	propcott.load(err => {
+	var params = {};
+	for(var k in req.body)
+		if(editable.indexOf(k) >= 0) params[k] = req.body[k];
+			
+	var then = (err, draft) => {
 		if(err) console.error(err);
-		propcott.import(req.body);
-		propcott.save(err => {
-			console.log(propcott);
-			if(err) console.error(err);
-			callback(propcott);
-		});
-	});
+		
+		draft.import(params);
+		draft.save(err => callback(err, draft));
+	};
+	
+	if(req.session.draftId) {
+		new Propcott({draftId: req.session.draftId}).load(then);
+	} else {
+		then(null, new Propcott());
+	}
 };
+
+
+
+// update creator after login SOMEWHERE
+
+
 
 module.exports.handle = function(req, res) {
 	switch(req.body.action) {
 		case 'preview':
-			update(req, propcott => {
-				req.session.draftId = propcott.draftId;
+			update(req, (err, draft) => {
+				console.log(err, draft);
+				req.session.draftId = draft.draftId;
 				res.redirect('/editor/preview');
 			});
 		break;
 
 		case 'save':
-			update(req, propcott => {
-				if(req.session.user) {
-					propcott.creator = {
-						id: req.session.user.id,
-						displayName: req.session.user.displayName,
-						org: req.session.user.org,
-						orgLink: req.session.user.orgLink
-					};
-					
-					propcott.save(err => {
+			update(req, (err, draft) => {
+				if(err) console.error(err);
+				
+				if(req.session.user && typeof draft.id != 'undefined' && req.session.user.id == draft.creator.id) {
+					new Propcott({id: draft.id}).load((err, propcott) => {
 						if(err) console.error(err);
-						else req.flash('Propcott saved successfully.');
-						res.redirect('/p/' + propcott.slug());
+						
+						delete draft.published;
+						propcott.import(draft);
+						
+						propcott.save(err => {
+							if(err) console.error(err);
+							else {
+								draft.delete();
+								delete req.session.draftId;
+							}
+							req.flash('Propcott saved successfully.');
+							res.redirect(`/p/${propcott.id}`);
+						});
 					});
 				} else {
-					propcott.save(err => {
-						if(err) console.error(err);
-						req.session.draftId = propcott.draftId;
-						req.flash('Please log in to save your propcott.');
-						res.redirect('/login');
-					})
+					req.session.draftId = draft.draftId;
+					
+					if(req.session.user) {
+						req.flash('Propcott saved successfully.');
+						res.redirect(`/d/${draft.draftId}`);
+					} else res.redirect('/editor/save');
 				}
 			});
 		break;
@@ -115,23 +154,3 @@ module.exports.handle = function(req, res) {
 			return res.redirect('back');
 	}
 };
-
-var Draft = {
-	clear: function(req) {
-
-	},
-	update: function(req) {
-
-	},
-	get: function(req) {
-
-	},
-	set: function(draft) {
-
-	}
-};
-
-/*
-drafts.data.propcott.com
-{req.sessionId}.json
-*/

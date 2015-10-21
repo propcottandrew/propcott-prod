@@ -4,17 +4,11 @@ var bodyParser    = require('body-parser');
 var cookieParser  = require('cookie-parser');
 var cons          = require('consolidate');
 var express       = require('express');
-var handlebars    = require('handlebars');
 var fs            = require('fs');
 
 var router        = require(app.http.router);
 var flash         = require(app.express.messaging);
 var dynamoSession = require(app.express.dynamoSessionStore)(session);
-
-var P = require(app.models.propcott);
-var p = new P();
-p._abc = true;
-console.log(p, JSON.stringify(p));
 
 module.exports = (function(app) {
 	app.use(express.static('public'));
@@ -34,6 +28,14 @@ module.exports = (function(app) {
 			maxAge: 2700000000
 		}
 	}));
+	
+	// Allow for req.session.previous(body&&url) to be used to restore sessions
+	app.use((req, res, next) => {
+		if(((req.session||{}).previous||{}).url == req.originalUrl)
+			for(var i in req.session.previous.body)
+				req.body[i] = req.session.previous.body[i];
+		next();
+	});
 
 	app.use(function(req, res, next) {
 		res.render = (function(render) {
@@ -50,15 +52,9 @@ module.exports = (function(app) {
 	app.set('view engine', 'html');
 	app.disable('view cache');
 	app.set('views', __dirname + '/views');
-
-/*
-	app.set('view engine', 'html');
-	app.set('layout', 'layout');
-	//app.set('partials', {foo: 'foo'});
-	app.enable('view cache');
-	app.engine('html', require('hogan-express'));
-	app.set('views', __dirname + '/app/views');
-*/
+	//app.set('layout', 'layout');
+	//app.enable('view cache');
+	
 	// Test data for homepage
 	app.use(function(req, res, next) {
 		res.render = (function(render) {

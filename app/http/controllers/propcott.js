@@ -6,7 +6,7 @@ module.exports.view = (req, res) => {
 };
 
 module.exports.viewDraft = (req, res) => {
-	console.log('draft',req.params.draftId);
+	console.log('draft', req.params.draftId);
 	
 	res.send('');
 };
