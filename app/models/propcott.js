@@ -109,6 +109,7 @@ Propcott.prototype.on('deleting', (p, callback) => {
 });
 
 Propcott.prototype.on('saving', (p, callback) => {
+	console.log('saving', p);
 	if(!p.puslished) {
 		if(!p.draftId) {
 			if(p.creator) p.draftId = uuid.v4();

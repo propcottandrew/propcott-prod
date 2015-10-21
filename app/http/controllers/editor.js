@@ -29,6 +29,7 @@ module.exports.edit = function(req, res) {
 		
 		if(req.session.user)
 			draft.setCreator(req.session.user);
+		console.log(req.session.user, draft);
 		
 		res.render('propcott/create', {propcott: draft});
 	});
@@ -36,13 +37,13 @@ module.exports.edit = function(req, res) {
 
 module.exports.preview = function(req, res) {
 	new Propcott({draftId: req.session.draftId}).load((err, draft) => {
+		console.log(draft);
 		if(err) console.error(err);
 		res.render('propcott/preview', {propcott: draft});
 	});
 };
 
 module.exports.save = function(req, res, next) {
-	console.log(req.session);
 	if(!req.session.draftId) {
 		next('route');
 		if(!res.headersSent) {
@@ -54,12 +55,10 @@ module.exports.save = function(req, res, next) {
 	var id = req.session.draftId.replace(/^expire\//, '');
 	
 	new Propcott({draftId: req.session.draftId}).load((err, draft) => {
-		if(err) console.info(err);
+			if(err) console.info(err);
 		
-		console.log(draft);
 		new User({id: req.session.user.id}).load((err, user) => {
 			if(err) console.info(err);
-			console.log(user);
 			
 			draft.draftId = id;
 			draft.setCreator(user);
@@ -130,6 +129,9 @@ var update = function(req, callback) {
 	var then = (err, draft) => {
 		if(err) console.error(err);
 		
+		if(req.session.user)
+			draft.setCreator(req.session.user);
+		
 		draft.import(params);
 		draft.save(err => callback(err, draft));
 	};
@@ -145,7 +147,7 @@ module.exports.handle = function(req, res) {
 	switch(req.body.action) {
 		case 'preview':
 			update(req, (err, draft) => {
-				console.log(err, draft);
+				if(err) console.error(err);
 				req.session.draftId = draft.draftId;
 				res.redirect('/editor/preview');
 			});
