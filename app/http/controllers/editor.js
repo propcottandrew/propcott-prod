@@ -1,5 +1,6 @@
 var Propcott = require(app.models.propcott);
 var User     = require(app.models.user);
+var s3       = require(app.aws).s3;
 
 var editable = [
 	'title',
@@ -24,7 +25,7 @@ module.exports.fresh = function(req, res) {
 
 module.exports.edit = function(req, res) {
 	new Propcott({draftId: req.session.draftId}).load((err, draft) => {
-		if(err) console.info(err);
+		if(err && err != 'NoIdFound') console.info(err);
 		
 		if(req.session.user)
 			draft.setCreator(req.session.user);
@@ -40,14 +41,69 @@ module.exports.preview = function(req, res) {
 	});
 };
 
-module.exports.save = function(req, res) {
+module.exports.save = function(req, res, next) {
+	console.log(req.session);
+	if(!req.session.draftId) {
+		next('route');
+		if(!res.headersSent) {
+			req.flash('There is nothing to save.');
+			return res.redirect('/');
+		}
+	}
 	
-	Draft.get(req, function(err, draft) {
-		var propcott = new Propcott(draft);
-		propcott.save(function(err, propcott) {
-			if(propcott.id) return res.redirect('/p/' + propcott.slug());
+	var id = req.session.draftId.replace(/^expire\//, '');
+	
+	new Propcott({draftId: req.session.draftId}).load((err, draft) => {
+		if(err) console.info(err);
+		
+		console.log(draft);
+		new User({id: req.session.user.id}).load((err, user) => {
+			if(err) console.info(err);
+			console.log(user);
+			
+			draft.draftId = id;
+			draft.setCreator(user);
+			if(!user.drafts) user.drafts = [];
+			user.drafts.push(draft.draftId);
+			
+			draft.save(err => {
+				if(err) console.info(err);
+				res.redirect(`/d/${id}`);
+				
+				user.save(err => err && console.error(err));
+				s3.deleteObject({
+					Bucket: 'drafts.data.propcott.com',
+					Key: `expire/${id}.json`
+				}, err => err && console.error(err));
+			});
 		});
 	});
+	
+	/*s3.getObject({
+		Bucket: 'drafts.data.propcott.com',
+		Key: `expire/${id}.json`
+	}, (err, data) => {
+		if(err) return console.error(err);
+		var draft = new Propcott(data.Item);
+			
+		delete req.session.draftId;
+		new Propcott({draftId: id}).load((err, propcott) => {
+			if(err) console.error(err);
+			propcott.setCreator(req.session.user);
+			propcott.save(err => err && console.error(err));
+		});
+		
+		new User({id: req.session.user.id}).load((err, user) => {
+			
+			if(!user.drafts) user.drafts = [];
+			user.drafts.push(req.session.draftId);
+			res.redirect(`/d/${id}`);
+		});
+		s3.deleteObject({
+			Bucket: 'drafts.data.propcott.com',
+			Key: `expire/${id}.json`
+		}, err => err && console.error(err));
+	});*/
 };
 
 module.exports.load = function(req, res) {
@@ -85,12 +141,6 @@ var update = function(req, callback) {
 	}
 };
 
-
-
-// update creator after login SOMEWHERE
-
-
-
 module.exports.handle = function(req, res) {
 	switch(req.body.action) {
 		case 'preview':
@@ -104,6 +154,8 @@ module.exports.handle = function(req, res) {
 		case 'save':
 			update(req, (err, draft) => {
 				if(err) console.error(err);
+				
+				if(draft.draftId) req.session.draftId = draft.draftId;
 				
 				if(req.session.user && typeof draft.id != 'undefined' && req.session.user.id == draft.creator.id) {
 					new Propcott({id: draft.id}).load((err, propcott) => {
@@ -123,8 +175,6 @@ module.exports.handle = function(req, res) {
 						});
 					});
 				} else {
-					req.session.draftId = draft.draftId;
-					
 					if(req.session.user) {
 						req.flash('Propcott saved successfully.');
 						res.redirect(`/d/${draft.draftId}`);
@@ -138,10 +188,10 @@ module.exports.handle = function(req, res) {
 				req.flash('You aren\'t working on a draft.');
 				res.redirect('/');
 			} else {
+				delete req.session.draftId;
 				new Propcott({draftId: req.session.draftId}).delete((err, propcott) => {
 					if(err) console.error(err);
 					req.flash('Your draft has been deleted successfully.');
-					console.info(propcott);
 					if(propcott.id) return res.redirect(`/p/${propcott.slug()}`);
 					res.redirect('/');
 				});

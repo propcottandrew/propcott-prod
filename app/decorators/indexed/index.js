@@ -273,43 +273,47 @@ Propcott.index.query({
 			callback();
 		});
 
-		target.prototype.on('saved', (item, callback) => {
+		target.prototype.on('indexing', (item, callback) => {
 			callback();
 			
-			if(item.canIndex && !item.canIndex()) return;
-			
-			var index = to(item, options.schema, true);
+			async.series([
+				callback => this.emit('saving', callback),
+				callback => {
+					var index = to(item, options.schema, true);
 
-			if(!item._index) {
-				// Not indexed, index item
-				aws.dynamo.putItem({
-					TableName: 'Propcotts',
-					Item: to(item, options.schema).reduce((o, v, i) => ((o[i.toString(36)] = v), o), {})
-				}, err => {
-					if(err) console.error(err);
-					else    item._index = index;
-				});
-			} else {
-				var diff = subtract(index, item._index);
+					if(!item._index) {
+						// Not indexed, index item
+						aws.dynamo.putItem({
+							TableName: 'Propcotts',
+							Item: to(item, options.schema).reduce((o, v, i) => ((o[i.toString(36)] = v), o), {})
+						}, err => {
+							if(err) console.error(err);
+							else    item._index = index;
+						});
+					} else {
+						var diff = subtract(index, item._index);
 
-				if(diff.length) {
-					index = to(item, options.schema);
+						if(diff.length) {
+							index = to(item, options.schema);
 
-					// Update index with variables we changed
-					var item = {TableName: options.table, Key: {}};
-					item.Key[options.keys.hash.toString(36)] = index[options.keys.hash];
-					if(typeof options.keys.range != 'undefined')
-						item.Key[options.keys.range.toString(36)] = index[options.keys.range];
+							// Update index with variables we changed
+							var item = {TableName: options.table, Key: {}};
+							item.Key[options.keys.hash.toString(36)] = index[options.keys.hash];
+							if(typeof options.keys.range != 'undefined')
+								item.Key[options.keys.range.toString(36)] = index[options.keys.range];
 
-					appendAttributes(item, index.map((v, i) => diff[i] && v));
-					appendUpdateExpression(item, index.map((v, i) => diff[i] && v));
+							appendAttributes(item, index.map((v, i) => diff[i] && v));
+							appendUpdateExpression(item, index.map((v, i) => diff[i] && v));
 
-					aws.dynamo.updateItem(item, err => {
-						if(err) console.error(err);
-						else    item._index = index;
-					});
-				}
-			}
+							aws.dynamo.updateItem(item, err => {
+								if(err) console.error(err);
+								else    item._index = index;
+							});
+						}
+					}	
+				},
+				callback => this.emit('indexed', callback)
+			], err => err && console.error(err));
 		});
 	};
 };

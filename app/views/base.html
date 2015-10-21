@@ -556,8 +556,8 @@
 						<span class="navigation-text">Explore</span>
 						<span class="typcn typcn-news"></span>
 					</a>
-					<a class="block round navigation-item" href="/new">
-						<span class="navigation-text">Start a Propcott</span>
+					<a class="block round navigation-item" href="/{% if draft %}editor{% else %}new{% endif %}">
+						<span class="navigation-text">{% if draft %}Continue Writing{% else %}Start a Propcott{% endif %}</span>
 						<span class="typcn typcn-edit"></span>
 					</a>
 				{% endblock %}

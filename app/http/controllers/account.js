@@ -1,9 +1,7 @@
 var User = require(app.models.user);
 
 module.exports.updateGeneral = function(req, res) {
-	var user = new User({id: req.session.user.id});
-	
-	user.load(function(err, user) {
+	new User({id: req.session.user.id}).load((err, user) => {
 		if(err) {
 			console.error(err);
 			req.flash('Could not update account');
@@ -65,8 +63,19 @@ module.exports.general = function(req, res) {
 	});
 };
 
-module.exports.propcotts = function() {
-
+module.exports.propcotts = (req, res) => {
+	var user = new User({id: req.session.user.id});
+	
+	user.load(function(err, user) {
+		if(err) {
+			console.error(err);
+			req.flash('Could not load account info');
+			res.redirect('/');
+			return;
+		}
+		console.log(user);
+		res.render('account/propcotts', {user: user});
+	});
 };
 
 module.exports.notifications = function() {

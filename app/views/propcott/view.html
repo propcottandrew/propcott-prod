@@ -186,10 +186,16 @@
 					<h1 style="font-size: {{ propcott.title_size }}">{{ propcott.title }}</h1>
 				</div>
 				<div id="propcott-content">
-					{% if propcott.creator.displayName %}
-					<p style="float: right; color: #aaa; margin: 0 1em; text-align: right; font-family: 'Josefin Sans',sans-serif; line-height: 1;">Propcott by {{ propcott.creator.displayName }}
-					{% if propcott.creator.org %}<br>from
-					{% if propcott.creator.org_link %}<a href="{{ propcott.creator.org_link.replace(/^(?!https?:\/\/)/, 'http://') }}">{{ propcott.creator.org }}{% else %}<strong style="color: #333;">{{ propcott.creator.org }}</strong>{% endif %}{% endif %}</a></p>
+					{% if propcott.creator %}
+						<p style="float: right; color: #aaa; margin: 0 1em; text-align: right; font-family: 'Josefin Sans',sans-serif; line-height: 1;">Propcott by {{ propcott.creator.displayName }}
+						{% if propcott.creator.org %}<br>from
+							{% if propcott.creator.org_link %}
+								<a href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
+							{% else %}
+								<strong style="color: #333;">{{ propcott.creator.org }}</strong>
+							{% endif %}
+						{% endif %}
+						</p>
 					{% endif %}
 
 					<p style="margin: 1em;">Propcotting <span style="color: rgb(215,0,0);">{{ propcott.target }}</span></p>

@@ -1,3 +1,4 @@
+var Propcott = require(app.models.propcott);
 var slugToId = require(app.http.middleware.slugToId);
 
 module.exports = (req, res, next) => {

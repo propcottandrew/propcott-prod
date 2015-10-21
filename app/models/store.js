@@ -10,13 +10,13 @@ var Base = require(app.models.base);
 var aws  = require(app.aws);
 
 class Store extends Base {
-	get(key, callback) {
+	get(key, callback, consistent) {
 		callback = callback || noop;
 
 		var params = {
 			TableName: 'Store',
 			Key: {Key: {S: key}},
-			ConsistentRead: false
+			ConsistentRead: !!consistent
 		};
 
 		aws.dynamo.getItem(params, function(err, data) {

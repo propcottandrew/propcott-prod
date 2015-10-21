@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}My Propcotts{% endblock %}
+
+{% block account.main %}
+<div class="account-block">
+	{% if user.drafts.length %}
+	<h2>My Drafts</h2>
+	<ul>
+	{% for draft in user.drafts %}
+		<li><a href="/d/{{ draft }}">{{ draft }}</a></li>
+	{% endfor %}
+	</ul>
+	{% endif %}
+
+	<h2>Propcotts <small>I support</small></h2>
+	
+	<ul>
+	system maintenance...
+	</ul>
+
+	<h2>My Victories</h2>
+	
+	<ul>
+	system maintenance...
+	</ul>
+
+	<h2>Propcotts <small>I created</small></h2>
+	
+	<ul>
+	system maintenance...
+	</ul>
+</div>
+{% endblock %}

@@ -41,6 +41,7 @@ module.exports = (function(app) {
 		res.render = (function(render) {
 			return function() {
 				res.locals.user = req.session.user;
+				res.locals.draft = !!req.session.draftId;
 				render.apply(this, arguments);
 			};
 		})(res.render);

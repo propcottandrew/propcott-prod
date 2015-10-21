@@ -20,6 +20,7 @@ module.exports = function(app) {
 
 	app.get ('/account', m.user, c.account.general);
 	app.post('/account', m.user, c.account.updateGeneral);
+	app.get ('/account/propcotts', m.user, c.account.propcotts);
 
 	app.get ('/d/:draftId',     m.userR, m.ownDraft,    c.propcott.viewDraft);
 //	app.get ('/v/:slug',                 m.ownDraft,    c.propcott.view);

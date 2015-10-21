@@ -47,7 +47,7 @@ module.exports = function (session) {
 	DynamoSessionStore.prototype.get = function (sid, callback) {
 		Store.get(this.prefix + ':' + sid, function(err, data) {
 			if(callback) return callback(err, data);
-		});
+		}, true);
 	};
 
 	/**

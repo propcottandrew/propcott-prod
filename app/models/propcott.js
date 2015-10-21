@@ -99,7 +99,7 @@ Propcott.decorate(id({counter: 'propcotts'}));
 Propcott.decorate(indexed(require(app.models.indexes.propcott)));
 Propcott.decorate(stored({
 	bucket  : p => (p.published ? 'propcotts' : 'drafts') + '.data.propcott.com',
-	key     : p => (p.published ? hasher.to(p.id) : p.draftId) + '/index.json'
+	key     : p => (p.published ? `${hasher.to(p.id)}/index` : p.draftId) + '.json'
 }));
 
 // Events
@@ -110,7 +110,11 @@ Propcott.prototype.on('deleting', (p, callback) => {
 
 Propcott.prototype.on('saving', (p, callback) => {
 	if(!p.puslished) {
-		if(!p.draftId) p.draftId = uuid.v4();
+		if(!p.draftId) {
+			if(p.creator) p.draftId = uuid.v4();
+			else p.draftId = 'expire/' + uuid.v4();
+		}
+		
 		return callback();
 	}
 	

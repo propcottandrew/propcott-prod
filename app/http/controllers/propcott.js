@@ -6,9 +6,9 @@ module.exports.view = (req, res) => {
 };
 
 module.exports.viewDraft = (req, res) => {
-	console.log('draft', req.params.draftId);
-	
-	res.send('');
+	new Propcott({draftId: req.params.draftId}).load((err, propcott) => {
+		res.render('propcott/view', {propcott: propcott});
+	});
 };
 
 module.exports.remove = (req, res) => {
