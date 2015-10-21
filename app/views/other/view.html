@@ -1,9 +1,6 @@
-{% extends '../base.html' %}
+{{#partial "title"}}{{title}}{{/title}}
 
-{% block title %}propcott.title{% endblock %}
-
-{% block body.end %}
-	{% parent %}
+{{#partial "body.end"}}
 	<div id="fb-root"></div>
 	<script type="text/javascript" id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.3&amp;appId=1475586926065669"></script>
 	<script type="text/javascript" id="twitter-wjs" src="//platform.twitter.com/widgets.js"></script>
@@ -149,9 +146,9 @@
 		padding: 0 1em;
 	}
 	</style>
-{% endblock %}
+{{/partial}}
 
-{% block content %}
+{{#partial "content"}}
 <div class="container">
 	{% if user.id == propcott.creator.id %}
 	<div style="margin-top: .5em; padding: .5em; background: #eee; border: 1px solid #ddd; border-radius: 5px;">
@@ -289,8 +286,7 @@
 			</div>
 		</div>
 	</div>
-
-
-
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

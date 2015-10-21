@@ -1,17 +1,16 @@
 var User = require(app.models.user);
 
-module.exports.updateGeneral = function(req, res, next) {
-	if(!req.session.user) return next();
-
+module.exports.updateGeneral = function(req, res) {
 	var user = new User({id: req.session.user.id});
+	
 	user.load(function(err, user) {
 		if(err) {
+			console.error(err);
 			req.flash('Could not update account');
 			res.redirect('/account');
 			return;
 		}
 
-		delete user['g-recaptcha-response'];
 		if(req.body.password && req.body.password != req.body.password_verify) {
 			req.flash('Passwords do not match');
 			res.redirect('/account');
@@ -53,11 +52,11 @@ module.exports.updateGeneral = function(req, res, next) {
 };
 
 module.exports.general = function(req, res) {
-	if(!req.session.user) return next();
-
-	var user = new User(req.session.user.id);
+	var user = new User({id: req.session.user.id});
+	
 	user.load(function(err, user) {
 		if(err) {
+			console.error(err);
 			req.flash('Could not load account info');
 			res.redirect('/');
 			return;

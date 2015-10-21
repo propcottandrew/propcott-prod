@@ -33,12 +33,14 @@ JSON.stringify = (function(original) {
 			return replacer1(key, value) && replacer2(key, value);
 		};
 	};
+	
+	var globalReplacer = (key, value) => key[0] !== '_' ? value : undefined;
 
 	return function stringify(value, replacer, space) {
 		return original.apply(JSON, [
 			value,
-			(value && value.json && value.json.replacer) ? (replacer ? replacerMerge(replacer, value.json.replacer) : value.json.replacer) : replacer,
-			value && value.json && value.json.space || space
+			replacer ? replacerMerge(replacer, globalReplacer) : globalReplacer,
+			space
 		]);
 	};
 })(JSON.stringify);

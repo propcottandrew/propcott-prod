@@ -1,5 +1,6 @@
 // convert to base 36 and reverse string for better partitioning.
 module.exports.to = function(id) {
+	if(isNaN(id)) return;
 	var base36 = id.toString(36);
 	for(var i = base36.length - 1, hash = ''; i >= 0; hash += base36[i--]);
 	return hash;

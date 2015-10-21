@@ -1,11 +1,12 @@
-{% extends '../base.html' %}
+{{#partial "title"}}Propcott{{/partial}}
 
-{% block head.end %}
-	{% parent %}
-	<script src='https://www.google.com/recaptcha/api.js'></script>
-{% endblock %}
-
-{% block content %}
+{{#partial "content"}}
+<style>
+.contentbox {
+    border-radius: 10px;
+    background-color: white;
+}
+</style>
 <div class="container">
 
 	<p style="text-align: center;">
@@ -16,7 +17,7 @@
 		<div class="col-6" style="vertical-align: top;">
 			<h2 style="margin-top: 0;">Login</h2>
 			<form class="form-horizontal" role="form" method="POST">
-				{{ csrf_field() }}
+				{{csrf_field}}
 
 				<div class="form-group">
 					<label class="col-md-4 control-label">E-Mail Address</label>
@@ -54,7 +55,7 @@
 		<div class="col-6" style="vertical-align: top;">
 			<h2 style="margin-top: 0;">Sign up</h2>
 			<form class="form-horizontal" role="form" method="POST" action="/register">
-				{{ csrf_field() }}
+				{{csrf_field}}
 
 				<div class="form-group">
 					<label class="col-md-4 control-label">Name</label>
@@ -123,4 +124,6 @@
 		</div>
 	</div>
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

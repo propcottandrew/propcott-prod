@@ -1,13 +1,10 @@
-{% extends '../base.html' %}
+{{#partial "title"}}Contact Propcott{{/partial}}
 
-{% block content %}
-
-{% block head.end %}
-	{% parent %}
+{{#partial "head.end"}}
 	<script src='https://www.google.com/recaptcha/api.js'></script>
-{% endblock %}
+{{/partial}}
 
-{% block content %}
+{{#partial "content"}}
 <div class="container">
 	<div style="border-radius: 10px; padding: 1em; margin-bottom: 1em; background: white; margin-top: 1em;">
 		<h1 style="margin-top: 0;">Contact <small>Propcott</small></h1>
@@ -64,9 +61,11 @@
 				</div>
 			</noscript>
 			
-			{{ csrf_input() }}
+			{{csrf_field}}
 			<p><input type="submit" value="Send"></p>
 		</form>
 	</div>
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

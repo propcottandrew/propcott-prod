@@ -66,7 +66,7 @@ var appendAttributes = (params, diff) => {
 		if(v) o[`#${i.toString(36)}`] = i.toString(36);
 		return o;
 	}, {});
-
+	
 	// { ":avail":{"S":"Available"}, ":back":{"S":"Backordered"}, ":disc":{"S":"Discontinued"} }
 	params.ExpressionAttributeValues = diff.reduce((o, v, i) => {
 		if(typeof v == 'object' && v.N) {
@@ -95,7 +95,7 @@ module.exports = (options) => {
 
 	// Return decorator
 	return target => {
-
+		
 		// Build keys map
 		options.keys = options.keys((function recurse(schema, i) {
 			var map = {};
@@ -109,7 +109,7 @@ module.exports = (options) => {
 			}
 			return map;
 		})(options.schema, 0));
-
+		
 		aws.dynamo.describeTable({TableName: options.table}, (err, data) => {
 			if(err && err.code == 'ResourceNotFoundException') {
 				// attempt to make table
@@ -118,9 +118,9 @@ module.exports = (options) => {
 			} else if(err) return console.error(err); // do something
 			//console.log(JSON.stringify(data.Table.AttributeDefinitions));
 		});
-
+		
 		target.index = {
-
+			
 			/*
 			Find a single object and return a new instance of it
 			target.index.find({status: '0', id: 1337});
@@ -130,19 +130,19 @@ module.exports = (options) => {
 				item.Key[options.keys.hash.toString(36)] = {S: String(key.hash)};
 				if(typeof options.keys.range != 'undefined')
 					item.Key[options.keys.range.toString(36)] = {N: String(key.range)};
-
+				
 				aws.dynamo.getItem(item, (err, data) => {
 					if(err) return callback(err);
 					if(!data.Item) return callback();
-
+					
 					var index = [];
 					for(var prop in data.Item)
 						index[parseInt(prop, 36)] = data.Item[prop];
-
+					
 					callback(err, new target(from(index, options.schema)));
 				});
 			},
-
+			
 			/*
 			update one or more properties and return a new instance of it
 			old index values are kept in _old
@@ -156,24 +156,24 @@ module.exports = (options) => {
 				params.Key[options.keys.hash.toString(36)] = {S: String(key.hash)};
 				if(typeof options.keys.range != 'undefined')
 					params.Key[options.keys.range.toString(36)] = {N: String(key.range)};
-
+				
 				appendAttributes(params, to(properties, options.schema));
 				appendUpdateExpression(params, to(properties, options.schema));
-
+				
 				params.ReturnValues = 'ALL_NEW';
-
+				
 				aws.dynamo.updateItem(params, (err, data) => {
 					var index = [];
 					for(var prop in data.Attributes)
 						index[parseInt(prop, 36)] = data.Attributes[prop];
-
+					
 					callback(err, new target(from(index, options.schema)));
 				});
 			},
-
+			
 			// write / batch write
 			// delete / batch delete
-
+			
 			/*
 			Iterate through matching items
 			target.index.each({
@@ -192,11 +192,11 @@ module.exports = (options) => {
 			query: (opt, iterator, callback) => {
 				// find index name from key attribute
 				// always build attributes incrementally rather than a 1:1 mapping
-
-
-
-/*
-Propcott.index.query({
+				
+				
+				
+				
+/*Propcott.index.query({
 	TableName: 'Propcotts',
 	IndexName: '5-index',
 	ScanIndexForward: true,
@@ -210,40 +210,40 @@ Propcott.index.query({
 	},
 	KeyConditionExpression: '#0=:0',
 	FilterExpression: '#2=:2'
-});
-*/
-
-
-
-
-
+});*/
+				
+				
+				
+				
+				
+				
 				aws.dynamo.query(opt, (err, data) => {
 					if(err) return callback(err);
 					// todo: control (wait/next/stop)
-
+					
 					data.Items.forEach(item => {
 						var index = [];
 						for(var prop in item)
 							index[parseInt(prop, 36)] = item[prop];
-
+						
 						iterator(new target(from(index, options.schema)));
 					});
-
+										
 					if(data.LastEvaluatedKey) {
 						opt.ExclusiveStartKey = data.LastEvaluatedKey;
 						target.index.query(opt, iterator, callback);
 					}
 				});
-
+				
 				/*
 				var find = to(opt.key, options.schema, true)
 					.map((v, i) => v && i)
 					.filter(v => typeof v != 'undefined');
-
+				
 				var params = {TableName: options.table};
-
+				
 				appendAttributes(params, to(opt.key, options.schema, true));
-
+				
 				console.log(JSON.stringify(params, null, 4));
 				if(compare(find, [options.keys.hash, options.keys.range])) {
 					// primary key
@@ -255,11 +255,11 @@ Propcott.index.query({
 					}
 					// todo: check global
 				}*/
-
+				
 				//console.log(options.keys);
-
+				
 			},
-
+			
 			/*
 			todo
 			*/
@@ -267,7 +267,7 @@ Propcott.index.query({
 				
 			}
 		};
-
+		
 		target.prototype.on('loaded', (item, callback) => {
 			item._index = to(item, options.schema, true) || true;
 			callback();
@@ -275,11 +275,8 @@ Propcott.index.query({
 
 		target.prototype.on('saved', (item, callback) => {
 			callback();
-			
-			if(item.canIndex && !item.canIndex()) return;
-			
 			var index = to(item, options.schema, true);
-
+			
 			if(!item._index) {
 				// Not indexed, index item
 				aws.dynamo.putItem({
@@ -291,19 +288,19 @@ Propcott.index.query({
 				});
 			} else {
 				var diff = subtract(index, item._index);
-
+				
 				if(diff.length) {
 					index = to(item, options.schema);
-
+					
 					// Update index with variables we changed
 					var item = {TableName: options.table, Key: {}};
 					item.Key[options.keys.hash.toString(36)] = index[options.keys.hash];
 					if(typeof options.keys.range != 'undefined')
 						item.Key[options.keys.range.toString(36)] = index[options.keys.range];
-
+					
 					appendAttributes(item, index.map((v, i) => diff[i] && v));
 					appendUpdateExpression(item, index.map((v, i) => diff[i] && v));
-
+					
 					aws.dynamo.updateItem(item, err => {
 						if(err) console.error(err);
 						else    item._index = index;

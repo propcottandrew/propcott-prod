@@ -10,7 +10,7 @@ module.exports.login = (req, res) => {
 	User.find('local', req.body.email, (err, user) => {
 		if(err || !user.authenticate(req.body.password)) {
 			req.flash('Invalid username or password');
-			res.render('auth/login.html');
+			res.render('auth/login');
 		} else user.load((err, user) => {
 			if(err) {
 				req.flash('Could not load user');

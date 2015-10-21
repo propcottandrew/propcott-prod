@@ -22,8 +22,8 @@ class Propcott extends Base {
 		super(data);
 		this.defaults({
 			published: false,
-			created  : new Date(),
-			modified : new Date()
+			created  : Date.now(),
+			modified : Date.now()
 		});
 	}
 
@@ -61,6 +61,14 @@ class Propcott extends Base {
 			callback();
 		});
 	}
+	
+	slug() {
+		return this.id + '-todo';
+	}
+
+	canIndex() {
+		return typeof this.id != 'undefined';
+	}
 
 	static find(id, callback) {
 		Propcott.index.find({hash: '0', range: id}, callback);
@@ -91,10 +99,14 @@ Propcott.decorate(stored({
 }));
 
 // Events
+Propcott.prototype.on('deleting', (p, callback) => {
+	if(!p.published) return callback();
+	callback('AlreadyPublished');
+});
 Propcott.prototype.on('saving', (p, callback) => {
 	if(p.id || p.draftId && !p.published) return callback();
 	if(p.published) return p.genId(callback);
-	else if(p.creator) p.draftId = hasher.to(p.creator.id) + '-drafts/' + uuid.v4();
+	else if(p.creator) p.draftId = hasher.to(p.creator.id) + '/' + uuid.v4();
 	else               p.draftId = uuid.v4();
 	callback();
 });

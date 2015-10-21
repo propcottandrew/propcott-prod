@@ -13,10 +13,10 @@ module.exports = function() {
 		res.render = (function(render) {
 			return function() {
 				if(res.locals.flash)
-					res.locals.alert = {messages: (res.locals.flash.txt || [])
+					res.locals.messages = (res.locals.flash.txt || [])
 						.concat((res.locals.flash.bag || []).map(v => 
 							(MessageBag[v] instanceof Array) ? MessageBag[v] : [0, MessageBag[v]]))
-						.map(v => ({type: v[0] || DEFAULT, content: v[1]}))};
+						.map(v => ({type: v[0] || DEFAULT, content: v[1]}));
 				
 				render.apply(this, arguments);
 			};

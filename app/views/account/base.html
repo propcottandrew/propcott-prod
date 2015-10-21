@@ -1,0 +1,82 @@
+{% extends '../base.html' %}
+
+{% block head.end %}
+	{% parent %}
+	<style type="text/css">
+		#account-navigation {
+			font-family: 'Josefin Sans',sans-serif;
+			list-style: none;
+			padding: 0;
+			float: left;
+			text-align: right;
+			margin-top: 3px;
+			margin-right: -3px;
+		}
+		
+		#account-navigation a {
+			border-right: 3px solid #E77E8A;
+			padding: .25em .5em;
+			display: inline-block;
+			transition: 300ms;
+			font-size: 1.1em;
+			position: relative;
+			left: 3px;
+		}
+		#account-navigation a:hover {
+			border-right-width: 3px;
+			text-decoration: none;
+			left: 0;
+		}
+		#account-navigation .active a {
+			border-right-color: #c80017;
+			left: 0;
+		}
+		#account-main {
+			overflow: hidden;
+			padding: 3px;
+			margin-top: 2em;
+		}
+		.account-block {
+			position: relative;
+			z-index: 1;
+			padding: 16px;
+			background: white;
+			box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+			margin-bottom: 32px;
+		}
+		.account-block h1, .account-block h2, .account-block h3, .account-block h4, .account-block h5, .account-block h6 {
+			margin: 0;
+		}
+		.account-block hr {
+			border: none;
+			border-top: 1px solid #eee;
+			margin: 16px -16px 16px -16px;
+		}
+		table td+td {
+			text-align: center;
+			vertical-align: top;
+		}
+		th, td {
+			text-align: left;
+			padding: .5em;
+			line-height: 1.3;
+		}
+	</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+	<ul id="account-navigation">
+	{% block account.navigation %}
+		<li{% if tab == 'general' %} class="active"{% endif %}><a href="/account">General</a></li>
+		<li{% if tab == 'notifications' %} class="active"{% endif %}><a href="/account/notifications">Notifications and Reminders</a></li>
+		<li{% if tab == 'propcotts' %} class="active"{% endif %}><a href="'/account/propcotts">My Propcotts</a></li>
+		<li{% if tab == 'connections' %} class="active"{% endif %}><a href="'/account/connections">Connected Accounts</a></li>
+	{% endblock %}
+	</ul>
+	<div id="account-main">
+	{% block account.main %}{% endblock %}
+	</div>
+</div>
+{% endblock %}

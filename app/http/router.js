@@ -3,6 +3,7 @@ var m = require(app.http.middleware.index);
 
 module.exports = function(app) {
 	app.get('/', function(req, res) {
+		console.log(req.session.user);
 		res.render('home');
 	});
 
@@ -11,7 +12,7 @@ module.exports = function(app) {
 	});
 
 	app.get ('/login',    m.guest, c.auth.form);
-	app.post('/login',    m.user,  c.auth.login);
+	app.post('/login',    m.guest, c.auth.login);
 	app.post('/register', m.guest, c.auth.register);
 	app.get ('/logout',   m.user,  c.auth.logout);
 
@@ -21,16 +22,18 @@ module.exports = function(app) {
 	app.get ('/account', m.user, c.account.general);
 	app.post('/account', m.user, c.account.updateGeneral);
 
+	app.get ('/d/:draftId',     m.user, m.ownDraft,    c.propcott.viewDraft);
+//	app.get ('/v/:slug',                m.ownDraft,    c.propcott.view);
 	app.get ('/p/:slug',                m.slugToId,    c.propcott.view);
 	app.get ('/p/:slug/join',   m.user, m.slugToId,    c.propcott.join);
 	app.get ('/p/:slug/delete', m.user, m.ownPropcott, c.propcott.remove);
-	app.get ('/p/:slug/edit',   m.user, m.ownPropcott, c.draft.load);
+	app.get ('/p/:slug/edit',   m.user, m.ownPropcott, c.editor.load);
 
-	app.get ('/new',            c.draft.fresh);
-	app.get ('/editor',         c.draft.edit);
-	app.get ('/editor/preview', c.draft.preview);
-	app.get ('/editor/save',    c.draft.save);
-	app.post('/editor/handle',  c.draft.handle);
+	app.get ('/new',            c.editor.fresh);
+	app.get ('/editor',         c.editor.edit);
+	app.get ('/editor/preview', c.editor.preview);
+	app.get ('/editor/save',    c.editor.save);
+	app.post('/editor/handle',  c.editor.handle);
 
 	/*
 	|--------------------------------------------------------------------------

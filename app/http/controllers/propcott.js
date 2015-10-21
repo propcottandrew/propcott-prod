@@ -5,6 +5,12 @@ module.exports.view = (req, res) => {
 	res.send('');
 };
 
+module.exports.viewDraft = (req, res) => {
+	console.log('draft',req.params.draftId);
+	
+	res.send('');
+};
+
 module.exports.remove = (req, res) => {
 	res.send('');
 };

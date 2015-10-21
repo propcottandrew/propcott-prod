@@ -1,19 +1,14 @@
-{% extends '../base.html' %}
-
-{% block title %}Start a Propcott{% endblock %}
-
-{% block body.start %}
-{% parent %}
+{{#partial "body.start"}}
 <form method="POST" action="/editor/handle">
-{% endblock %}
+{{/partial}}
 
-{% block body.end %}
-{% parent %}
+{{#partial "body.end"}}
 </form>
-{% endblock %}
+{{/partial}}
 
-{% block head.end %}
-	{% parent %}
+{{#partial "title"}}Start a Propcott{{/partial}}
+
+{{#partial "head.end"}}
 	<style type="text/css">
 		body {
 			padding-top: 0;
@@ -72,9 +67,9 @@
 		}
 	</style>
 	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
-{% endblock %}
+{{/partial}}
 
-{% block body.end %}
+{{#partial "body.end"}}
 <script type="text/javascript">
 function chooseVideo() {
 	var video = prompt("Please enter the YouTube video URL");
@@ -85,8 +80,8 @@ function chooseVideo() {
 		document.getElementById('media-type').value = 'video';
 		document.getElementById('media-link').value = id;
 
-		document.getElementById('media').style.backgroundImage = 'url(http://img.youtube.com/vi/' + id + '/mqdefault.jpg)';
-		document.getElementById('media').className = 'filled';
+		document.getElementById('propcott-media').style.backgroundImage = 'url(http://img.youtube.com/vi/' + id + '/mqdefault.jpg)';
+		document.getElementById('propcott-media').className = 'filled';
 	}
 }
 
@@ -107,18 +102,18 @@ function upload(file) {
 		document.getElementById('media-type').value = 'image';
 		document.getElementById('media-link').value = data.path;
 
-		document.getElementById('media').style.backgroundImage = 'url(//static.propcott.com/' + data.path + ')';
-		document.getElementById('media').className = 'filled';
+		document.getElementById('propcott-media').style.backgroundImage = 'url(//static.propcott.com/' + data.path + ')';
+		document.getElementById('propcott-media').className = 'filled';
 	}
 
 	xhr.send(data);
 }
 
-document.getElementById('why').placeholder = '<p>' + document.getElementById('why').placeholder + '</p>';
-document.getElementById('how').placeholder = '<p>' + document.getElementById('how').placeholder + '</p>';
-document.getElementById('alt').placeholder = '<p>' + document.getElementById('alt').placeholder + '</p>';
+document.getElementById('propcott-why').placeholder = '<p>' + document.getElementById('propcott-why').placeholder + '</p>';
+document.getElementById('propcott-how').placeholder = '<p>' + document.getElementById('propcott-how').placeholder + '</p>';
+document.getElementById('propcott-alt').placeholder = '<p>' + document.getElementById('propcott-alt').placeholder + '</p>';
 
-CKEDITOR.replace('why', {
+CKEDITOR.replace('propcott-why', {
 	allowedContent: 'u em strong ul ol li;a[!href]',
 	height: 'auto',
 	extraPlugins: 'confighelper',
@@ -127,7 +122,7 @@ CKEDITOR.replace('why', {
 	this.updateElement();
 });
 
-CKEDITOR.replace('how', {
+CKEDITOR.replace('propcott-how', {
 	allowedContent: 'p',
 	height: 'auto',
 	extraPlugins: 'confighelper',
@@ -138,7 +133,7 @@ CKEDITOR.replace('how', {
 	this.element.setText('<ul>' + this.getData().replace(/<(\/)?p>/g, '<$1li>') + '</ul>');
 });
 
-CKEDITOR.replace('alt', {
+CKEDITOR.replace('propcott-alt', {
 	allowedContent: 'p',
 	height: 'auto',
 	extraPlugins: 'confighelper',
@@ -170,7 +165,7 @@ for(var e=document.querySelectorAll('textarea'), i=0; i<e.length; i++) (function
 var verb = '', event = window.addEventListener || (verb = 'on', window.attachEvent);
 var origSize = 48;
 var oldLength;
-event.call(document.getElementById('title'), verb + 'input', function() {
+event.call(document.getElementById('propcott-title'), verb + 'input', function() {
 	if(!oldLength || oldLength > this.value.length) {
 		console.log(this.clientHeight <= 250, parseFloat(this.style.fontSize), origSize);
 		while(this.clientHeight <= 250 && parseFloat(this.style.fontSize) <= origSize) {
@@ -194,13 +189,13 @@ event.call(document.getElementById('title'), verb + 'input', function() {
 });
 
 event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
-	document.getElementById('title_size').value = document.getElementById('title').style.fontSize;
+	document.getElementById('propcott-title_size').value = document.getElementById('propcott-title').style.fontSize;
 });
 
 </script>
-{% endblock %}
+{{/partial}}
 
-{% block content %}
+{{partial "content"}}
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
 		<button class="block round navigation-item" type="submit" name="action" value="cancel" style="margin-left: -.75em;">
@@ -225,7 +220,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 				<div id="propcott-featured-image">
 					<input type="hidden" name="propcott-title_size" id="propcott-title_size">
 					<textarea id="propcott-title"
-							  name="title"
+							  name="propcott-title"
 							  class="autosize"
 							  placeholder="Enter a title"
 							  style="font-size: {{ propcott.title_size }}"
@@ -247,7 +242,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 
 					<p style="position: absolute; margin: 1em; pointer-events: none; color: rgb(215,0,0);">Propcotting </p>
 					<textarea id="propcott-target"
-							  name="target"
+							  name="propcott-target"
 							  class="editable-region autosize"
 							  placeholder="corporation, person, organization etc."
 							  style="text-indent:6.2em;"
@@ -332,7 +327,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 					</div>
 
 					<textarea id="propcott-what"
-							  name="what"
+							  name="propcott-what"
 							  class="editable-region autosize"
 							  placeholder="What do you hope to accomplish?"
 							  >{{ propcott.what }}</textarea>
@@ -352,7 +347,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 					</div>
 
 					<textarea id="propcott-why"
-							  name="why"
+							  name="propcott-why"
 							  class="editable-region autosize"
 							  placeholder="Background / Description"
 							  >{{ propcott.why }}</textarea>
@@ -372,7 +367,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 					</div>
 
 					<textarea id="propcott-how"
-							  name="how"
+							  name="propcott-how"
 							  class="editable-region autosize"
 							  placeholder="Course of action"
 							  >{{ propcott.how }}</textarea>
@@ -392,7 +387,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 					</div>
 
 					<textarea id="propcott-alt"
-							  name="alt"
+							  name="propcott-alt"
 							  class="editable-region autosize"
 							  placeholder="Provide an alternative to the target"
 							  >{{ propcott.alt }}</textarea>
@@ -454,4 +449,6 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 
 	<input type="hidden" name="propcott-id" value="{{ propcott.id }}" />
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

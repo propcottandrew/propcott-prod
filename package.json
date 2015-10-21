@@ -4,7 +4,7 @@
   "description": "Reinventing Boycotts",
   "main": "index.js",
   "scripts": {
-    "start": "node-dev --use-strict index.js",
+    "start": "node-dev index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "lessc less/style.css public/css/style.css"
   },
@@ -31,6 +31,7 @@
     "passport": "^0.2.2",
     "passport-facebook": "^2.0.0",
     "passport-local": "^1.0.0",
+    "swig": "^1.4.2",
     "uuid": "^2.0.1",
     "validator": "^4.0.1"
   }

@@ -11,30 +11,10 @@ var router        = require(app.http.router);
 var flash         = require(app.express.messaging);
 var dynamoSession = require(app.express.dynamoSessionStore)(session);
 
-var template = fs.readFileSync(__dirname + '/views/base.html', 'utf8');
-handlebars.registerPartial('base', template);
-
-handlebars.loadPartial = function (name) {
-  var partial = handlebars.partials[name];
-  if (typeof partial === "string") {
-    partial = handlebars.compile(partial);
-    handlebars.partials[name] = partial;
-  }
-  return partial;
-};
-
-handlebars.registerHelper("block",
-  function (name, options) {
-    /* Look for partial by name. */
-    var partial
-      = handlebars.loadPartial(name) || options.fn;
-    return partial(this, { data : options.hash });
-  });
-
-handlebars.registerHelper("partial",
-  function (name, options) {
-    handlebars.registerPartial(name, options.fn);
-  });
+var P = require(app.models.propcott);
+var p = new P();
+p._abc = true;
+console.log(p, JSON.stringify(p));
 
 module.exports = (function(app) {
 	app.use(express.static('public'));
@@ -66,7 +46,7 @@ module.exports = (function(app) {
 		next();
 	});
 
-	app.engine('html', cons.handlebars);
+	app.engine('html', cons.swig);
 	app.set('view engine', 'html');
 	app.disable('view cache');
 	app.set('views', __dirname + '/views');

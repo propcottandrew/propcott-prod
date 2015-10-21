@@ -1,6 +1,6 @@
-{% extends '../base.html' %}
+{{#partial "title"}}About Propcott{{/partial}}
 
-{% block content %}
+{{#partial "content"}}
 <div class="container">
 	<h1>About <small>Propcott</small></h1>
 
@@ -12,4 +12,6 @@
 	
 	<p style="font-style: italic;">Propcott.com strives to empower the consumer.</p>
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

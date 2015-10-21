@@ -1,18 +1,14 @@
-{% extends '../base.html' %}
+{{#partial "body.start"}}
+<form action="POST" method="/editor/handle">
+{{/partial}}
 
-{% block body.start %}
-{% parent %}
-<form method="POST" action="/editor/handle">
-{% endblock %}
-
-{% block body.end %}
-{% parent %}
+{{#partial "body.end"}}
 </form>
-{% endblock %}
+{{/partial}}
 
-{% block title %}Start a Propcott{% endblock %}
+{{#partial "title"}}Start a Propcott{{/partial}}
 
-{% block content %}
+{{#partial "content"}}
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
 		<button class="block round navigation-item" type="submit" name="action" value="cancel" style="margin-left: -.75em;">
@@ -81,4 +77,6 @@
 		</div>
 	</div>
 </div>
-{% endblock %}
+{{/partial}}
+
+{{>base}}

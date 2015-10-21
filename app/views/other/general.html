@@ -1,13 +1,11 @@
-{% extends 'base.html' %}
+{{#partial "title"}}General Settings{{/partial}}
 
-{% block title %}General Settings{% endblock %}
-
-{% block account.main %}
+{{#partial "content"}}
 <div class="account-block">
 	<h2>General <small>settings</small></h2>
 	<p style="margin: 0;">&nbsp;</p>
 	<form role="form" method="POST" action="account">
-		{{ csrf_input() }}
+		{{csrf_field}}
 
 <table>
 	<tr>
@@ -77,7 +75,7 @@
 
 <div class="account-block">
 	<h2>Close <small>your account</small></h2>
-	<p><a href="{{ url('/account/merge') }}">Merge</a> with another Propcott account.</p>
-	<p><a href="{{ url('/account/close') }}">Close</a> your Propcott account.</p>
+	<p><a href="/account/merge">Merge</a> with another Propcott account.</p>
+	<p><a href="/account/close">Close</a> your Propcott account.</p>
 </div>
-{% endblock %}
+{{/partial}}

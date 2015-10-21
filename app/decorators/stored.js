@@ -36,15 +36,33 @@ module.exports = options => {
 				callback => {
 					s3.getObject({
 						Bucket: options.bucket(this),
-						Key: options.key(this) + '.json'
+						Key: options.key(this)
 					}, (err, data) => {
 						if(err)        return callback(err);
 						if(!data.Body) return callback('NotFound');
 						this._saved = true;
-						this.importData(data.Body);
+						this.import(JSON.parse(data.Body));
+						callback();
 					});
 				},
 				callback => this.emit('loaded', callback)
+			], err => callback && callback(err, this));
+		};
+		
+		target.prototype.delete = function(callback) {
+			async.series([
+				callback => this.emit('deleting', callback),
+				callback => {
+					s3.deleteObject({
+						Bucket: options.bucket(this),
+						Key: options.key(this)
+					}, (err, data) => {
+						if(err) return callback(err);
+						this._saved = false;
+						callback();
+					});
+				},
+				callback => this.emit('deleted', callback)
 			], err => callback && callback(err, this));
 		};
 	};
