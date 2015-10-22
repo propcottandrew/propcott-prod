@@ -22,8 +22,7 @@ class Propcott extends Base {
 		super(data);
 		this.defaults({
 			published: false,
-			created  : Date.now(),
-			modified : Date.now()
+			created  : Date.now()
 		});
 	}
 
@@ -54,25 +53,36 @@ class Propcott extends Base {
 						monthly: '#+1',
 						all: '#+1'
 					}
-				}, (err, p) => {
-					console.log(err, p);
-				});
+				}, err => err && console.error(err));
 			}
 			callback();
 		});
 	}
-	
+
 	setCreator(user) {
 		this.creator = {
-			id      : user.id,
-			name    : user.displayName,
-			org     : user.org,
-			org_link: user.org_link
+			id           : user.id,
+			display_name : user.display_name,
+			org          : user.org,
+			org_link     : user.org_link
 		};
 	}
-	
-	slug() {
-		return `${this.id}-${this.title.toLowerCase().trim().replace(/\s+/g, '-').substr(0,75)}`;
+
+	get slug() {
+		if(this._slug) return this._slug;
+
+		var maxlen = 75;
+
+		return this._slug = (this.title||'')
+			.toLowerCase()
+			.replace(/[_]/g, '-')
+			.replace(/[^a-zA-Z0-9\s-]/g, '')
+			.replace(/\b[a-zA-Z0-9]{1,2}\b/g, '')
+			.trim()
+			.replace(/\s+/g, '-')
+			.replace(/-+/g, '-')
+			.substr(0, maxlen - String(this.id).length - 1)
+			+ '-' + this.id;
 	}
 
 	static find(id, callback) {
@@ -99,7 +109,7 @@ Propcott.decorate(id({counter: 'propcotts'}));
 Propcott.decorate(indexed(require(app.models.indexes.propcott)));
 Propcott.decorate(stored({
 	bucket  : p => (p.published ? 'propcotts' : 'drafts') + '.data.propcott.com',
-	key     : p => (p.published ? `${hasher.to(p.id)}/index` : (p.creator ? `${hasher.to(p.creator.id)}/` : 'TMP/') + p.draftId) + '.json'
+	key     : p => (p.published ? `${hasher.to(p.id)}/index` : (p.creator ? `${hasher.to(p.creator.id)}/` : 'TMP/') + p.draft_id) + '.json'
 }));
 
 // Events
@@ -110,7 +120,7 @@ Propcott.prototype.on('deleting', (p, callback) => {
 
 Propcott.prototype.on('saving', (p, callback) => {
 	if(!p.published) {
-		if(!p.draftId) p.draftId = uuid.v4();
+		if(!p.draft_id) p.draft_id = uuid.v4();
 		return callback();
 	}
 	if(!p.id) p.genId(callback);
@@ -123,7 +133,7 @@ Propcott.prototype.on('saved', (p, callback) => {
 });
 
 Propcott.prototype.on('loading', (p, callback) => {
-	if(!(p.id || p.draftId)) callback('NoIdFound');
+	if(!(p.id || p.draft_id)) callback('NoIdFound');
 	else callback();
 });
 

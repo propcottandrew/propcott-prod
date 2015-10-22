@@ -48,7 +48,7 @@ module.exports = options => {
 				callback => this.emit('loaded', callback)
 			], err => callback && callback(err, this));
 		};
-		
+
 		target.prototype.delete = function(callback) {
 			async.series([
 				callback => this.emit('deleting', callback),

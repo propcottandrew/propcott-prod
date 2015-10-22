@@ -7,7 +7,65 @@
 	<div id="fb-root"></div>
 	<script type="text/javascript" id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.3&amp;appId=1475586926065669"></script>
 	<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
+	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 	<script type="text/javascript">
+	document.getElementById('propcott-new-update').placeholder = '<p>' + document.getElementById('propcott-new-update').placeholder + '</p>';
+	CKEDITOR.plugins.add('post_update', {
+		init: function(editor) {
+			editor.addCommand('post_update', {
+				exec: function(editor) {
+					var form = document.createElement('form');
+					form.method = 'POST';
+
+					(function make(list) {
+						for(var i in list) {
+							var input = document.createElement('input');
+							input.name = i;
+							input.value = list[i];
+							form.appendChild(input);
+						}
+					})({
+						content: editor.getData(),
+						action: 'update',
+						'_token': '{{ csrf_token() }}'
+					});
+
+					document.body.appendChild(form);
+					form.submit();
+				}
+			});
+
+			editor.ui.addButton('post_update', {
+				label: 'Post Update',
+				command: 'post_update',
+			});
+		}
+	});
+	var editor = CKEDITOR.replace('propcott-new-update', {
+		height: 'auto',
+		extraPlugins: 'confighelper,post_update',
+		title: ''
+	}).on('change', function() {
+		this.updateElement();
+	});
+
+	document.getElementById('propcott-updates-button').onclick = function() {
+		var elem = document.getElementById('propcott-updates'), last;
+		(function Scroll_To(elem, pos) {
+			var y = elem.scrollTop;
+			y += Math.round((pos - y) * 0.3);
+			if (last == y || Math.abs(y-pos) < 2) {
+				elem.scrollTop = pos;
+				CKEDITOR.instances['propcott-new-update'].focus();
+				return;
+			}
+			last = y;
+			elem.scrollTop = y;
+			setTimeout(Scroll_To, 40, elem, pos);
+		})(document.body, elem.offsetTop);
+		return false;
+	};
+
 	var client = new ZeroClipboard( document.getElementById("copy-button") );
 	client.on("ready", function(readyEvent) {
 		var timeout, text;
@@ -24,6 +82,25 @@
 	});
 	</script>
 	<style>
+	.cke_button__post_update .cke_button_icon {
+		display: none;
+	}
+	.cke_button__post_update .cke_button_label {
+		display: inline;
+		padding: 0;
+		font-weight: bold;
+		cursor: pointer;
+	}
+	.cke_button__post_update {
+		background-color: #e1edf7;
+		transition: 300ms;
+	}
+	.cke_button__post_update:hover {
+		background-color: #C7E3FA !important;
+	}
+	#cke_17 {
+		float: right;
+	}
 	#copy-button {
 		width: 100px;
 		text-align: center;
@@ -92,6 +169,19 @@
 {% endblock %}
 
 {% block content %}
+<div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
+	<div class="container">
+		<a class="block round navigation-item" href="/p/{{ propcott.slug }}/edit">
+			<span class="navigation-text">Edit Propcott</span>
+			<span class="typcn typcn-pencil"></span>
+		</a>
+		<a class="block round navigation-item" id="propcott-updates-button" href="#propcott-updates">
+			<span class="navigation-text">Update Propcotters</span>
+			<span class="typcn typcn-microphone"></span>
+		</a>
+	</div>
+</div>
+
 <div class="container">
 	<div class="row">
 		<div class="col-7 push-5">
@@ -125,26 +215,22 @@
 					<div style="margin: 0 1em;">{% autoescape false %}{{ propcott.why }}{% endautoescape %}</div>
 				</div>
 			</div>
-			{% if propcott.updates && propcott.updates.length %}
-				<div id="propcott-updates">
-					{% if user.id == propcott.creator.id %}
-						<textarea id="propcott-new-update"
-							  name="propcott-new-update"
-							  class="editable-region"
-							  placeholder="Update your propcotters"
-							  ></textarea>
-					{% endif %}
-					{% if propcott.updates && propcott.updates.length %}
-						<h2 style="font-size: 1.2em; margin: 0; padding: 16px; border-top: 1px solid #eee;">Updates and Announcements</h2>
-						{% for update in propcott.updates %}
-							<div class="propcott-update{% if loop.index == 0 %} first{% endif %}">
-							<div style="color: gray; float: right; font-size: .8em; margin: 0 0 1em 1em;">{{ update.created }}</div>
-								{{ update.content }}
-							</div>
-						{% endfor %}
-					{% endif %}
-				</div>
-			{% endif %}
+			<div id="propcott-updates">
+				<textarea id="propcott-new-update"
+					  name="propcott-new-update"
+					  class="editable-region"
+					  placeholder="Update your propcotters"
+					  ></textarea>
+				{% if propcott.updates.length %}
+					<h2 style="font-size: 1.2em; margin: 0; padding: 16px; border-top: 1px solid #eee;">Updates and Announcements</h2>
+					{% for update in propcott.updates %}
+						<div class="propcott-update{% if loop.index == 0 %} first{% endif %}">
+						<div style="color: gray; float: right; font-size: .8em; margin: 0 0 1em 1em;">{{ update.created }}</div>
+							{{ update.content }}
+						</div>
+					{% endfor %}
+				{% endif %}
+			</div>
 
 			<div class="fb-comments" data-href="/p-test/{{ propcott.id }}" data-numposts="5"></div>
 		</div>
@@ -179,26 +265,6 @@
 						</ul>
 					{% endif %}
 
-					{% if !user || !user.supports %}
-					<p>
-						<form method="POST" action="/p/{{ propcott.id }}/join">
-							<p style="font-family: 'Josefin Sans',sans-serif;line-height: 1;">
-								<span style="font-weight: bold;">Were you a part of a campaign similar to this propcott in any way?</span>
-								<label style="display: block;">
-									<input type="radio" name="previous_support" value="1">
-									I was already supporting a campaign similar to this propcott
-								</label>
-								<label style="display: block;">
-									<input type="radio" name="previous_support" value="0">
-									I was not, but now I proudly am.
-								</label>
-							</p>
-							<button type="submit" class="block join-button">Join!</button>
-							{{ csrf_field }}
-						</form>
-					</p>
-					{% endif %}
-
 					<h3>Spread <small>the word!</small></h3>
 					<p class="sharebuttons">
 						<a href="mailto:?subject={{ encodeURIComponent(propcott.title) }}&amp;body=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#0a88ff;">email</a>
@@ -224,8 +290,5 @@
 			</div>
 		</div>
 	</div>
-
-
-
 </div>
 {% endblock %}

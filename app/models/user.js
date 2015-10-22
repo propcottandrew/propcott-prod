@@ -57,9 +57,7 @@ class User extends Base {
 
 				if(previous) params.support.previous = '#+1';
 
-				Propcott.index.update({hash: 0, range: id}, params, (err, p) => {
-					console.log(err, p);
-				});
+				Propcott.index.update({hash: 0, range: id}, params, err => err && console.error(err));
 			}
 			callback();
 		});
@@ -129,7 +127,7 @@ class User extends Base {
 		return {
 			id           : this.id,
 			email        : this.email,
-			displayName  : this.displayName,
+			display_name : this.display_name,
 			avatar       : this.avatar && {url: this.avatar},
 			notifications: this.notifications,
 			permissions  : this.permissions
@@ -183,7 +181,7 @@ User.prototype.on('saved', (user, callback) => {
 				Key: {S: c._oldKey || c.key},
 				Provider: {S: c.provider}
 			}
-		}, err => console.log(err));
+		}, err => err && console.error(err));
 	});
 
 	user.credentials.forEach(c => {
@@ -200,8 +198,8 @@ User.prototype.on('saved', (user, callback) => {
 					Provider: {S: c.provider}
 				}
 			}, function(err, data) {
-				if(!err) delete user._state.changedCredentials[i];
-				console.log(err);
+				if(err) console.error(err);
+				else delete user._state.changedCredentials[i];
 			});
 		}
 
@@ -218,8 +216,8 @@ User.prototype.on('saved', (user, callback) => {
 			if(c._password) params.Item.Password = {S: bcrypt.hashSync(c._password)};
 
 			dynamo.putItem(params, function(err, data) {
-				if(!err) delete c._state;
-				console.log(err);
+				if(err) console.error(err);
+				else delete c._state;
 			});
 		}
 	});

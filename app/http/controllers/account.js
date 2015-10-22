@@ -54,7 +54,7 @@ module.exports.updateGeneral = function(req, res) {
 
 module.exports.general = function(req, res) {
 	var user = new User({id: req.session.user.id});
-	
+
 	user.load(function(err, user) {
 		if(err) {
 			console.error(err);
@@ -76,7 +76,6 @@ module.exports.propcotts = (req, res) => {
 	}, (err, data) => {
 		if(err) return console.error(err);
 		data.drafts = data.drafts.Contents.map(v => v.Key.substr(data.drafts.Prefix.length).slice(0,-5));
-		console.log(data);
 		res.render('account/propcotts', data);
 	});
 	/*s3.listObjects({
@@ -86,9 +85,9 @@ module.exports.propcotts = (req, res) => {
 		if(err) return console.error(err);
 		console.log(data.Contents);
 	});
-	
+
 	var user = new User({id: req.session.user.id});
-	
+
 	user.load(function(err, user) {
 		if(err) {
 			console.error(err);

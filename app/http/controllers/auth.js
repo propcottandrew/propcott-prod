@@ -17,7 +17,7 @@ module.exports.login = (req, res) => {
 				req.flash('Could not load user');
 				return res.render('auth/login');
 			}
-			
+
 			req.session.user = user.session();
 			req.flash('Successfully logged in');
 			user.emit('login', err => {
@@ -66,8 +66,8 @@ module.exports.register = function(req, res) {
 
 module.exports.logout = function(req, res) {
 	var user = new User(req.session.user);
-	new Propcott({draftId: req.session.draftId}).delete();
-	
+	new Propcott({draft_id: req.session.draft_id}).delete();
+
 	req.session.destroy(err => {
 		if(err) {
 			req.flash('Could not log out');

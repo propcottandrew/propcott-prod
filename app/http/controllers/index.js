@@ -1,4 +1,5 @@
 module.exports = {
+	api: require(app.http.controllers.api),
 	auth: require(app.http.controllers.auth),
 	oauth: require(app.http.controllers.oauth),
 	account: require(app.http.controllers.account),

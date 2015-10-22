@@ -2,16 +2,6 @@
 
 {% block title %}Start a Propcott{% endblock %}
 
-{% block body.start %}
-{% parent %}
-<form method="POST" action="/editor/handle">
-{% endblock %}
-
-{% block body.end %}
-{% parent %}
-</form>
-{% endblock %}
-
 {% block head.end %}
 	{% parent %}
 	<style type="text/css">
@@ -82,11 +72,11 @@ function chooseVideo() {
 
 	var id = (video.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]{11}).*/)||[])[7];
 	if (id) {
-		document.getElementById('media-type').value = 'video';
-		document.getElementById('media-link').value = id;
+		document.getElementById('propcott-media_type').value = 'video';
+		document.getElementById('propcott-media_link').value = id;
 
-		document.getElementById('media').style.backgroundImage = 'url(http://img.youtube.com/vi/' + id + '/mqdefault.jpg)';
-		document.getElementById('media').className = 'filled';
+		document.getElementById('propcott-media').style.backgroundImage = 'url(http://img.youtube.com/vi/' + id + '/mqdefault.jpg)';
+		document.getElementById('propcott-media').className = 'filled';
 	}
 }
 
@@ -97,34 +87,40 @@ function upload(file) {
 	if (!file || file.type.indexOf('image') == -1) return;
 
 	var data = new FormData();
-	data.append('file', file);
-	data.append('name', file.name);
-	data.append('_token', '{{ csrf_token() }}');
+	data.append('image', file);
+	data.append('_token', '{{ csrf_token }}');
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/api/upload');
 	xhr.onload = function() {
 		var data = JSON.parse(xhr.responseText);
-		document.getElementById('media-type').value = 'image';
-		document.getElementById('media-link').value = data.path;
+		console.log(data);
+		document.getElementById('propcott-media_type').value = 'image';
+		document.getElementById('propcott-media_link').value = data.path;
 
-		document.getElementById('media').style.backgroundImage = 'url(//static.propcott.com/' + data.path + ')';
-		document.getElementById('media').className = 'filled';
+		document.getElementById('propcott-media').style.backgroundImage = 'url(//static.propcott.com/' + data.path + ')';
+		document.getElementById('propcott-media').className = 'filled';
 	}
 
 	xhr.send(data);
 }
 
-document.getElementById('why').placeholder = '<p>' + document.getElementById('why').placeholder + '</p>';
-document.getElementById('how').placeholder = '<p>' + document.getElementById('how').placeholder + '</p>';
-document.getElementById('alt').placeholder = '<p>' + document.getElementById('alt').placeholder + '</p>';
+document.getElementById('propcott-why').placeholder = '<p>' + document.getElementById('propcott-why').placeholder + '</p>';
+document.getElementById('propcott-how').placeholder = '<p>' + document.getElementById('propcott-how').placeholder + '</p>';
+document.getElementById('propcott-alt').placeholder = '<p>' + document.getElementById('propcott-alt').placeholder + '</p>';
+
+if(document.getElementById('propcott-how'))
+	document.getElementById('propcott-how').innerHTML =
+		'<p>' + document.getElementById('propcott-how').innerHTML.replace(/\n/g, '</p><p>') + '</p>';
+
+if(document.getElementById('propcott-alt'))
+	document.getElementById('propcott-alt').innerHTML =
+		'<p>' + document.getElementById('propcott-alt').innerHTML.replace(/\n/g, '</p><p>') + '</p>';
 
 CKEDITOR.replace('why', {
 	allowedContent: 'u em strong ul ol li;a[!href]',
 	height: 'auto',
 	extraPlugins: 'confighelper',
 	title: ''
-}).on('change', function() {
-	this.updateElement();
 });
 
 CKEDITOR.replace('how', {
@@ -134,8 +130,6 @@ CKEDITOR.replace('how', {
 	removePlugins: 'toolbar',
 	title: '',
 	autoUpdateElement: false
-}).on('change', function() {
-	this.element.setText('<ul>' + this.getData().replace(/<(\/)?p>/g, '<$1li>') + '</ul>');
 });
 
 CKEDITOR.replace('alt', {
@@ -145,8 +139,6 @@ CKEDITOR.replace('alt', {
 	removePlugins: 'toolbar',
 	title: '',
 	autoUpdateElement: false
-}).on('change', function() {
-	this.element.setText('<ul>' + this.getData().replace(/<(\/)?p>/g, '<$1li>') + '</ul>');
 });
 
 for(var e=document.querySelectorAll('.autosize'), i=0; i<e.length; i++) (function(elem) {
@@ -170,7 +162,7 @@ for(var e=document.querySelectorAll('textarea'), i=0; i<e.length; i++) (function
 var verb = '', event = window.addEventListener || (verb = 'on', window.attachEvent);
 var origSize = 48;
 var oldLength;
-event.call(document.getElementById('title'), verb + 'input', function() {
+event.call(document.getElementById('propcott-title'), verb + 'input', function() {
 	if(!oldLength || oldLength > this.value.length) {
 		console.log(this.clientHeight <= 250, parseFloat(this.style.fontSize), origSize);
 		while(this.clientHeight <= 250 && parseFloat(this.style.fontSize) <= origSize) {
@@ -193,14 +185,25 @@ event.call(document.getElementById('title'), verb + 'input', function() {
 	}
 });
 
-event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
-	document.getElementById('title_size').value = document.getElementById('title').style.fontSize;
+event.call(document.getElementById('propcott-form'), verb + 'submit', function() {
+	console.log(document.getElementById('propcott-title_size').value, document.getElementById('propcott-title').style.fontSize);
+	document.getElementById('propcott-title_size').value = document.getElementById('propcott-title').style.fontSize;
+
+	document.getElementById('propcott-why').innerHTML =
+		CKEDITOR.instances['propcott-why'].getData();
+
+	document.getElementById('propcott-how').innerHTML =
+		CKEDITOR.instances['propcott-how'].getData().replace(/<\/p><p>/g, '\n').replace(/<\/p>|<p>/g, '');
+
+	document.getElementById('propcott-alt').innerHTML =
+		CKEDITOR.instances['propcott-alt'].getData().replace(/<\/p><p>/g, '\n').replace(/<\/p>|<p>/g, '');
 });
 
 </script>
 {% endblock %}
 
 {% block content %}
+<form method="POST" action="/editor/handle" id="propcott-form">
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
 		<button class="block round navigation-item" type="submit" name="action" value="cancel" style="margin-left: -.75em;">
@@ -223,7 +226,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 		<div class="col-7 push-5">
 			<div id="propcott" class="propcott-full">
 				<div id="propcott-featured-image">
-					<input type="hidden" name="propcott-title_size" id="propcott-title_size">
+					<input type="hidden" name="title_size" id="propcott-title_size">
 					<textarea id="propcott-title"
 							  name="title"
 							  class="autosize"
@@ -259,63 +262,73 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 					<select id="propcott-industry"
 					        name="industry"
 							style="font-style: normal; border: 0; outline: 0; padding:.5em; background: rgba(0,0,0,0.025); cursor: pointer;">
+						{% if propcott.industry %}
+						<optgroup label="Saved Industry">
+							<option value="{{ propcott.industry }}">{{ propcott.industry }}</option>
+						</optgroup>
+						<optgroup label="All Industries">
+						{% else %}
 						<option>Choose an Industry</option>
+						{% endif %}
 						<option>Other</option>
-						<option>Agriculture</option>
-						<option>Grocery</option>
 						<option>Accounting</option>
-						<option>Health Care</option>
 						<option>Advertising</option>
-						<option>Internet Publishing</option>
 						<option>Aerospace</option>
-						<option>Investment Banking</option>
+						<option>Agriculture</option>
 						<option>Aircraft</option>
-						<option>Legal</option>
 						<option>Airline</option>
-						<option>Manufacturing</option>
 						<option>Apparel &amp; Accessories</option>
-						<option>Motion Picture &amp; Video</option>
 						<option>Automotive</option>
-						<option>Music</option>
 						<option>Banking</option>
-						<option>Newspaper Publishers</option>
-						<option>Broadcasting</option>
-						<option>Online Auctions</option>
-						<option>Brokerage</option>
-						<option>Pension Funds</option>
 						<option>Biotechnology</option>
-						<option>Pharmaceuticals</option>
+						<option>Broadcasting</option>
+						<option>Brokerage</option>
 						<option>Call Centers</option>
-						<option>Private Equity</option>
 						<option>Cargo Handling</option>
-						<option>Publishing</option>
 						<option>Chemical</option>
-						<option>Real Estate</option>
 						<option>Computer</option>
-						<option>Retail &amp; Wholesale</option>
 						<option>Consulting</option>
-						<option>Securities &amp; Commodity Exchanges</option>
 						<option>Consumer Products</option>
-						<option>Service</option>
 						<option>Cosmetics</option>
-						<option>Soap &amp; Detergent</option>
 						<option>Defense</option>
-						<option>Software</option>
 						<option>Department Stores</option>
-						<option>Sports</option>
 						<option>Education</option>
-						<option>Technology</option>
 						<option>Electronics</option>
-						<option>Telecommunications</option>
 						<option>Energy</option>
-						<option>Television</option>
 						<option>Entertainment &amp; Leisure</option>
-						<option>Transportation</option>
 						<option>Executive Search</option>
-						<option>Trucking</option>
 						<option>Financial Services</option>
-						<option>Venture Capital</option>
 						<option>Food, Beverage &amp; Tobacco</option>
+						<option>Grocery</option>
+						<option>Health Care</option>
+						<option>Internet Publishing</option>
+						<option>Investment Banking</option>
+						<option>Legal</option>
+						<option>Manufacturing</option>
+						<option>Motion Picture &amp; Video</option>
+						<option>Music</option>
+						<option>Newspaper Publishers</option>
+						<option>Online Auctions</option>
+						<option>Pension Funds</option>
+						<option>Pharmaceuticals</option>
+						<option>Private Equity</option>
+						<option>Publishing</option>
+						<option>Real Estate</option>
+						<option>Retail &amp; Wholesale</option>
+						<option>Securities &amp; Commodity Exchanges</option>
+						<option>Service</option>
+						<option>Soap &amp; Detergent</option>
+						<option>Software</option>
+						<option>Sports</option>
+						<option>Technology</option>
+						<option>Telecommunications</option>
+						<option>Television</option>
+						<option>Transportation</option>
+						<option>Trucking</option>
+						<option>Venture Capital</option>
+						{% if propcott.industry %}
+						</optgroup>
+						{% endif %}
 					</select></p>
 
 					<hr />
@@ -332,11 +345,11 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 						</div>
 					</div>
 
-					<textarea id="propcott-what"
-							  name="what"
+					<textarea id="propcott-goal"
+							  name="goal"
 							  class="editable-region autosize"
 							  placeholder="What do you hope to accomplish?"
-							  >{{ propcott.what }}</textarea>
+							  >{{ propcott.goal }}</textarea>
 
 					<hr />
 
@@ -356,7 +369,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 							  name="why"
 							  class="editable-region autosize"
 							  placeholder="Background / Description"
-							  >{{ propcott.why }}</textarea>
+							  >{% autoescape false %}{{ propcott.why }}{% endautoescape %}</textarea>
 
 					<hr />
 
@@ -376,7 +389,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 							  name="how"
 							  class="editable-region autosize"
 							  placeholder="Course of action"
-							  >{{ propcott.how }}</textarea>
+							  >{{ propcott.how.join(String.fromCharCode(10)) }}</textarea>
 
 					<hr />
 
@@ -396,7 +409,7 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 							  name="alt"
 							  class="editable-region autosize"
 							  placeholder="Provide an alternative to the target"
-							  >{{ propcott.alt }}</textarea>
+							  >{{ propcott.alt.join(String.fromCharCode(10)) }}</textarea>
 
 					<hr>
 
@@ -417,42 +430,23 @@ event.call(document.getElementById('form-wrap'), verb + 'submit', function() {
 			<div id="propcott-sidebar">
 				{% if propcott.media_type == 'image' %}
 				<div id="propcott-media" style="background-image: url('http://static.propcott.com/{{ propcott.media_link }}');" class="filled">
-					<div class="dropzone">
-						drag and drop image here<br>or<br>
-						<button type="button" onclick="document.getElementById('media-photo').click()">upload<br>image</button>
-						<button type="button" onclick="chooseVideo()">embed<br>youtube</button>
-						<input type="hidden" name="propcott-media_type" value="{{ propcott.media_type }}" id="media-type">
-						<input type="hidden" name="propcott-media_link" value="{{ propcott.media_link }}" id="media-link">
-						<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
-					</div>
-				</div>
 				{% elseif propcott.media_type == 'video' %}
 				<div id="propcott-media" style="background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');" class="filled">
-					<div class="dropzone">
-						drag and drop image here<br>or<br>
-						<button type="button" onclick="document.getElementById('media-photo').click()">upload<br>image</button>
-						<button type="button" onclick="chooseVideo()">embed<br>youtube</button>
-						<input type="hidden" name="propcott-media_type" value="{{ propcott.media_type }}" id="media-type">
-						<input type="hidden" name="propcott-media_link" value="{{ propcott.media_link }}" id="media-link">
-						<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
-					</div>
-				</div>
 				{% else %}
 				<div id="propcott-media">
+				{% endif %}
 					<div class="dropzone">
 						drag and drop image here<br>or<br>
 						<button type="button" onclick="document.getElementById('media-photo').click()">upload<br>image</button>
 						<button type="button" onclick="chooseVideo()">embed<br>youtube</button>
-						<input type="hidden" name="propcott-media_type" value="{{ propcott.media_type }}" id="media-type">
-						<input type="hidden" name="propcott-media_link" value="{{ propcott.media_link }}" id="media-link">
+						<input type="hidden" name="media_type" value="{{ propcott.media_type }}" id="propcott-media_type">
+						<input type="hidden" name="media_link" value="{{ propcott.media_link }}" id="propcott-media_link">
 						<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
 					</div>
 				</div>
-				{% endif %}
 			</div>
 		</div>
 	</div>
-
-	<input type="hidden" name="propcott-id" value="{{ propcott.id }}" />
 </div>
+</form>
 {% endblock %}

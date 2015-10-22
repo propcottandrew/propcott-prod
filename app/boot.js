@@ -28,7 +28,7 @@ module.exports = (function(app) {
 			maxAge: 2700000000
 		}
 	}));
-	
+
 	// Allow for req.session.previous(body&&url) to be used to restore sessions
 	app.use((req, res, next) => {
 		if(((req.session||{}).previous||{}).url == req.originalUrl)
@@ -41,7 +41,6 @@ module.exports = (function(app) {
 		res.render = (function(render) {
 			return function() {
 				res.locals.user = req.session.user;
-				res.locals.draft = !!req.session.draftId;
 				render.apply(this, arguments);
 			};
 		})(res.render);
@@ -55,7 +54,7 @@ module.exports = (function(app) {
 	app.set('views', __dirname + '/views');
 	//app.set('layout', 'layout');
 	//app.enable('view cache');
-	
+
 	// Test data for homepage
 	app.use(function(req, res, next) {
 		res.render = (function(render) {
