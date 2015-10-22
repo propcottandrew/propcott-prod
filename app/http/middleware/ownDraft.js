@@ -6,12 +6,8 @@ module.exports = (req, res, next) => {
 	slugToId(req, res, err => err && next(err));
 
 	// Continue if owner
-	new Propcott({draftId: req.params.draftId}).load((err, propcott) => {
-		if(err) {
-			console.error(err);
-			return next('route');
-		}
-		if(propcott.draftId == req.params.draftId) return next();
-		else return next('route');
+	new Propcott({creator: {id: req.session.user.id}, draftId: req.params.draftId}).load((err, propcott) => {
+		if(err) return next('route');
+		else return next();
 	});
 };

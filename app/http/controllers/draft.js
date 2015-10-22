@@ -3,16 +3,16 @@ var User     = require(app.models.user);
 var s3       = require(app.aws).s3;
 
 module.exports.view = (req, res) => {
-	new Propcott({draftId: req.params.draftId}).load((err, propcott) => {
-		res.render('propcott/draft', {propcott: propcott});
+	var draft = new Propcott({creator: req.session.user, draftId: req.params.draftId});
+	draft.load((err, draft) => {
+		if(err) console.error(err);
+		res.render('propcott/draft', {propcott: draft});
 	});
 };
 
 module.exports.edit = function(req, res) {
-	new Propcott({draftId: req.params.draftId}).load((err, draft) => {
+	new Propcott({creator: req.session.user, draftId: req.params.draftId}).load((err, draft) => {
 		if(err) console.error(err);
-
-		draft.draftId = 'expire/' + draft.draftId;
 
 		draft.save(err => {
 			if(err) console.error(err);
@@ -23,7 +23,7 @@ module.exports.edit = function(req, res) {
 };
 
 module.exports.remove = (req, res) => {
-	new Propcott({draftId: req.params.draftId}).delete((err, draft) => {
+	new Propcott({creator: req.session.user, draftId: req.params.draftId}).delete((err, draft) => {
 		if(err) return console.error(err);
 
 		new User(req.session.user).load((err, user) => {

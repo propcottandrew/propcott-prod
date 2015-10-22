@@ -35,7 +35,7 @@ class Propcott extends Base {
 		//params.ExpressionAttributeValues = {
 		//	':0': {S: }
 		//}
-		params.KeyConditionExpression = 'PropcottId='
+		params.KeyConditionExpression = 'PropcottId=';
 
 		dynamo.query({
 			TableName: 'Supporters',
@@ -99,7 +99,7 @@ Propcott.decorate(id({counter: 'propcotts'}));
 Propcott.decorate(indexed(require(app.models.indexes.propcott)));
 Propcott.decorate(stored({
 	bucket  : p => (p.published ? 'propcotts' : 'drafts') + '.data.propcott.com',
-	key     : p => (p.published ? `${hasher.to(p.id)}/index` : p.draftId) + '.json'
+	key     : p => (p.published ? `${hasher.to(p.id)}/index` : (p.creator ? `${hasher.to(p.creator.id)}/` : 'TMP/') + p.draftId) + '.json'
 }));
 
 // Events
@@ -109,13 +109,8 @@ Propcott.prototype.on('deleting', (p, callback) => {
 });
 
 Propcott.prototype.on('saving', (p, callback) => {
-	console.log('saving', p);
 	if(!p.puslished) {
-		if(!p.draftId) {
-			if(p.creator) p.draftId = uuid.v4();
-			else p.draftId = 'expire/' + uuid.v4();
-		}
-		
+		if(!p.draftId) p.draftId = uuid.v4();
 		return callback();
 	}
 	
@@ -125,8 +120,7 @@ Propcott.prototype.on('saving', (p, callback) => {
 
 Propcott.prototype.on('saved', (p, callback) => {
 	p._saved = true;
-	if(p.draftId) callback('SavedAsDraft');
-	else callback();
+	callback();
 });
 
 Propcott.prototype.on('loading', (p, callback) => {
@@ -135,7 +129,7 @@ Propcott.prototype.on('loading', (p, callback) => {
 });
 
 Propcott.prototype.on('loaded', (p, callback) => {
-	p.loaded = true;
+	p._saved = true;
 	callback();
 });
 
