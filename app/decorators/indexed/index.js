@@ -273,14 +273,11 @@ Propcott.index.query({
 			callback();
 		});
 
-		target.prototype.on('indexing', (item, callback) => {
-			callback();
-			
+		target.prototype.on('saving', (item, callback) => {
 			async.series([
-				callback => this.emit('saving', callback),
+				callback => item.emit('indexing', callback),
 				callback => {
 					var index = to(item, options.schema, true);
-
 					if(!item._index) {
 						// Not indexed, index item
 						aws.dynamo.putItem({
@@ -310,10 +307,10 @@ Propcott.index.query({
 								else    item._index = index;
 							});
 						}
-					}	
+					}
 				},
-				callback => this.emit('indexed', callback)
-			], err => err && console.error(err));
+				callback => item.emit('indexed', callback)
+			], err => callback(err));
 		});
 	};
 };

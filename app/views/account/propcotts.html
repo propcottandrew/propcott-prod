@@ -4,10 +4,10 @@
 
 {% block account.main %}
 <div class="account-block">
-	{% if user.drafts.length %}
+	{% if drafts.length %}
 	<h2>My Drafts</h2>
 	<ul>
-	{% for draft in user.drafts %}
+	{% for draft in drafts %}
 		<li><a href="/d/{{ draft }}">{{ draft }}</a></li>
 	{% endfor %}
 	</ul>

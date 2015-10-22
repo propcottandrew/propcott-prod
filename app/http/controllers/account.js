@@ -1,4 +1,7 @@
-var User = require(app.models.user);
+var User   = require(app.models.user);
+var hasher = require(app.util.hasher);
+var s3     = require(app.aws).s3;
+var async  = require('async');
 
 module.exports.updateGeneral = function(req, res) {
 	new User({id: req.session.user.id}).load((err, user) => {
@@ -64,6 +67,26 @@ module.exports.general = function(req, res) {
 };
 
 module.exports.propcotts = (req, res) => {
+	async.parallel({
+		user: callback => new User({id: req.session.user.id}).load(callback),
+		drafts: callback => s3.listObjects({
+			Bucket: 'drafts.data.propcott.com',
+			Prefix: `${hasher.to(req.session.user.id)}/`
+		}, callback)
+	}, (err, data) => {
+		if(err) return console.error(err);
+		data.drafts = data.drafts.Contents.map(v => v.Key.substr(data.drafts.Prefix.length).slice(0,-5));
+		console.log(data);
+		res.render('account/propcotts', data);
+	});
+	/*s3.listObjects({
+		Bucket: 'drafts.data.propcott.com',
+		Prefix: `${hasher.to(req.session.user.id)}/`
+	}, function(err, data) {
+		if(err) return console.error(err);
+		console.log(data.Contents);
+	});
+	
 	var user = new User({id: req.session.user.id});
 	
 	user.load(function(err, user) {
@@ -73,9 +96,8 @@ module.exports.propcotts = (req, res) => {
 			res.redirect('/');
 			return;
 		}
-		console.log(user);
 		res.render('account/propcotts', {user: user});
-	});
+	});*/
 };
 
 module.exports.notifications = function() {

@@ -5,7 +5,7 @@ var async    = require('async');
 
 var editable = [
 	'title',
-	'who',
+	'target',
 	'what',
 	'why',
 	'how',
@@ -63,7 +63,10 @@ module.exports.save = function(req, res) {
 
 				propcott.save(err => {
 					if(err) console.error(err);
-					else req.flash('Propcott saved successfully.');
+					else {
+						delete req.session.draftId;
+						req.flash('Propcott saved.');
+					}
 					
 					res.redirect(`/p/${propcott.slug()}`);
 					s3.deleteObject({
@@ -79,6 +82,8 @@ module.exports.save = function(req, res) {
 			draft.save(err => {
 				if(err) return console.error(err);
 				
+				delete req.session.draftId;
+				req.flash('Propcott saved.');
 				res.redirect(`/d/${draft.draftId}`);
 				
 				s3.deleteObject({
@@ -96,14 +101,13 @@ module.exports.handle = function(req, res) {
 		case 'save':
 			async.waterfall([
 				callback => {
-					console.log('starting in it');
+					console.info(req.session.draftId);
 					if(req.session.draftId)
 						new Propcott({draftId: req.session.draftId}).load(callback);
 					else
 						callback(null, new Propcott());
 				},
 				(draft, callback) => {
-					console.log(1,draft);
 					var params = {};
 					for(var k in req.body)
 						if(editable.indexOf(k) >= 0) params[k] = req.body[k];
@@ -113,7 +117,6 @@ module.exports.handle = function(req, res) {
 					console.log(draft);
 				}
 			], (err, draft) => {
-				console.log(2, err, draft);
 				if(err) console.error(err);
 				req.session.draftId = draft.draftId;
 				res.redirect('/editor/' + req.body.action);

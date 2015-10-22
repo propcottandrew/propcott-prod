@@ -13,7 +13,9 @@ module.exports.view = (req, res) => {
 module.exports.edit = function(req, res) {
 	new Propcott({creator: req.session.user, draftId: req.params.draftId}).load((err, draft) => {
 		if(err) console.error(err);
-
+		
+		delete draft.creator;
+		
 		draft.save(err => {
 			if(err) console.error(err);
 			req.session.draftId = draft.draftId;
@@ -39,5 +41,16 @@ module.exports.remove = (req, res) => {
 };
 
 module.exports.publish = (req, res) => {
-
+	new Propcott({creator: req.session.user, draftId: req.params.draftId}).load((err, draft) => {
+		if(err) return console.error(err);
+		
+		var draftId = draft.draftId;
+		delete draft.draftId;
+		draft.published = true;
+		
+		draft.save((err, propcott) => {
+			res.redirect(`/p/${propcott.slug()}`);
+			//new Propcott({creator: req.session.user, draftId: draftId}).delete(err => err && console.error(err));
+		});
+	});
 };

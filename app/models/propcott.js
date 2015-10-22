@@ -12,7 +12,7 @@ var hasher = local('framework/hasher');
 var Base    = require(app.models.base);
 var aws     = require(app.aws);
 var stored  = require(app.decorators.stored);
-var indexed = require(app.decorators.indexed.toString());
+var indexed = require(app.decorators.indexed.index);
 var id      = require(app.decorators.id);
 var hasher  = require(app.util.hasher);
 var uuid    = require('uuid');
@@ -109,11 +109,10 @@ Propcott.prototype.on('deleting', (p, callback) => {
 });
 
 Propcott.prototype.on('saving', (p, callback) => {
-	if(!p.puslished) {
+	if(!p.published) {
 		if(!p.draftId) p.draftId = uuid.v4();
 		return callback();
 	}
-	
 	if(!p.id) p.genId(callback);
 	else callback();
 });

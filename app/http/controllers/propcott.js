@@ -1,8 +1,10 @@
 var Propcott = require(app.models.propcott);
 
 module.exports.view = (req, res) => {
-	console.log(req.params.id);
-	res.send('');
+	Propcott.find(req.params.id, (err, propcott) => {
+		console.log(propcott);
+		res.render('propcott/view', {propcott: propcott});
+	});
 };
 
 module.exports.remove = (req, res) => {
