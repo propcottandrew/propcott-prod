@@ -1,29 +1,28 @@
 {% extends '../base.html' %}
 
-{% block body.start %}
-{% parent %}
-<form method="POST" action="/editor/handle">
-{% endblock %}
+{% block title %}{{ propcott.title }}{% endblock %}
 
 {% block body.end %}
-{% parent %}
-</form>
+	<style type="text/css">
+	#propcott-alt, #propcott-how {
+		font-weight: bold;
+		margin-top: 0;
+	}
+	</style>
 {% endblock %}
-
-{% block title %}Start a Propcott{% endblock %}
 
 {% block content %}
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
-		<a class="block round navigation-item" href="/d/{{ propcott.draft_id }}/delete" onclick="return confirm('Are you sure you want to delete this propcott?');">
+		<a class="block round navigation-item" href="/editor/delete" onclick="return confirm('Are you sure you want to delete this propcott?');">
 			<span class="navigation-text">Cancel</span>
 			<span class="typcn typcn-cancel"></span>
 		</a>
-		<a class="block round navigation-item" href="/d/editor">
+		<a class="block round navigation-item" href="/editor">
 			<span class="navigation-text">Edit</span>
 			<span class="typcn typcn-pencil"></span>
 		</a>
-		<a class="block round navigation-item" href="/d/{{ propcott.draft_id }}/save" onclick="return confirm('Are you sure you want to publish this propcott?');">
+		<a class="block round navigation-item" href="/editor/save" onclick="return confirm('Are you sure you want to publish this propcott?');">
 			<span class="navigation-text">Save</span>
 			<span class="typcn typcn-cloud-storage"></span>
 		</a>
@@ -48,7 +47,7 @@
 					<hr />
 
 					<h2 class="headline">Why</h2>
-					<div style="margin: 0 1em;">{{ propcott.why }}</div>
+					<div style="margin: 0 1em;">{% autoescape false %}{{ propcott.why }}{% endautoescape %}</div>
 				</div>
 			</div>
 		</div>
@@ -65,6 +64,8 @@
 				{% endif %}
 
 				<div style="margin: .5em 1em 1em 0">
+
+					<h2 style="font-size: 1.6em;margin: 1em 0 0 0;">Join <small>this propcott!</small></h2>
 
 					{% if propcott.how %}
 						<p style="margin-bottom: 0;">What to do:</p>

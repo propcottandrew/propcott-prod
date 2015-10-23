@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 
-	<title>{{ title || 'Propcott' }}</title>
+	<title>{% block title %}Propcott{% endblock %}</title>
 
 	<link href="/css/style.css" rel="stylesheet">
 	<link href="http://fonts.googleapis.com/css?family=Josefin+Sans:400,700,400italic,700italic|Merriweather:400,400italic,700,700italic" rel="stylesheet" type="text/css">
@@ -561,7 +561,7 @@
 						<span class="navigation-text">Explore</span>
 						<span class="typcn typcn-news"></span>
 					</a>
-					<a class="block round navigation-item" href="/{% if draft %}editor{% else %}new{% endif %}">
+					<a class="block round navigation-item" href="/{% if session.draft_id %}editor{% else %}new{% endif %}">
 						<span class="navigation-text">{% if session.draft_id %}Continue Writing{% else %}Start a Propcott{% endif %}</span>
 						<span class="typcn typcn-edit"></span>
 					</a>

@@ -32,7 +32,7 @@ var to = (item, schema, skipFormat) => {
 			index = index.concat(to((item || {})[prop], schema[prop], skipFormat));
 		else if(skipFormat)
 			index.push(item && item[prop]);
-		else if(!item || !item[prop])
+		else if(typeof item == 'undefined' || typeof item[prop] == 'undefined')
 			index.push(undefined);
 		else if(types.has(schema[prop]))
 			index.push(types.get(schema[prop]).to(item[prop]));
@@ -50,7 +50,7 @@ var from = (index, schema, skipFormat) => {
 			continue;
 		else if(typeof schema[prop] == 'object')
 			item[prop] = from(index, schema[prop]);
-		else if(!index[0])
+		else if(typeof index[0] == 'undefined')
 			{ index.shift(); continue; }
 		else if(!skipFormat && types.has(schema[prop]))
 			item[prop] = types.get(schema[prop]).from(index.shift());
@@ -110,6 +110,7 @@ module.exports = (options) => {
 			return map;
 		})(options.schema, 0));
 
+/* make table build scripts
 		aws.dynamo.describeTable({TableName: options.table}, (err, data) => {
 			if(err && err.code == 'ResourceNotFoundException') {
 				// attempt to make table
@@ -118,6 +119,7 @@ module.exports = (options) => {
 			} else if(err) return console.error(err); // do something
 			//console.log(JSON.stringify(data.Table.AttributeDefinitions));
 		});
+*/
 
 		target.index = {
 
@@ -126,10 +128,24 @@ module.exports = (options) => {
 			target.index.find({status: '0', id: 1337});
 			*/
 			find: (key, callback) => {
+				console.log('find', key);
+				
+				
+				
+				
 				var item = {TableName: options.table, Key: {}};
 				item.Key[options.keys.hash.toString(36)] = {S: String(key.hash)};
 				if(typeof options.keys.range != 'undefined')
 					item.Key[options.keys.range.toString(36)] = {N: String(key.range)};
+				
+				
+				
+				
+				console.log('getItem', item);
+				
+				
+				
+				
 				aws.dynamo.getItem(item, (err, data) => {
 					console.log(err, data);
 					if(err) return callback(err);
@@ -152,6 +168,11 @@ module.exports = (options) => {
 			});
 			*/
 			update: (key, properties, callback) => {
+				console.log('update', key, properties);
+				
+				
+				
+				
 				var params = {TableName: options.table, Key: {}};
 				params.Key[options.keys.hash.toString(36)] = {S: String(key.hash)};
 				if(typeof options.keys.range != 'undefined')
@@ -162,7 +183,16 @@ module.exports = (options) => {
 
 				params.ReturnValues = 'ALL_NEW';
 
+
+
+
+				console.log('updateItem', params);
+
+
+
+
 				aws.dynamo.updateItem(params, (err, data) => {
+					if(err) console.error(err);
 					var index = [];
 					for(var prop in data.Attributes)
 						index[parseInt(prop, 36)] = data.Attributes[prop];
@@ -190,6 +220,11 @@ module.exports = (options) => {
 			});
 			*/
 			query: (opt, iterator, callback) => {
+				console.log('query', opt);
+				
+				
+				
+				
 				// find index name from key attribute
 				// always build attributes incrementally rather than a 1:1 mapping
 
@@ -232,7 +267,7 @@ Propcott.index.query({
 					if(data.LastEvaluatedKey) {
 						opt.ExclusiveStartKey = data.LastEvaluatedKey;
 						target.index.query(opt, iterator, callback);
-					}
+					} else callback();
 				});
 
 				/*
@@ -266,50 +301,81 @@ Propcott.index.query({
 			scan: (opt, iterator, callback) => {
 
 			}
+			
+			
 		};
 
-		target.prototype.on('loaded', (item, callback) => {
-			item._index = to(item, options.schema, true) || true;
+		target.prototype.localIndex = function(callback) {
+		//target.prototype.on('loaded', (item, callback) => {
+			console.log('localIndex');
+			
+			
+			
+			
+			this._index = to(this, options.schema, true) || true;
 			callback();
-		});
+		};
 
-		target.prototype.on('saving', (item, callback) => {
+		target.prototype.reIndex = function(callback) {
+		//target.prototype.on('saving', (item, callback) => {
+			console.log('reIndex');
+			
+			
+			
+			
 			callback();
-			var index = to(item, options.schema, true);
-
-			if(!item._index) {
+			var index = to(this, options.schema, true);
+console.log('INDEX', index);
+			if(!this.hasOwnProperty('_index')) {
 				// Not indexed, index item
+				
+				
+console.log('1', to(this, options.schema));
+				console.log('putItem', {
+					TableName: 'Propcotts',
+					Item: to(this, options.schema).reduce((o, v, i) => ((o[i.toString(36)] = v), o), {})
+				});
+				
+				
+				
 				aws.dynamo.putItem({
 					TableName: 'Propcotts',
-					Item: to(item, options.schema).reduce((o, v, i) => ((o[i.toString(36)] = v), o), {})
+					Item: to(this, options.schema).reduce((o, v, i) => ((o[i.toString(36)] = v), o), {})
 				}, err => {
 					if(err) console.error(err);
-					else    item._index = index;
+					else    this._index = index;
 				});
 			} else {
-				var diff = subtract(index, item._index);
+				var diff = subtract(index, this._index);
 
 				if(diff.length) {
-					index = to(item, options.schema);
+					index = to(this, options.schema);
 
 					// Update index with variables we changed
-					var item = {TableName: options.table, Key: {}};
-					item.Key[options.keys.hash.toString(36)] = index[options.keys.hash];
+					var params = {TableName: options.table, Key: {}};
+					params.Key[options.keys.hash.toString(36)] = index[options.keys.hash];
 					if(typeof options.keys.range != 'undefined')
-						item.Key[options.keys.range.toString(36)] = index[options.keys.range];
+						params.Key[options.keys.range.toString(36)] = index[options.keys.range];
 
-					appendAttributes(item, index.map((v, i) => diff[i] && v));
-					appendUpdateExpression(item, index.map((v, i) => diff[i] && v));
+					appendAttributes(params, index.map((v, i) => diff[i] && v));
+					appendUpdateExpression(params, index.map((v, i) => diff[i] && v));
 
-					aws.dynamo.updateItem(item, err => {
+
+
+
+					console.log('updateItem', params);
+
+
+
+
+					aws.dynamo.updateItem(params, err => {
 						if(err) console.error(err);
-						else    item._index = index;
+						else    this._index = index;
 					});
 				}
 			}
-		});
+		};
 	};
 };
 
 module.exports.types = types;
-

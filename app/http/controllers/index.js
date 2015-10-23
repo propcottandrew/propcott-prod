@@ -5,5 +5,6 @@ module.exports = {
 	account: require(app.http.controllers.account),
 	propcott: require(app.http.controllers.propcott),
 	draft: require(app.http.controllers.draft),
-	editor: require(app.http.controllers.editor)
+	editor: require(app.http.controllers.editor),
+	explore: require(app.http.controllers.explore)
 };

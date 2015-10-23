@@ -1,6 +1,6 @@
 {% extends '../base.html' %}
 
-{% block title %}propcott.title{% endblock %}
+{% block title %}{{ propcott.title }}{% endblock %}
 
 {% block body.end %}
 	{% parent %}
@@ -23,7 +23,7 @@
 		});
 	});
 	</script>
-	<style>
+	<style type="text/css">
 	#copy-button {
 		width: 100px;
 		text-align: center;
@@ -213,7 +213,7 @@
 
 						<a href="https://plus.google.com/share?url=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#e93f2e;" target="_blank">google+</a>
 
-						<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={{ propcott.media.thumb }}&amp;description={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#b81621;" target="_blank">pinterest</a>
+						<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% endif %}{% if propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}&amp;description={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#b81621;" target="_blank">pinterest</a>
 					</p>
 					<p>
 						<span id="copy-label" class="typcn typcn-link"></span>

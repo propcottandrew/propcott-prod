@@ -1,4 +1,5 @@
 var Propcott = require(app.models.propcott);
+var User     = require(app.models.user);
 var async    = require('async');
 
 module.exports.view = (req, res, next) => {
@@ -11,8 +12,7 @@ module.exports.view = (req, res, next) => {
 			return next('route');
 		}
 		data.propcott.import(data.index);
-console.log(data);
-		if(!req.session.user || req.session.user.id == req.params.id)
+		if(!req.session.user || req.session.user.id != data.propcott.creator.id)
 			res.render('propcott/view', data);
 		else
 			res.render('propcott/manage', data);
@@ -44,7 +44,7 @@ module.exports.edit = (req, res) => {
 };
 
 module.exports.join = (req, res) => {
-	new User(req.session.user).support(req.params.id, req.body.previous_support, err => {
+	new User(req.session.user).support(req.params.id, req.body.previous_support == '1', err => {
 		if(err) console.error(err);
 		req.flash('Thank you for supporting this propcott!');
 		res.redirect(`/p/${req.params.slug}`);

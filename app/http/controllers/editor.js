@@ -27,6 +27,7 @@ module.exports.fresh = function(req, res) {
 
 module.exports.edit = function(req, res) {
 	new Propcott({draft_id: req.session.draft_id}).load((err, draft) => {
+		console.log(err, draft);
 		if(err && err != 'NoIdFound') console.info(err);
 
 		if(req.session.user)
@@ -56,6 +57,10 @@ module.exports.save = function(req, res) {
 		if(draft.id) {
 			new Propcott({published: true, id: draft.id}).load((err, propcott) => {
 				if(err) return console.error(err);
+				
+				propcott.localIndex(err => {
+					// todo
+				});
 
 				delete draft.published;
 				propcott.import(draft);
@@ -66,6 +71,9 @@ module.exports.save = function(req, res) {
 					else {
 						delete req.session.draft_id;
 						req.flash('Propcott saved.');
+						propcott.reIndex(err => {
+							// todo
+						});
 					}
 					res.redirect(`/p/${propcott.slug}`);
 					s3.deleteObject({

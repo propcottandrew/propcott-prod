@@ -18,13 +18,11 @@ class Base {
 	}
 
 	import(data) {
-		
 		if(typeof data == 'string') data = JSON.parse(data);
-		
 		(function copy(to, from) {
 			for(var key in from) {
 				if(!from.hasOwnProperty(key)) continue;
-				if(typeof from != 'object' || from instanceof Array) // maybe do a merge or something for array? either way we'll need to handle it
+				if(typeof from[key] != 'object' || from[key] instanceof Array) // maybe do a merge or something for array? either way we'll need to handle it
 					to[key] = from[key];
 				else {
 					if(typeof to[key] == 'undefined') to[key] = {};

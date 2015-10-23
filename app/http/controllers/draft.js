@@ -48,11 +48,21 @@ module.exports.publish = (req, res) => {
 		delete draft.draft_id;
 		draft.published = true;
 
-		if(!draft.support) draft.support = {all: 0};
+		draft.support = {
+			daily   : 0,
+			weekly  : 0,
+			monthly : 0,
+			all     : 0,
+			previous: 0
+		};
 
 		draft.save((err, propcott) => {
 			if(err) console.error(err);
-			else res.redirect(`/p/${propcott.slug}`);
+			else propcott.reIndex(err => {
+				if(err) console.error(err);
+				res.redirect(`/p/${propcott.slug}`);
+			});
+			
 			new User(req.session.user).load((err, user) => {
 				user.propcotts.push(propcott.id);
 				user.save(err => {

@@ -16,11 +16,6 @@ module.exports = options => {
 			async.series([
 				callback => this.emit('saving', callback),
 				callback => {
-					console.log('saving', {
-						Bucket     : options.bucket(this),
-						Key        : options.key(this),
-						Body       : JSON.parse(this,null,4),
-					});
 					s3.putObject({
 						Bucket     : options.bucket(this),
 						Key        : options.key(this),

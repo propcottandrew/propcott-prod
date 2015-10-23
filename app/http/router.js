@@ -10,6 +10,8 @@ module.exports = function(app) {
 		app.get(`/${page}`, (req, res) => res.render(`static/${page}`));
 	});
 
+	app.get ('/explore', c.explore.recent);
+
 	app.get ('/login',    m.guest, c.auth.form);
 	app.post('/login',    m.guest, c.auth.login);
 	app.post('/register', m.guest, c.auth.register);
@@ -31,8 +33,8 @@ module.exports = function(app) {
 
 //	app.get ('/v/:slug',                 m.ownDraft, c.propcott.view);
 	app.get ('/p/:slug',                 m.slugToId, c.propcott.view);
-	app.get ('/p/:slug/join',   m.userR, m.slugToId, c.propcott.join);
 	app.get ('/p/:slug/edit',   m.userR, m.slugToId, c.propcott.edit);
+	app.post('/p/:slug/join',   m.userR, m.slugToId, c.propcott.join);
 //	app.get ('/p/:slug/delete', m.userR, m.slugToId, c.propcott.remove);
 
 	app.get ('/new',                     c.editor.fresh);

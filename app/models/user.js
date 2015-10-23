@@ -147,6 +147,7 @@ class User extends Base {
 		}, function(err, data) {
 			if(err)             return callback(err);
 			else if(!data.Item) return callback('User not found');
+			
 			var user = new User({id: data.Item.Id.N});
 			user.credentials.push({
 				provider: provider,

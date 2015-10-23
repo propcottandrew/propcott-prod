@@ -7,7 +7,7 @@ module.exports = {
 		id      : Number, // 1
 		industry: String, // 2
 		target  : String, // 3
-		created : Number,   // 4
+		created : Number, // 4
 		support : {
 			daily   : Number, // 5
 			weekly  : Number, // 6
