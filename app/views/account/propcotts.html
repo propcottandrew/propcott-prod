@@ -5,10 +5,19 @@
 {% block account.main %}
 <div class="account-block">
 	{% if drafts.length %}
-	<h2>My Drafts</h2>
+	<h2>Propcotts <small>I haven't published yet</small></h2>
 	<ul>
 	{% for draft in drafts %}
 		<li><a href="/d/{{ draft }}">{{ draft }}</a></li>
+	{% endfor %}
+	</ul>
+	{% endif %}
+	
+	{% if user.propcotts.length %}
+	<h2>Propcotts <small>I created</small></h2>
+	<ul>
+	{% for propcott in user.propcotts %}
+		<li><a href="/p/{{ propcott }}">{{ propcott }}</a></li>
 	{% endfor %}
 	</ul>
 	{% endif %}
@@ -18,17 +27,12 @@
 	<ul>
 	system maintenance...
 	</ul>
-
+{#
 	<h2>My Victories</h2>
 	
 	<ul>
 	system maintenance...
 	</ul>
-
-	<h2>Propcotts <small>I created</small></h2>
-	
-	<ul>
-	system maintenance...
-	</ul>
+#}
 </div>
 {% endblock %}

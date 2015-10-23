@@ -55,19 +55,18 @@ module.exports.save = function(req, res) {
 		draft.draft_id = req.session.draft_id;
 		if(draft.id) {
 			new Propcott({published: true, id: draft.id}).load((err, propcott) => {
-			//Propcott.find(draft.id, (err, propcott) => {
 				if(err) return console.error(err);
 
+				delete draft.published;
 				propcott.import(draft);
 				delete propcott.draft_id;
-
+				
 				propcott.save(err => {
 					if(err) console.error(err);
 					else {
 						delete req.session.draft_id;
 						req.flash('Propcott saved.');
 					}
-
 					res.redirect(`/p/${propcott.slug}`);
 					s3.deleteObject({
 						Bucket: 'drafts.data.propcott.com',

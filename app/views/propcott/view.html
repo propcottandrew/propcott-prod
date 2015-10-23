@@ -161,7 +161,7 @@
 				{% endif %}
 
 				<div style="margin: .5em 1em 1em 0">
-					<p style="float: right; color: rgb(215, 0, 0); font-weight: bold; font-family: 'Josefin Sans',sans-serif; vertical-align: top; margin: 0; line-height: 1;text-align: right; margin-top: -.5em;"><span style="font-size: 1.5em; ">{{ propcott.support }}</span><br>propcotters</p>
+					<p style="float: right; color: rgb(215, 0, 0); font-weight: bold; font-family: 'Josefin Sans',sans-serif; vertical-align: top; margin: 0; line-height: 1;text-align: right; margin-top: -.5em;"><span style="font-size: 1.5em; ">{{ propcott.support.all }}</span><br>propcotters</p>
 
 					<h2 style="font-size: 1.6em;margin: 1em 0 0 0;">Join <small>this propcott!</small></h2>
 
@@ -217,8 +217,8 @@
 					</p>
 					<p>
 						<span id="copy-label" class="typcn typcn-link"></span>
-						<button id="copy-button" data-clipboard-text="http://www.propcott.com/{{ propcott.slug }}">Copy link</button>
-						<span id="copy-link">http://www.propcott.com/{{ propcott.slug }}</span>
+						<button id="copy-button" data-clipboard-text="http://www.propcott.com/p/{{ propcott.slug }}">Copy link</button>
+						<span id="copy-link">http://www.propcott.com/p/{{ propcott.slug }}</span>
 					</p>
 				</div>
 			</div>

@@ -15,7 +15,8 @@ class User extends Base {
 		this.defaults({
 			created: Date.now(),
 			credentials: [],
-			drafts: []
+			propcotts: [],
+			supporting: []
 		});
 	}
 

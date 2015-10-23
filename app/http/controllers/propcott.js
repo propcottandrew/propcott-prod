@@ -1,14 +1,17 @@
 var Propcott = require(app.models.propcott);
 var async    = require('async');
 
-module.exports.view = (req, res) => {
+module.exports.view = (req, res, next) => {
 	async.parallel({
 		propcott: callback => new Propcott({published: true, id: req.params.id}).load(callback),
 		index: callback => Propcott.find(req.params.id, callback)
 	}, (err, data) => {
-		if(err) console.error(err);
-		else data.propcott.import(data.index);
-
+		if(err) {
+			console.error(err);
+			return next('route');
+		}
+		data.propcott.import(data.index);
+console.log(data);
 		if(!req.session.user || req.session.user.id == req.params.id)
 			res.render('propcott/view', data);
 		else

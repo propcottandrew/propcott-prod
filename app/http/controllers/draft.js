@@ -48,12 +48,18 @@ module.exports.publish = (req, res) => {
 		delete draft.draft_id;
 		draft.published = true;
 
-		if(!draft.support) draft.support = 0;
+		if(!draft.support) draft.support = {all: 0};
 
 		draft.save((err, propcott) => {
 			if(err) console.error(err);
 			else res.redirect(`/p/${propcott.slug}`);
-			//new Propcott({creator: req.session.user, draft_id: draft_id}).delete(err => err && console.error(err));
+			new User(req.session.user).load((err, user) => {
+				user.propcotts.push(propcott.id);
+				user.save(err => {
+					if(err) console.error(err);
+					else new Propcott({creator: req.session.user, draft_id: draft_id}).delete(err => err && console.error(err));
+				});
+			});
 		});
 	});
 };

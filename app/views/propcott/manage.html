@@ -172,11 +172,11 @@
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
 		<a class="block round navigation-item" href="/p/{{ propcott.slug }}/edit">
-			<span class="navigation-text">Edit Propcott</span>
+			<span class="navigation-text">Edit</span>
 			<span class="typcn typcn-pencil"></span>
 		</a>
 		<a class="block round navigation-item" id="propcott-updates-button" href="#propcott-updates">
-			<span class="navigation-text">Update Propcotters</span>
+			<span class="navigation-text">Post Update</span>
 			<span class="typcn typcn-microphone"></span>
 		</a>
 	</div>
@@ -247,7 +247,7 @@
 				{% endif %}
 
 				<div style="margin: .5em 1em 1em 0">
-					<p style="float: right; color: rgb(215, 0, 0); font-weight: bold; font-family: 'Josefin Sans',sans-serif; vertical-align: top; margin: 0; line-height: 1;text-align: right; margin-top: -.5em;"><span style="font-size: 1.5em; ">{{ propcott.support }}</span><br>propcotters</p>
+					<p style="float: right; color: rgb(215, 0, 0); font-weight: bold; font-family: 'Josefin Sans',sans-serif; vertical-align: top; margin: 0; line-height: 1;text-align: right; margin-top: -.5em;"><span style="font-size: 1.5em; ">{{ propcott.support.all }}</span><br>propcotters</p>
 
 					<h2 style="font-size: 1.6em;margin: 1em 0 0 0;">Join <small>this propcott!</small></h2>
 
@@ -283,8 +283,8 @@
 					</p>
 					<p>
 						<span id="copy-label" class="typcn typcn-link"></span>
-						<button id="copy-button" data-clipboard-text="http://www.propcott.com/{{ propcott.slug }}">Copy link</button>
-						<span id="copy-link">http://www.propcott.com/{{ propcott.slug }}</span>
+						<button id="copy-button" data-clipboard-text="http://www.propcott.com/p/{{ propcott.slug }}">Copy link</button>
+						<span id="copy-link">http://www.propcott.com/p/{{ propcott.slug }}</span>
 					</p>
 				</div>
 			</div>

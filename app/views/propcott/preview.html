@@ -15,18 +15,18 @@
 {% block content %}
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
-		<button class="block round navigation-item" type="submit" name="action" value="cancel" style="margin-left: -.75em;">
+		<a class="block round navigation-item" href="/d/{{ propcott.draft_id }}/delete" onclick="return confirm('Are you sure you want to delete this propcott?');">
 			<span class="navigation-text">Cancel</span>
-			<span class="typcn typcn-times"></span>
-		</button>
-		<a class="block round navigation-item" href="/editor">
+			<span class="typcn typcn-cancel"></span>
+		</a>
+		<a class="block round navigation-item" href="/d/editor">
 			<span class="navigation-text">Edit</span>
 			<span class="typcn typcn-pencil"></span>
 		</a>
-		<button class="block round navigation-item" type="submit" name="action" value="save">
-			<span class="navigation-text">Save Propcott</span>
-			<span class="typcn typcn-pin"></span>
-		</button>
+		<a class="block round navigation-item" href="/d/{{ propcott.draft_id }}/save" onclick="return confirm('Are you sure you want to publish this propcott?');">
+			<span class="navigation-text">Save</span>
+			<span class="typcn typcn-cloud-storage"></span>
+		</a>
 	</div>
 </div>
 
@@ -43,7 +43,7 @@
 					<hr />
 
 					<h2 class="headline">Goal</h2>
-					<p style="margin: 1em;">{{ propcott.what }}</p>
+					<p style="margin: 1em;">{{ propcott.goal }}</p>
 
 					<hr />
 
@@ -66,13 +66,18 @@
 
 				<div style="margin: .5em 1em 1em 0">
 
-					<p style="margin-bottom: 0;">What to do:</p>
-
-					<div class="list-wrapper">{{ propcott.how }}</div>
+					{% if propcott.how %}
+						<p style="margin-bottom: 0;">What to do:</p>
+						<ul id="propcott-how">
+							{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
+						</ul>
+					{% endif %}
 
 					{% if propcott.alt %}
 						<p style="margin-bottom: 0;">Instead, you may want to try...</p>
-						<div class="list-wrapper">{{ propcott.alt }}</div>
+						<ul id="propcott-alt">
+							{% for alt in propcott.alt %}<li>{{ alt }}</li>{% endfor %}
+						</ul>
 					{% endif %}
 
 					<p><button type="button" class="block join-button">Join!</button></p>
