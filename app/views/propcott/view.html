@@ -92,6 +92,7 @@
 {% endblock %}
 
 {% block content %}
+{% autoescape false %}
 <div class="container">
 	<div class="row">
 		<div class="col-7 push-5">
@@ -122,7 +123,7 @@
 					<hr />
 
 					<h2 class="headline">Why</h2>
-					<div style="margin: 0 1em;">{% autoescape false %}{{ propcott.why }}{% endautoescape %}</div>
+					<div style="margin: 0 1em;">{{ propcott.why }}</div>
 				</div>
 			</div>
 			{% if propcott.updates && propcott.updates.length %}
@@ -146,7 +147,7 @@
 				</div>
 			{% endif %}
 
-			<div class="fb-comments" data-href="/p-test/{{ propcott.id }}" data-numposts="5"></div>
+			<div class="fb-comments" data-href="/p/{{ propcott.id }}" data-numposts="5"></div>
 		</div>
 		<div class="col-5 pull-7">
 			<div id="propcott-sidebar">
@@ -224,8 +225,6 @@
 			</div>
 		</div>
 	</div>
-
-
-
 </div>
+{% endautoescape %}
 {% endblock %}

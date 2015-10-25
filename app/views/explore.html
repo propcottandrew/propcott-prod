@@ -101,13 +101,14 @@
 {% endblock %}
 
 {% block content %}
+{% autoescape false %}
 <div class="container" style="margin-top: 1em;">
 	<div class="row">
 		<div class="col-12" style="vertical-align: top;">
 			<div style="border-radius: 10px; padding: 1em; margin-bottom: 1em; background: white;">
 				{% for propcott in propcotts %}
 					<div style="margin-bottom: 1em; clear: both;">
-						<div id="propcott-media" style="float: left; width: 120px; height: 90px; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+						<div id="propcott-media" style="margin-right: 1em; float: left; width: 120px; height: 90px; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
 						<div style="overflow:hidden; font-size: .9em;">
 							<p style="float: right; text-align: right; line-height: 1.2; margin: 0 0 1em 1em;">Targeting <span style="color:rgb(215,0,0)">{{ propcott.target }}</span><br>
 							<span style="color: rgb(215,0,0);">{{ propcott.support.all }} supporters</span></p>
@@ -135,4 +136,5 @@ document.getElementById('tab-hot-button').onclick = function() {
 	document.getElementById('tab-new-button').className = '';
 };
 </script>
+{% endautoescape %}
 {% endblock %}

@@ -2,14 +2,11 @@ var c = require(app.http.controllers.index);
 var m = require(app.http.middleware.index);
 
 module.exports = function(app) {
-	app.get('/', function(req, res) {
-		res.render('home');
-	});
-
 	['about', 'contact', 'help', 'privacy', 'terms'].forEach(page => {
 		app.get(`/${page}`, (req, res) => res.render(`static/${page}`));
 	});
 
+	app.get ('/', c.home);
 	app.get ('/explore', c.explore.recent);
 
 	app.get ('/login',    m.guest, c.auth.form);

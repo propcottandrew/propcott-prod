@@ -1,5 +1,5 @@
 module.exports = {
-	table: 'Supporters'
+	table: 'Supporters',
 	read: 5,
 	write: 5,
 	schema: {

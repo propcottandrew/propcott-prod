@@ -169,6 +169,7 @@
 {% endblock %}
 
 {% block content %}
+{% autoescape false %}
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
 		<a class="block round navigation-item" href="/p/{{ propcott.slug }}/edit">
@@ -212,7 +213,7 @@
 					<hr />
 
 					<h2 class="headline">Why</h2>
-					<div style="margin: 0 1em;">{% autoescape false %}{{ propcott.why }}{% endautoescape %}</div>
+					<div style="margin: 0 1em;">{{ propcott.why }}</div>
 				</div>
 			</div>
 			<div id="propcott-updates">
@@ -232,7 +233,7 @@
 				{% endif %}
 			</div>
 
-			<div class="fb-comments" data-href="/p-test/{{ propcott.id }}" data-numposts="5"></div>
+			<div class="fb-comments" data-href="/p/{{ propcott.id }}" data-numposts="5"></div>
 		</div>
 		<div class="col-5 pull-7">
 			<div id="propcott-sidebar">
@@ -291,4 +292,5 @@
 		</div>
 	</div>
 </div>
+{% endautoescape %}
 {% endblock %}

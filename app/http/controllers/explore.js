@@ -26,7 +26,7 @@ module.exports.recent = (req, res) => {
 	Propcott.index.query({
 		TableName: 'Propcotts',
 		IndexName: '4-index',
-		ScanIndexForward: true,
+		ScanIndexForward: false,
 		ExpressionAttributeNames: {
 			'#0': '0',
 			//'#2': '2'

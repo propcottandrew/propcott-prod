@@ -46,7 +46,7 @@ module.exports.register = function(req, res) {
 	delete req.body.register;
 
 	for(var i in req.body) user[i] = req.body[i];
-	user.displayName = req.body.name.split(' ')[0];
+	user.display_name = req.body.name.split(' ')[0];
 	user.save(function(err, user) {
 		if(err) {
 			req.flash(MessageBag, 'auth.registered.error');

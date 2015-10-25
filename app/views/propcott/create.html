@@ -203,6 +203,7 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function()
 {% endblock %}
 
 {% block content %}
+{% autoescape false %}
 <form method="POST" action="/editor/handle" id="propcott-form">
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
@@ -369,7 +370,7 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function()
 							  name="why"
 							  class="editable-region autosize"
 							  placeholder="Background / Description"
-							  >{% autoescape false %}{{ propcott.why }}{% endautoescape %}</textarea>
+							  >{{ propcott.why }}</textarea>
 
 					<hr />
 
@@ -449,4 +450,5 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function()
 	</div>
 </div>
 </form>
+{% endautoescape %}
 {% endblock %}

@@ -78,6 +78,7 @@
 {% endblock %}
 
 {% block content %}
+{% autoescape false %}
 <div class="container" style="margin-top: 1em;">
 	<div class="row">
 		<div class="col-7">
@@ -91,6 +92,18 @@
 		</div>
 		<div class="col-5" style="vertical-align: top; padding-left: 1em;">
 			<div id="rightbar">
+				{% for propcott in propcotts %}
+					<div style="margin-bottom: 1em; clear: both;">
+						<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+						<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
+							<a href="/p/{{ propcott.slug || propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
+							<p style="margin-top: 0.5em;">Targeting {{ propcott.target }}<br>
+							<span style="color: #B51010;">{{ propcott.support.all }} supporters</span></p>
+						</div>
+					</div>
+				{% endfor %}
+				<p style="text-align: right;margin-bottom: 0;"><a href="/explore">View more...</a></p>
+{#
 				<div class="tabs">
 					{% for tab in tabs %}
 					<button id="tab-{{ tab.name.toLowerCase() }}-button"{% if loop.first %} class="active"{% endif %}>{{ tab.name }}</button>
@@ -119,6 +132,7 @@
 						{% endif %}
 					</div>
 				{% endfor %}
+#}
 			</div>
 		</div>
 	</div>
@@ -140,4 +154,5 @@ for(var i=0; i<tabs.length; i++) (function(index) {
 	};
 })(i);
 </script>
+{% endautoescape %}
 {% endblock %}

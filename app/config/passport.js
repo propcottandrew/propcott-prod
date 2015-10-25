@@ -4,6 +4,18 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var bcrypt = require('bcryptjs');
 var dynamo = require(app.aws).dynamo;
 
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_CLIENT_ID,
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+    enableProof: false
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log(accessToken, refreshToken, profile);
+  }
+));
+
+/*
 passport.use(new LocalStrategy({
 		usernameField: 'email',
 		passwordField: 'password'
@@ -43,10 +55,12 @@ passport.use(new LocalStrategy({
 passport.use(new FacebookStrategy({
 		clientID: process.env.FACEBOOK_CLIENT_ID,
 		clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-		callbackURL: 'http://localhost:3000/oauth/facebook/callback',
+		callbackURL: process.env.FACEBOOK_CALLBACK_URL,
 		enableProof: false
 	},
 	function(accessToken, refreshToken, profile, done) {
+		console.log('ARGS', arguments);
+		done();
 		var params = {
 			TableName: 'users',
 			ConditionExpression: 'attribute_exists(Id)',
@@ -68,3 +82,4 @@ passport.use(new FacebookStrategy({
 		});
 	}
 ));
+*/

@@ -128,26 +128,11 @@ module.exports = (options) => {
 			target.index.find({status: '0', id: 1337});
 			*/
 			find: (key, callback) => {
-				console.log('find', key);
-				
-				
-				
-				
 				var item = {TableName: options.table, Key: {}};
 				item.Key[options.keys.hash.toString(36)] = {S: String(key.hash)};
 				if(typeof options.keys.range != 'undefined')
 					item.Key[options.keys.range.toString(36)] = {N: String(key.range)};
-				
-				
-				
-				
-				console.log('getItem', item);
-				
-				
-				
-				
 				aws.dynamo.getItem(item, (err, data) => {
-					console.log(err, data);
 					if(err) return callback(err);
 					if(!data.Item) return callback();
 
@@ -168,11 +153,6 @@ module.exports = (options) => {
 			});
 			*/
 			update: (key, properties, callback) => {
-				console.log('update', key, properties);
-				
-				
-				
-				
 				var params = {TableName: options.table, Key: {}};
 				params.Key[options.keys.hash.toString(36)] = {S: String(key.hash)};
 				if(typeof options.keys.range != 'undefined')
@@ -182,14 +162,6 @@ module.exports = (options) => {
 				appendUpdateExpression(params, to(properties, options.schema));
 
 				params.ReturnValues = 'ALL_NEW';
-
-
-
-
-				console.log('updateItem', params);
-
-
-
 
 				aws.dynamo.updateItem(params, (err, data) => {
 					if(err) console.error(err);
@@ -220,11 +192,6 @@ module.exports = (options) => {
 			});
 			*/
 			query: (opt, iterator, callback) => {
-				console.log('query', opt);
-				
-				
-				
-				
 				// find index name from key attribute
 				// always build attributes incrementally rather than a 1:1 mapping
 
@@ -307,37 +274,16 @@ Propcott.index.query({
 
 		target.prototype.localIndex = function(callback) {
 		//target.prototype.on('loaded', (item, callback) => {
-			console.log('localIndex');
-			
-			
-			
-			
 			this._index = to(this, options.schema, true) || true;
 			callback();
 		};
 
 		target.prototype.reIndex = function(callback) {
 		//target.prototype.on('saving', (item, callback) => {
-			console.log('reIndex');
-			
-			
-			
-			
 			callback();
 			var index = to(this, options.schema, true);
-console.log('INDEX', index);
 			if(!this.hasOwnProperty('_index')) {
 				// Not indexed, index item
-				
-				
-console.log('1', to(this, options.schema));
-				console.log('putItem', {
-					TableName: 'Propcotts',
-					Item: to(this, options.schema).reduce((o, v, i) => ((o[i.toString(36)] = v), o), {})
-				});
-				
-				
-				
 				aws.dynamo.putItem({
 					TableName: 'Propcotts',
 					Item: to(this, options.schema).reduce((o, v, i) => ((o[i.toString(36)] = v), o), {})
@@ -359,15 +305,7 @@ console.log('1', to(this, options.schema));
 
 					appendAttributes(params, index.map((v, i) => diff[i] && v));
 					appendUpdateExpression(params, index.map((v, i) => diff[i] && v));
-
-
-
-
-					console.log('updateItem', params);
-
-
-
-
+					
 					aws.dynamo.updateItem(params, err => {
 						if(err) console.error(err);
 						else    this._index = index;

@@ -149,11 +149,12 @@ class User extends Base {
 			else if(!data.Item) return callback('User not found');
 			
 			var user = new User({id: data.Item.Id.N});
-			user.credentials.push({
+			var cred = {
 				provider: provider,
-				key: key,
-				_password: data.Item.Password.S
-			});
+				key: key
+			};
+			if(data.Item.Password) cred._password = data.Item.Password.S
+			user.credentials.push(cred);
 			callback(null, user);
 		});
 	}

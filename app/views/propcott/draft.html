@@ -74,6 +74,7 @@
 {% endblock %}
 
 {% block content %}
+{% autoescape false %}
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
 		<a class="block round navigation-item" href="/d/{{ propcott.draft_id }}/edit">
@@ -121,7 +122,7 @@
 					<hr />
 
 					<h2 class="headline">Why</h2>
-					<div style="margin: 0 1em;">{% autoescape false %}{{ propcott.why }}{% endautoescape %}</div>
+					<div style="margin: 0 1em;">{{ propcott.why }}</div>
 				</div>
 			</div>
 		</div>
@@ -159,8 +160,6 @@
 			</div>
 		</div>
 	</div>
-
-
-
 </div>
+{% endautoescape %}
 {% endblock %}

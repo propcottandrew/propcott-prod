@@ -71,7 +71,7 @@ module.exports = (function(app) {
 	// Initialize the router
 	router(app);
 
-	var server = app.listen(3000, function() {
+	var server = app.listen(80, function() {
 		var host = server.address().address;
 		var port = server.address().port;
 		console.info('Node running at http://%s:%s', host, port);
