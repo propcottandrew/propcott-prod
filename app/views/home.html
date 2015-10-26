@@ -83,7 +83,7 @@
 	<div class="row">
 		<div class="col-7">
 			<div id="featured">
-				<h2>Reinventing Boycotts</h2>
+				<h2>Boycotts made simple</h2>
 				<div class="buttons">
 					<a href="/new">Start a Propcott</a>
 					<a href="/about">Learn More</a>
@@ -92,67 +92,64 @@
 		</div>
 		<div class="col-5" style="vertical-align: top; padding-left: 1em;">
 			<div id="rightbar">
-				{% for propcott in propcotts %}
-					<div style="margin-bottom: 1em; clear: both;">
-						<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+				<div class="tabs">
+					<button class="active" id="hot-button" onclick="show('hot')">Hot</button>
+					<button id="new-button" onclick="show('new')">New</button>
+				</div>
+				{% if featured %}
+					<div style="margin-bottom: 1em; clear: both; background-color: #eee; overflow: hidden; padding: 0 1em;">
+						<p style="margin: 0;"><strong><small>FEATURED</small></strong></p>
+						<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if featured.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ featured.media_link }}');{% elseif featured.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ featured.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
 						<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
-							<a href="/p/{{ propcott.slug || propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
-							<p style="margin-top: 0.5em;">Targeting {{ propcott.target }}<br>
-							<span style="color: #B51010;">{{ propcott.support.all }} supporters</span></p>
+							<a href="/p/{{ featured.slug || featured.id }}">{{ featured.title || 'Untitled' }}</a>
+							<p style="margin-top: 0.5em;">Targeting {{ featured.target }}<br>
+							<span style="color: #B51010;">{{ featured.support.all }} supporters</span></p>
 						</div>
 					</div>
-				{% endfor %}
-				<p style="text-align: right;margin-bottom: 0;"><a href="/explore">View more...</a></p>
-{#
-				<div class="tabs">
-					{% for tab in tabs %}
-					<button id="tab-{{ tab.name.toLowerCase() }}-button"{% if loop.first %} class="active"{% endif %}>{{ tab.name }}</button>
-					{% endfor %}
-				</div>
-				{% for tab in tabs %}
-					<div id="tab-{{ tab.name.toLowerCase() }}" class="tablist"{% if !loop.first %} style="display: none;"{% endif %}>
-						{% for propcott in tab.data %}
-							<div style="margin-bottom: 1em; clear: both;">
-								{% if propcott.media_type == 'image' %}
-								<div id="propcott-media" style="float: left; width: 120px; height: 90px; background-image: url('http://static.propcott.com/{{ propcott.media_link }}');"></div>
-								{% elseif propcott.media_type == 'video' %}
-								<div id="propcott-media" style="float: left; width: 120px; height: 90px; background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');"></div>
-								{% else %}
-								<div id="propcott-media" style="float: left; width: 120px; height: 90px; background-color: #aaa;"></div>
-								{% endif %}
-								<div style="overflow:hidden; font-size: .9em;">
-									<a href="/p/{{ propcott.slug || propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
-									<p>Targeting {{ propcott.target }}<br>
-									<span style="color: #B51010;">{{ propcott.supporters }} supporters</span></p>
-								</div>
+				{% endif %}
+				
+				<div id="new-tab" style="display: none;">
+					{% for propcott in recent %}
+						<div style="margin-bottom: 1em; clear: both;">
+							<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+							<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
+								<a href="/p/{{ propcott.slug || propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
+								<p style="margin-top: 0.5em;">Targeting {{ propcott.target }}<br>
+								<span style="color: #B51010;">{{ propcott.support.all }} supporters</span></p>
 							</div>
-						{% endfor %}
-						{% if tab.link %}
-						<p style="text-align: right;margin-bottom: 0;"><a href="{{ tab.link }}">View more...</a></p>
-						{% endif %}
-					</div>
-				{% endfor %}
-#}
+						</div>
+					{% endfor %}
+					<p style="text-align: right;margin-bottom: 0;"><a href="/explore">View more...</a></p>
+				</div>
+				
+				<div id="hot-tab">
+					{% for propcott in hot %}
+						<div style="margin-bottom: 1em; clear: both;">
+							<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+							<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
+								<a href="/p/{{ propcott.slug || propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
+								<p style="margin-top: 0.5em;">Targeting {{ propcott.target }}<br>
+								<span style="color: #B51010;">{{ propcott.support.all }} supporters</span></p>
+							</div>
+						</div>
+					{% endfor %}
+					<p style="text-align: right;margin-bottom: 0;"><a href="/explore/daily">View more...</a></p>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <script type="text/javascript">
-var tabs = [{% for tab in tabs %}'{{ tab.name.toLowerCase() }}'{% if !loop.last %},{% endif %}{% endfor %}];
-for(var i=0; i<tabs.length; i++) (function(index) {
-	document.getElementById('tab-' + tabs[index] + '-button').onclick = function() {
-		for(var i=0; i<tabs.length; i++) {
-			var tab = document.getElementById('tab-' + tabs[i] + '-button');
-			if(tab != this) {
-				document.getElementById('tab-' + tabs[i]).style.display = 'none';
-				tab.className = '';
-			}
-		}
-		document.getElementById('tab-' + tabs[index]).style.display = '';
-		this.className = 'active';
-	};
-})(i);
+var show = function(tab) {
+	document.getElementById('hot-button').className = '';
+	document.getElementById('new-button').className = '';
+	document.getElementById(tab + '-button').className = 'active';
+
+	document.getElementById('hot-tab').style.display='none';
+	document.getElementById('new-tab').style.display='none';
+	document.getElementById(tab + '-tab').style.display='block';
+}
 </script>
 {% endautoescape %}
 {% endblock %}

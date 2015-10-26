@@ -5,10 +5,16 @@ var cookieParser  = require('cookie-parser');
 var cons          = require('consolidate');
 var express       = require('express');
 var fs            = require('fs');
+var program = require('commander');
 
 var router        = require(app.http.router);
 var flash         = require(app.express.messaging);
 var dynamoSession = require(app.express.dynamoSessionStore)(session);
+
+program
+	.version('0.0.1')
+	.option('-p, --port <n>', 'Port to', parseInt)
+	.parse(process.argv);
 
 module.exports = (function(app) {
 	app.use(express.static('public'));
@@ -71,7 +77,7 @@ module.exports = (function(app) {
 	// Initialize the router
 	router(app);
 
-	var server = app.listen(80, function() {
+	var server = app.listen(program.port || 80, function() {
 		var host = server.address().address;
 		var port = server.address().port;
 		console.info('Node running at http://%s:%s', host, port);

@@ -21,22 +21,15 @@
 var Propcott = require(app.models.propcott);
 var async    = require('async');
 
-module.exports.recent = (req, res) => {
+var indexOn = (req, res, index, locals) => {
 	var tasks = [];
 	Propcott.index.query({
 		TableName: 'Propcotts',
-		IndexName: '4-index',
+		IndexName: `${index}-index`,
 		ScanIndexForward: false,
-		ExpressionAttributeNames: {
-			'#0': '0',
-			//'#2': '2'
-		},
-		ExpressionAttributeValues: {
-			':0': {S: '0'},
-			//':2': {S: 'Sports'}
-		},
+		ExpressionAttributeNames: {'#0': '0'},
+		ExpressionAttributeValues: {':0': {S: '0'}},
 		KeyConditionExpression: '#0=:0',
-		//FilterExpression: '#2=:2'
 	}, index => {
 		tasks.push(callback => new Propcott({published: true, id: index.id}).load((err, propcott) => {
 			propcott.import(index);
@@ -44,37 +37,19 @@ module.exports.recent = (req, res) => {
 		}));
 	}, err => {
 		if(err) {
-			console.error(err);
-			return res.send('err');
+			req.flash('An unexpected error occured.');
+			return res.redirect('back');
 		}
 		async.parallel(tasks, (err, results) => {
-			res.render('explore', {propcotts: results});
+			locals = locals || {};
+			locals.propcotts = results;
+			res.render('explore', locals);
 		});
 	});
 };
-/*
-Propcott.index.query({
-	TableName: 'Propcotts',
-	IndexName: '5-index',
-	ScanIndexForward: true,
-	ExpressionAttributeNames: {
-		'#0': '0',
-		'#2': '2'
-	},
-	ExpressionAttributeValues: {
-		':0': {S: '0'},
-		':2': {S: 'Grocery'}
-	},
-	KeyConditionExpression: '#0=:0',
-	FilterExpression: '#2=:2'
-}, obj => {
-	console.log(obj);
 
-	public function recent()
-	{
-		return view('explore', [
-			'tab' => 'new',
-			'propcotts' => Propcott::where('published', true)->orderBy('created_at', 'desc')->paginate(10)
-		]);
-	}
-*/
+module.exports.recent  = (req, res) => indexOn(req, res, 4, {tab: 'new'});
+module.exports.daily   = (req, res) => indexOn(req, res, 5, {tab: 'hot', subtab: 'daily'});
+module.exports.weekly  = (req, res) => indexOn(req, res, 6, {tab: 'hot', subtab: 'weekly'});
+module.exports.monthly = (req, res) => indexOn(req, res, 7, {tab: 'hot', subtab: 'monthly'});
+module.exports.all     = (req, res) => indexOn(req, res, 8, {tab: 'hot', subtab: 'all'});

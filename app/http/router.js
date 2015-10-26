@@ -7,8 +7,14 @@ module.exports = function(app) {
 	});
 
 	app.get ('/', c.home);
-	app.get ('/explore', c.explore.recent);
+	app.get ('/search', c.search.cse);
 
+	app.get ('/explore', c.explore.recent);
+	app.get ('/explore/all', c.explore.all);
+	app.get ('/explore/daily', c.explore.daily);
+	app.get ('/explore/weekly', c.explore.weekly);
+	app.get ('/explore/monthly', c.explore.monthly);
+	
 	app.get ('/login',    m.guest, c.auth.form);
 	app.post('/login',    m.guest, c.auth.login);
 	app.post('/register', m.guest, c.auth.register);

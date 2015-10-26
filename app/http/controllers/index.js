@@ -7,5 +7,6 @@ module.exports = {
 	propcott: require(app.http.controllers.propcott),
 	draft: require(app.http.controllers.draft),
 	editor: require(app.http.controllers.editor),
-	explore: require(app.http.controllers.explore)
+	explore: require(app.http.controllers.explore),
+	search: require(app.http.controllers.search)
 };
