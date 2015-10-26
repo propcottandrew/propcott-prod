@@ -50,3 +50,17 @@ module.exports.join = (req, res) => {
 		res.redirect(`/p/${req.params.slug}`);
 	});
 };
+
+module.exports.update = (req, res) => {
+	new Propcott({published: true, id: req.params.id}).load((err, propcott) => {
+		propcott.updates.push({created: Date.now(), content: req.body.content});
+		propcott.save(err => {
+			if(err) {
+				req.flash('An unexpected error occured');
+				return res.redirect('back');
+			}
+			req.flash('You have updated your supporters!');
+			res.redirect(`/p/${req.params.slug}`);
+		});
+	});
+};

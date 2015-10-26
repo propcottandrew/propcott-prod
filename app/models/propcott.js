@@ -22,7 +22,8 @@ class Propcott extends Base {
 		super(data);
 		this.defaults({
 			published: false,
-			created  : Date.now()
+			created  : Date.now(),
+			updates: []
 		});
 	}
 

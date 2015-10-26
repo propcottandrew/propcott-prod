@@ -38,6 +38,7 @@ module.exports = function(app) {
 	app.get ('/p/:slug',                 m.slugToId, c.propcott.view);
 	app.get ('/p/:slug/edit',   m.userR, m.slugToId, c.propcott.edit);
 	app.post('/p/:slug/join',   m.userR, m.slugToId, c.propcott.join);
+	app.post('/p/:slug/update', m.userR, m.slugToId, c.propcott.update);
 //	app.get ('/p/:slug/delete', m.userR, m.slugToId, c.propcott.remove);
 
 	app.get ('/new',                     c.editor.fresh);

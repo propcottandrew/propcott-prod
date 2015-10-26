@@ -139,7 +139,7 @@
 						<h2 style="font-size: 1.2em; margin: 0; padding: 16px; border-top: 1px solid #eee;">Updates and Announcements</h2>
 						{% for update in propcott.updates %}
 							<div class="propcott-update{% if loop.index == 0 %} first{% endif %}">
-							<div style="color: gray; float: right; font-size: .8em; margin: 0 0 1em 1em;">{{ update.created }}</div>
+							<div style="color: gray; float: right; font-size: .8em; margin: 0 0 1em 1em;"></div>
 								{{ update.content }}
 							</div>
 						{% endfor %}
