@@ -33,7 +33,7 @@ var indexOn = (index, callback) => {
 module.exports = (req, res) => {
 	async.parallel({
 		recent:   callback => indexOn(4, callback),
-		hot:      callback => indexOn(8, callback),
+		hot:      callback => indexOn(7, callback),
 		featured: callback => Propcott.find(featured, (err, index) => {
 			if(err) return callback(err);
 			new Propcott({published: true, id: featured}).load((err, propcott) => {

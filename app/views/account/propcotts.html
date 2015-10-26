@@ -7,27 +7,41 @@
 	{% if drafts.length %}
 	<h2>Propcotts <small>I haven't published yet</small></h2>
 	<ul>
-	{% for draft in drafts %}
-		<li><a href="/d/{{ draft }}">{{ draft }}</a></li>
+	{% for propcott in drafts %}
+		<li><a href="/d/{{ propcott }}">{{ propcott }}</a></li>
+		{#<div style="margin-bottom: 1em; clear: both;">
+			<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+			<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
+				<a href="/d/{{ propcott.draft_id }}">{{ propcott.title || 'Untitled' }}</a>
+			</div>
+		</div>#}
 	{% endfor %}
 	</ul>
 	{% endif %}
 	
+	<div style="clear:both;"></div>
+	
 	{% if user.propcotts.length %}
 	<h2>Propcotts <small>I created</small></h2>
 	<ul>
-	{% for propcott in user.propcotts %}
+	{% for propcott in propcotts %}
 		<li><a href="/p/{{ propcott }}">{{ propcott }}</a></li>
+		{#<div style="margin-bottom: 1em; clear: both;">
+			<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+			<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
+				<a href="/p/{{ propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
+			</div>
+		</div>#}
 	{% endfor %}
 	</ul>
 	{% endif %}
 
+{#
 	<h2>Propcotts <small>I support</small></h2>
 	
 	<ul>
 	system maintenance...
 	</ul>
-{#
 	<h2>My Victories</h2>
 	
 	<ul>

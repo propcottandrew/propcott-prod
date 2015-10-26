@@ -1,7 +1,8 @@
-var User   = require(app.models.user);
-var hasher = require(app.util.hasher);
-var s3     = require(app.aws).s3;
-var async  = require('async');
+var User     = require(app.models.user);
+var hasher   = require(app.util.hasher);
+var s3       = require(app.aws).s3;
+var Propcott = require(app.models.propcott);
+var async    = require('async');
 
 module.exports.updateGeneral = function(req, res) {
 	new User({id: req.session.user.id}).load((err, user) => {
@@ -75,28 +76,38 @@ module.exports.propcotts = (req, res) => {
 		}, callback)
 	}, (err, data) => {
 		if(err) return console.error(err);
-		data.drafts = data.drafts.Contents.map(v => v.Key.substr(data.drafts.Prefix.length).slice(0,-5));
+		var len = data.drafts.Prefix.length;
+		data.drafts = data.drafts.Contents.map(v => v.Key.substr(len).slice(0,-5));
+		data.propcotts = data.user.propcotts;
 		res.render('account/propcotts', data);
 	});
-	/*s3.listObjects({
-		Bucket: 'drafts.data.propcott.com',
-		Prefix: `${hasher.to(req.session.user.id)}/`
-	}, function(err, data) {
+	/*
+	async.parallel({
+		user: callback => new User({id: req.session.user.id}).load(callback),
+		drafts: callback => s3.listObjects({
+			Bucket: 'drafts.data.propcott.com',
+			Prefix: `${hasher.to(req.session.user.id)}/`
+		}, callback)
+	}, (err, data) => {
 		if(err) return console.error(err);
-		console.log(data.Contents);
+		var len = data.drafts.Prefix.length;
+		data.drafts = data.drafts.Contents.map(v => callback => {
+			new Propcott({creator: req.session.user, draft_id: v.Key.substr(len).slice(0,-5)}).load(callback);
+		});
+		data.propcotts = data.user.propcotts.map(v => callback => {
+			new Propcott({published: true, id: v}).load(callback);
+		});
+		console.log(data.drafts, data.propcotts);
+		async.parallel({
+			drafts: data.drafts,
+			propcotts: data.propcotts
+		}, (err, data) => {
+			console.log(err, results);
+			res.render('account/propcotts', results);
+			
+		});
 	});
-
-	var user = new User({id: req.session.user.id});
-
-	user.load(function(err, user) {
-		if(err) {
-			console.error(err);
-			req.flash('Could not load account info');
-			res.redirect('/');
-			return;
-		}
-		res.render('account/propcotts', {user: user});
-	});*/
+	*/
 };
 
 module.exports.notifications = function() {
