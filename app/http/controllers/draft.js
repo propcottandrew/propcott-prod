@@ -27,16 +27,8 @@ module.exports.edit = function(req, res) {
 module.exports.remove = (req, res) => {
 	new Propcott({creator: req.session.user, draft_id: req.params.draft_id}).delete((err, draft) => {
 		if(err) return console.error(err);
-
-		new User(req.session.user).load((err, user) => {
-			if(err) return console.error(err);
-			user.drafts = user.drafts.filter(v => v != draft.draft_id);
-			user.save(err => {
-				if(err) console.error(err);
-				else req.flash('Propcott deleted successfully.');
-				res.redirect('/');
-			});
-		});
+		req.flash('Propcott deleted successfully.');
+		res.redirect('/');
 	});
 };
 

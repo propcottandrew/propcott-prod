@@ -44,6 +44,21 @@ module.exports.preview = function(req, res) {
 	});
 };
 
+module.exports.cancel = function(req, res) {
+	if(!req.session.draft_id) {
+		req.flash('You aren\'t working on a draft.');
+		res.redirect('back');
+	} else {
+		new Propcott({draft_id: req.session.draft_id}).delete((err, propcott) => {
+			if(err) console.error(err);
+			req.flash('Your draft has been deleted successfully.');
+			if(propcott.id) res.redirect(`/p/${propcott.slug}`);
+			else res.redirect('/');
+		});
+		delete req.session.draft_id;
+	}
+};
+
 // move from TMP/ to user hash/
 module.exports.save = function(req, res) {
 	if(!req.session.draft_id) {

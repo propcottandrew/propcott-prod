@@ -15,7 +15,7 @@
 {% autoescape false %}
 <div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
 	<div class="container">
-		<a class="block round navigation-item" href="/editor/delete" onclick="return confirm('Are you sure you want to delete this propcott?');">
+		<a class="block round navigation-item" href="/editor/cancel">
 			<span class="navigation-text">Cancel</span>
 			<span class="typcn typcn-cancel"></span>
 		</a>
@@ -35,7 +35,7 @@
 		<div class="col-7 push-5">
 			<div id="propcott" class="propcott-full">
 				<div id="propcott-featured-image">
-					<h1 style="font-size: {{ propcott.title_size }}">{{ propcott.title }}</h1>
+					<h1 id="propcott-title" style="font-size: {{ propcott.title_size }}">{{ propcott.title }}</h1>
 				</div>
 				<div id="propcott-content">
 					<p style="margin: 1em;">Propcotting <span style="color: rgb(215,0,0);">{{ propcott.target }}</span></p>

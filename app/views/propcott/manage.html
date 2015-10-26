@@ -188,7 +188,7 @@
 		<div class="col-7 push-5">
 			<div id="propcott" class="propcott-full">
 				<div id="propcott-featured-image">
-					<h1 style="font-size: {{ propcott.title_size }}">{{ propcott.title }}</h1>
+					<h1 id="propcott-title" style="font-size: {{ propcott.title_size }}">{{ propcott.title }}</h1>
 				</div>
 				<div id="propcott-content">
 					{% if propcott.creator %}
@@ -233,7 +233,7 @@
 				{% endif %}
 			</div>
 
-			<div class="fb-comments" data-href="/p/{{ propcott.id }}" data-numposts="5"></div>
+			<div class="fb-comments" data-href="http://www.propcott.com/p/{{ propcott.id }}" data-numposts="5"></div>
 		</div>
 		<div class="col-5 pull-7">
 			<div id="propcott-sidebar">

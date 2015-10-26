@@ -2,7 +2,7 @@ var c = require(app.http.controllers.index);
 var m = require(app.http.middleware.index);
 
 module.exports = function(app) {
-	['about', 'contact', 'help', 'privacy', 'terms'].forEach(page => {
+	['about', 'contact', 'privacy', 'terms', 'creator-tips', 'supporter-tips'].forEach(page => {
 		app.get(`/${page}`, (req, res) => res.render(`static/${page}`));
 	});
 
@@ -37,6 +37,7 @@ module.exports = function(app) {
 	app.get ('/new',                     c.editor.fresh);
 	app.get ('/editor',                  c.editor.edit);
 	app.get ('/editor/preview',          c.editor.preview);
+	app.get ('/editor/cancel',           c.editor.cancel);
 	app.get ('/editor/save',    m.userR, c.editor.save);
 	app.post('/editor/handle',           c.editor.handle);
 
