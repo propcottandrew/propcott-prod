@@ -67,6 +67,19 @@ module.exports.general = function(req, res) {
 	});
 };
 
+module.exports.notifications = (req, res) => {
+	new User({id: req.session.user.id}).load((err, user) => {
+		if(err) {
+			req.flash('Could not load account info');
+			return res.redirect('/');
+		}
+		
+		console.log(req.method);
+		
+		res.render('account/notifications', {user: user});
+	});
+};
+
 module.exports.propcotts = (req, res) => {
 	async.parallel({
 		user: callback => new User({id: req.session.user.id}).load(callback),
@@ -109,12 +122,3 @@ module.exports.propcotts = (req, res) => {
 	});
 	*/
 };
-
-module.exports.notifications = function() {
-
-};
-
-module.exports.connections = function() {
-
-};
-

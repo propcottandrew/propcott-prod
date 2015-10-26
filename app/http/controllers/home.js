@@ -43,7 +43,7 @@ module.exports = (req, res) => {
 			});
 		})
 	}, (err, results) => {
-		console.log(results.featured);
+		//console.log(results.featured);
 		res.render('home', results);
 	});
 	

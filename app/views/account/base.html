@@ -70,7 +70,7 @@
 	<ul id="account-navigation">
 	{% block account.navigation %}
 		<li{% if tab == 'general' %} class="active"{% endif %}><a href="/account">General</a></li>
-		{#<li{% if tab == 'notifications' %} class="active"{% endif %}><a href="/account/notifications">Notifications and Reminders</a></li>#}
+		<li{% if tab == 'notifications' %} class="active"{% endif %}><a href="/account/notifications">Notifications and Reminders</a></li>
 		<li{% if tab == 'propcotts' %} class="active"{% endif %}><a href="/account/propcotts">My Propcotts</a></li>
 		{#<li{% if tab == 'connections' %} class="active"{% endif %}><a href="/account/connections">Connected Accounts</a></li>#}
 	{% endblock %}

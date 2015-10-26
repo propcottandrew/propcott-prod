@@ -1,15 +1,8 @@
 var aws = require('aws-sdk');
 
-aws.config.accessKeyId     = process.env.AWS_KEY;
-aws.config.secretAccessKey = process.env.AWS_SECRET;
-aws.config.region          = process.env.AWS_REGION;
-aws.config.apiVersions = {
-	dynamodb: '2012-08-10',
-	s3:       '2006-03-01'
-};
-
 module.exports.dynamo = new aws.DynamoDB();
 module.exports.s3     = new aws.S3();
+module.exports.ses    = new aws.SES();
 
 module.exports.to = (attribute) => {
 	if(attribute === null || attribute === undefined) return {NULL: true};

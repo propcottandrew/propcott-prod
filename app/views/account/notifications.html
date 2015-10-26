@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}General Settings{% endblock %}
+
+{% block account.main %}
+<div class="account-block">
+	<h2>Notifications <small>and reminders</small></h2>
+	
+	<form role="form" method="POST" action="{{ url('/account/notifications') }}">
+		<table style="width: 100%">
+			<tr>
+				<td></td>
+				<th style="text-align: center">Email</th>
+			</tr>
+			<tr>
+				<td>Notify me when I join a Propcott</td>
+				<td><input type="checkbox" name="notifications.join-propcott.email"{% if user.notifications.join-propcott.email %} checked="true"{% endif %}></td>
+			</tr>
+			{% if user.supporting.length == 0 %}
+			<tr>
+				<td>Send me helpful information when I join my first Propcott</td>
+				<td><input type="checkbox" name="notifications.join-first-propcott.email"{% if user.notifications.join-first-propcott.email %} checked="true"{% endif %}></td>
+			</tr>
+			{% endif %}
+			<tr>
+				<td>Send me helpful information when I publish a Propcott</td>
+				<td><input type="checkbox" name="notifications.publish-propcott.email"{% if user.notifications.publish-propcott.email %} checked="true"{% endif %}></td>
+			</tr>
+			{#<tr>
+				<td>I want to receive reminders on Propcotts I have joined <select><option>Monthly</option><option>Weekly</option></select></td>
+				<td><input type="checkbox" name="notify-email-reminders"></td>
+				<td><input type="checkbox" name="notify-sms-reminders"></td>
+			</tr>#}
+			{#<tr>
+				<td>I want to receive updates on Propcotts I have joined</td>
+				<td><input type="checkbox" name="notify-email-updates"></td>
+				<td><input type="checkbox" name="notify-sms-updates"></td>
+			</tr>#}
+			{#<tr>
+				<td>I want to be notified when a Propcott I joined is successful</td>
+				<td><input type="checkbox" name="notify-email-successful"></td>
+				<td><input type="checkbox" name="notify-sms-successful"></td>
+			</tr>#}
+			{#<tr>
+				<td>I want to receive Propcotts weekly newsletters</td>
+				<td><input type="checkbox" name="notify-email-newsletter"></td>
+				<td>&nbsp;</td>
+			</tr>#}
+			{#<tr>
+				<td>I want to receive suggested Propcotts that are similar to Propcotts I have joined</td>
+				<td><input type="checkbox" name="notify-email-suggestions"></td>
+				<td>&nbsp;</td>
+			</tr>#}
+		</table>
+		<p style="text-align: right;">
+			{{ csrf_field }}
+			<input type="submit" value="Update" />
+		</p>
+	</form>
+</div>
+{% endblock %}
