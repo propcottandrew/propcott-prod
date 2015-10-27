@@ -56,10 +56,9 @@ module.exports = (function(app) {
 
 	app.engine('html', cons.swig);
 	app.set('view engine', 'html');
-	app.disable('view cache');
+	app.enable('view cache');
 	app.set('views', __dirname + '/views');
 	//app.set('layout', 'layout');
-	//app.enable('view cache');
 
 	// Test data for homepage
 	app.use(function(req, res, next) {

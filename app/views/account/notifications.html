@@ -13,42 +13,35 @@
 				<th style="text-align: center">Email</th>
 			</tr>
 			<tr>
-				<td>Notify me when I join a Propcott</td>
-				<td><input type="checkbox" name="join-propcott-email"{% if user.notifications['join-propcott-email'] %} checked="true"{% endif %}></td>
+				<td>I want to be notified as soon as I join a Propcott</td>
+				<td><input type="checkbox" name="join-email"{% if user.notifications['join-email'] %} checked="true"{% endif %}></td>
 			</tr>
-			{% if user.supporting.length >= 0 %}
 			<tr>
-				<td>Send me helpful information when I join my first Propcott</td>
-				<td><input type="checkbox" name="join-first-propcott-email"{% if user.notifications['join-first-propcott-email'] %} checked="true"{% endif %}></td>
+				<td>I want to be notified as soon as I publish a Propcott</td>
+				<td><input type="checkbox" name="publish-email"{% if user.notifications['publish-email'] %} checked="true"{% endif %}></td>
 			</tr>
-			{% endif %}
 			<tr>
-				<td>Send me helpful information when I publish a Propcott</td>
-				<td><input type="checkbox" name="publish-propcott-email"{% if user.notifications['publish-propcott-email'] %} checked="true"{% endif %}></td>
+				<td>I want to receive reminders on Propcotts I have joined <select name="reminders-time"><option{% if user.notifications['reminders-time'] == 'Monthly' %} selected="true"{% endif %}>Monthly</option><option{% if user.notifications['reminders-time'] == 'Weekly' %} selected="true"{% endif %}>Weekly</option></select></td>
+				<td><input type="checkbox" name="reminders-email"{% if user.notifications['reminders-email'] %} checked="true"{% endif %}></td>
 			</tr>
-			{#<tr>
-				<td>I want to receive reminders on Propcotts I have joined <select><option>Monthly</option><option>Weekly</option></select></td>
-				<td><input type="checkbox" name="notify-email-reminders"></td>
-				<td><input type="checkbox" name="notify-sms-reminders"></td>
-			</tr>#}
 			{#<tr>
 				<td>I want to receive updates on Propcotts I have joined</td>
-				<td><input type="checkbox" name="notify-email-updates"></td>
-				<td><input type="checkbox" name="notify-sms-updates"></td>
+				<td><input type="checkbox" name="updates-email"></td>
+				<td><input type="checkbox" name="updates-sms"></td>
 			</tr>#}
 			{#<tr>
 				<td>I want to be notified when a Propcott I joined is successful</td>
-				<td><input type="checkbox" name="notify-email-successful"></td>
-				<td><input type="checkbox" name="notify-sms-successful"></td>
+				<td><input type="checkbox" name="successful-email"></td>
+				<td><input type="checkbox" name="successful-sms"></td>
 			</tr>#}
 			{#<tr>
 				<td>I want to receive Propcotts weekly newsletters</td>
-				<td><input type="checkbox" name="notify-email-newsletter"></td>
+				<td><input type="checkbox" name="newsletter-email"></td>
 				<td>&nbsp;</td>
 			</tr>#}
 			{#<tr>
 				<td>I want to receive suggested Propcotts that are similar to Propcotts I have joined</td>
-				<td><input type="checkbox" name="notify-email-suggestions"></td>
+				<td><input type="checkbox" name="suggestions-email"></td>
 				<td>&nbsp;</td>
 			</tr>#}
 		</table>

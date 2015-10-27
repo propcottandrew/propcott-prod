@@ -19,9 +19,10 @@ class User extends Base {
 			propcotts: [],
 			supporting: [],
 			notifications: {
-				'join-propcott-email': true,
-				'join-first-propcott-email': true,
-				'publish-propcott-email': true
+				'join-email': true,
+				'publish-email': true,
+				'reminders-email': true,
+				'reminders-time': 'Weekly'
 			}
 		});
 	}
@@ -69,11 +70,8 @@ class User extends Base {
 			callback();
 		});
 		
-		if(this.notifications['join-propcott-email']) new Propcott({published: true, id: id}).load((err, propcott) =>
-			this.sendEmail('join-propcott', `Propcotting ${propcott.target}`, {propcott: propcott}));
-		
-		if(this.notifications['join-first-propcott-email'])
-			this.sendEmail('join-first-propcott', 'You\'ve joined a Propcott. Now what?');
+		if(this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) =>
+			this.sendEmail('join', `Propcotting ${propcott.target}`, {propcott: propcott}));
 	}
 
 	// Do they support a propcott?
@@ -170,7 +168,7 @@ class User extends Base {
 			callback(null, user);
 		});
 	}
-	
+
 	sendEmail(event, subject, data, callback) {
 		data = data || {};
 		data.user = this;

@@ -28,6 +28,7 @@ module.exports = function(app) {
 	app.get ('/account/propcotts',     m.user, c.account.propcotts);
 	app.get ('/account/notifications', m.user, c.account.notifications);
 	app.post('/account/notifications', m.user, c.account.notifications);
+	app.get ('/account/notifications/unsubscribe', m.userR, c.account.unsubscribe);
 
 	app.post('/api/upload', c.api.upload);
 

@@ -67,14 +67,25 @@ module.exports.general = function(req, res) {
 	});
 };
 
+module.exports.unsubscribe = (req, res) => {
+	new User(req.session.user).load((err, user) => {
+		user.notifications = {};
+		user.save(err => {
+			if(!err) req.flash('You have unsubscribed from all notifications');
+			res.redirect('/account/notifications');
+		});
+	});
+};
+
 module.exports.notifications = (req, res) => {
 	async.waterfall([
 		callback => new User(req.session.user).load(callback),
 		(user, callback) => {
 			if(req.method == 'GET') return callback(null, user);
-			user.notifications['join-propcott-email']       = !!req.body['join-propcott-email']       || undefined;
-			user.notifications['join-first-propcott-email'] = !!req.body['join-first-propcott-email'] || undefined;
-			user.notifications['publish-propcott-email']    = !!req.body['publish-propcott-email']    || undefined;
+			user.notifications['join-email']      = !!req.body['join-email']      || undefined;
+			user.notifications['publish-email']   = !!req.body['publish-email']   || undefined;
+			user.notifications['reminders-email'] = !!req.body['reminders-email'] || undefined;
+			user.notifications['reminders-time']  = req.body['reminders-time'];
 			user.save(callback);
 		}
 	], (err, user) => {
@@ -85,7 +96,7 @@ module.exports.notifications = (req, res) => {
 };
 
 module.exports.propcotts = (req, res) => {
-	async.parallel({
+	/*async.parallel({
 		user: callback => new User({id: req.session.user.id}).load(callback),
 		drafts: callback => s3.listObjects({
 			Bucket: 'drafts.data.propcott.com',
@@ -97,8 +108,8 @@ module.exports.propcotts = (req, res) => {
 		data.drafts = data.drafts.Contents.map(v => v.Key.substr(len).slice(0,-5));
 		data.propcotts = data.user.propcotts;
 		res.render('account/propcotts', data);
-	});
-	/*
+	});*/
+	
 	async.parallel({
 		user: callback => new User({id: req.session.user.id}).load(callback),
 		drafts: callback => s3.listObjects({
@@ -114,15 +125,10 @@ module.exports.propcotts = (req, res) => {
 		data.propcotts = data.user.propcotts.map(v => callback => {
 			new Propcott({published: true, id: v}).load(callback);
 		});
-		console.log(data.drafts, data.propcotts);
 		async.parallel({
-			drafts: data.drafts,
-			propcotts: data.propcotts
-		}, (err, data) => {
-			console.log(err, results);
-			res.render('account/propcotts', results);
-			
-		});
+			drafts: callback => async.parallel(data.drafts, (err, results) => callback(err, results)),
+			propcotts: callback => async.parallel(data.propcotts, (err, results) => callback(err, results))
+		}, (err, results) => res.render('account/propcotts', results));
 	});
-	*/
+	
 };
