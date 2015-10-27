@@ -8,5 +8,6 @@ module.exports = {
 	draft: require(app.http.controllers.draft),
 	editor: require(app.http.controllers.editor),
 	explore: require(app.http.controllers.explore),
-	search: require(app.http.controllers.search)
+	search: require(app.http.controllers.search),
+	contact: require(app.http.controllers.contact)
 };

@@ -5,6 +5,8 @@ module.exports = function(app) {
 	['about', 'contact', 'privacy', 'terms', 'creator-tips', 'supporter-tips'].forEach(page => {
 		app.get(`/${page}`, (req, res) => res.render(`static/${page}`));
 	});
+	
+	app.post('/contact', c.contact);
 
 	app.get ('/', c.home);
 	app.get ('/search', c.search.cse);

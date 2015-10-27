@@ -15,7 +15,7 @@
 <h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The target</h3>
 <p style="line-height: 1.8; color:#444; margin-top: 1em; margin-bottom: 1em;">{{ propcott.target }}</p>
 
-<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The action</h3>
+<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The action{% if propcott.how.length >= 2 %}s{% endif %}</h3>
 <ul style="margin-bottom: 1em;">
 {% for how in propcott.how %}
 	<li style="line-height: 1.8; color:#444; margin-top: 0.5em; margin-bottom: 0.5em;">{{ how }}</li>
@@ -26,7 +26,7 @@
 <p style="line-height: 1.8; color:#444; margin-top: 1em; margin-bottom: 1em;">{{ propcott.goal }}</p>
 
 {% if propcott.alt %}
-<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The alternatives</h3>
+<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The alternative{% if propcott.alt.length >= 2 %}s{% endif %}</h3>
 <ul style="margin-bottom: 1em;">
 {% for alt in propcott.alt %}
 	<li style="line-height: 1.8; color:#444; margin-top: 0.5em; margin-bottom: 0.5em;">{{ alt }}</li>

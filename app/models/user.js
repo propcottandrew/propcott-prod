@@ -69,7 +69,7 @@ class User extends Base {
 			}
 			callback();
 		});
-		console.log(this.notifications);
+
 		if(this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) => {
 			if(err) console.error(err);
 			this.sendEmail('join', `Propcotting ${propcott.target}`, {propcott: propcott});
