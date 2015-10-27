@@ -17,7 +17,7 @@ module.exports.view = (req, res, next) => {
 				},
 				KeyConditionExpression: `PropcottId=:0 and UserId=:1`
 			}, (err, data) => {
-				callback(err, !!data.Count);
+				callback(err, data.Count);
 			});
 		}
 	}, (err, data) => {

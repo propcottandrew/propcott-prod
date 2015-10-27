@@ -25,6 +25,15 @@
 <h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The goal</h3>
 <p style="line-height: 1.8; color:#444; margin-top: 1em; margin-bottom: 1em;">{{ propcott.goal }}</p>
 
+{% if propcott.alt %}
+<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The alternatives</h3>
+<ul style="margin-bottom: 1em;">
+{% for alt in propcott.alt %}
+	<li style="line-height: 1.8; color:#444; margin-top: 0.5em; margin-bottom: 0.5em;">{{ alt }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
 <br />
 
 <p style="line-height: 1.8; text-align: center; color: #888; margin-top: 1em; margin-bottom: 1em;">Spread this propcott around the world!</p>
