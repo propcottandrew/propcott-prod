@@ -10,30 +10,6 @@ var ses      = require(app.aws).ses;
 var bcrypt   = require('bcryptjs');
 var swig     = require('swig');
 
-var sendEmail = (event, subject, data, callback) => {
-	ses.sendEmail({
-		Destination: {ToAddresses: [data.user.email]},
-		Message: {
-			Body: {
-				Html: {
-					Data: swig.renderFile(`${app.emails}/${event}.html`, data),
-					Charset: 'UTF-8'
-				},
-				Text: {
-					Data: swig.renderFile(`${app.emails}/${event}.txt`, data),
-					Charset: 'UTF-8'
-				}
-			},
-			Subject: {
-				Data: subject,
-				Charset: 'UTF-8'
-			}
-		},
-		Source: 'Propcott <propcott@propcott.com>',
-		ReplyToAddresses: ['propcott@propcott.com']
-	}, callback || (err => err && console.error(err)));
-};
-
 class User extends Base {
 	constructor(data) {
 		super(data);
@@ -94,10 +70,10 @@ class User extends Base {
 		});
 		
 		if(this.notifications['join-propcott-email']) new Propcott({published: true, id: id}).load((err, propcott) =>
-			sendEmail('join-propcott', `Propcotting ${propcott.target}`, {user: this, propcott: propcott}));
+			this.sendEmail('join-propcott', `Propcotting ${propcott.target}`, {propcott: propcott}));
 		
 		if(this.notifications['join-first-propcott-email'])
-			sendEmail('join-first-propcott', 'You\'ve joined a Propcott. Now what?', {user: this});
+			this.sendEmail('join-first-propcott', 'You\'ve joined a Propcott. Now what?');
 	}
 
 	// Do they support a propcott?
@@ -194,6 +170,33 @@ class User extends Base {
 			callback(null, user);
 		});
 	}
+	
+	sendEmail(event, subject, data, callback) {
+		data = data || {};
+		data.user = this;
+		
+		ses.sendEmail({
+			Destination: {ToAddresses: [this.email]},
+			Message: {
+				Body: {
+					Html: {
+						Data: swig.renderFile(`${app.emails}/${event}.html`, data),
+						Charset: 'UTF-8'
+					},
+					Text: {
+						Data: swig.renderFile(`${app.emails}/${event}.txt`, data),
+						Charset: 'UTF-8'
+					}
+				},
+				Subject: {
+					Data: subject,
+					Charset: 'UTF-8'
+				}
+			},
+			Source: 'Propcott <propcott@propcott.com>',
+			ReplyToAddresses: ['propcott@propcott.com']
+		}, callback || (err => err && console.error(err)));
+	}
 }
 
 User.table = 'Credentials';
@@ -207,7 +210,7 @@ User.decorate(stored({
 
 User.prototype.on('register', (user, callback) => {
 	callback();
-	sendEmail('register', 'Welcome to Propcott', {user: user});
+	user.sendEmail('register', 'Welcome to Propcott');
 });
 
 new User({id: 2}).load((err, user) => {

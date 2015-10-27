@@ -63,7 +63,7 @@ module.exports.publish = (req, res) => {
 				});
 				
 				if(user.notifications['publish-propcott-email'])
-					sendEmail('publish-propcott', propcott.title, {user: user, propcott: propcott});
+					user.sendEmail('publish-propcott', propcott.title, {propcott: propcott});
 			});
 		});
 	});
