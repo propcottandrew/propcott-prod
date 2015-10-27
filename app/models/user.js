@@ -69,9 +69,11 @@ class User extends Base {
 			}
 			callback();
 		});
-		
-		if(this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) =>
-			this.sendEmail('join', `Propcotting ${propcott.target}`, {propcott: propcott}));
+		console.log(this.notifications);
+		if(this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) => {
+			if(err) console.error(err);
+			this.sendEmail('join', `Propcotting ${propcott.target}`, {propcott: propcott});
+		});
 	}
 
 	// Do they support a propcott?
@@ -209,10 +211,6 @@ User.decorate(stored({
 User.prototype.on('register', (user, callback) => {
 	callback();
 	user.sendEmail('register', 'Welcome to Propcott');
-});
-
-new User({id: 2}).load((err, user) => {
-	user.emit('register');
 });
 
 User.prototype.on('saving', (user, callback) => {

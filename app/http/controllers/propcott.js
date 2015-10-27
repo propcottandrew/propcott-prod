@@ -1,11 +1,25 @@
 var Propcott = require(app.models.propcott);
 var User     = require(app.models.user);
+var dynamo   = require(app.aws).dynamo;
 var async    = require('async');
 
 module.exports.view = (req, res, next) => {
 	async.parallel({
 		propcott: callback => new Propcott({published: true, id: req.params.id}).load(callback),
-		index: callback => Propcott.find(req.params.id, callback)
+		index: callback => Propcott.find(req.params.id, callback),
+		supporting: callback => {
+			if(!req.session.user) return callback();
+			dynamo.query({
+				TableName: 'Supporters',
+				ExpressionAttributeValues: {
+					':0': {N: String(req.params.id)},
+					':1': {N: String(req.session.user.id)}
+				},
+				KeyConditionExpression: `PropcottId=:0 and UserId=:1`
+			}, (err, data) => {
+				callback(err, !!data.Count);
+			});
+		}
 	}, (err, data) => {
 		if(err) {
 			console.error(err);

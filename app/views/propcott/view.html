@@ -180,9 +180,9 @@
 						</ul>
 					{% endif %}
 
-					{% if !user || !user.supports %}
+					{% if !user || !supporting %}
 					<p>
-						<form method="POST" action="/p/{{ propcott.id }}/join">
+						<form method="POST" action="/p/{{ propcott.slug }}/join">
 							<p style="font-family: 'Josefin Sans',sans-serif;line-height: 1;">
 								<span style="font-weight: bold;">Were you a part of a campaign similar to this propcott in any way?</span>
 								<label style="display: block;">
