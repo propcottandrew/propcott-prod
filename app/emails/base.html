@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head>
+<body>
+<div style="background-color:#e5e5e5;padding:20px;font-family:'Open sans','Arial',sans-serif;color:#444;">
+<div style="direction:ltr;text-align:left;font-family:'Open sans','Arial',sans-serif;background-color:white;padding:1.5em;border-radius:1em;max-width:580px;margin:2% auto 0 auto;border: 1px solid #d5d5d5;">
+<table cellspacing="0" border="0" cellpadding="0" width="100%" align="center" style="background:white;width:100%;">
+<tbody>
+<tr>
+<td>
+<div style="width:27px;min-height:32px;margin:10px auto">
+<img src="http://static.propcott.com/images/logo-email-header.png" style="margin-bottom: 10px;" width="27" height="32" />
+</div>
+</div>
+
+{% block content %}{% endblock %}
+
+<br />
+
+<div style="width:152px;min-height:100px;margin:10px auto">
+<a href="http://www.propcott.com/"><img src="http://static.propcott.com/images/logo-email-footer.png" width="157" height="100" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p style="direction:ltr;color:#777;font-size:0.8em;border-radius:1em;margin-top:1em;font-family:'Arial','Helvetica',sans-serif;text-align:center; color: #999;">This email was sent by Propcott.com to {{ user.email }}.</p>
+
+<p style="direction:ltr;color:#777;font-size:0.8em;border-radius:1em;margin-top:1em;font-family:'Arial','Helvetica',sans-serif;text-align:center; color: #999;">You can edit your <a href="/account/notifications" style="cursor: pointer; color: #777;">notification preferences</a> or <a href="/account/notifications/unsubscribe" style="cursor: pointer; color: #777;">unsubscribe</a> from <strong>all</strong> Propcott.com emails.</p>
+<p style="direction:ltr;color:#777;font-size:0.8em;border-radius:1em;margin-top:1em;font-family:'Arial','Helvetica',sans-serif;text-align:center; color: #999;"><a href="http://www.propcott.com/new" style="cursor: pointer; color: #777;">Start a Propcott</a> &bull; <a href="http://www.propcott.com/contact" style="cursor: pointer; color: #777;">Contact us</a></p>
+</body>
+</html>

@@ -2,12 +2,37 @@
 
 var Base     = require(app.models.base);
 var Propcott = require(app.models.propcott);
-var aws      = require(app.aws);
 var stored   = require(app.decorators.stored);
 var id       = require(app.decorators.id);
 var hasher   = require(app.util.hasher);
 var dynamo   = require(app.aws).dynamo;
+var ses      = require(app.aws).ses;
 var bcrypt   = require('bcryptjs');
+var swig     = require('swig');
+
+var sendEmail = (event, subject, data, callback) => {
+	ses.sendEmail({
+		Destination: {ToAddresses: [data.user.email]},
+		Message: {
+			Body: {
+				Html: {
+					Data: swig.renderFile(`${app.emails}/${event}.html`, data),
+					Charset: 'UTF-8'
+				},
+				Text: {
+					Data: swig.renderFile(`${app.emails}/${event}.txt`, data),
+					Charset: 'UTF-8'
+				}
+			},
+			Subject: {
+				Data: subject,
+				Charset: 'UTF-8'
+			}
+		},
+		Source: 'Propcott <propcott@propcott.com>',
+		ReplyToAddresses: ['propcott@propcott.com']
+	}, callback || (err => err && console.error(err)));
+};
 
 class User extends Base {
 	constructor(data) {
@@ -16,7 +41,12 @@ class User extends Base {
 			created: Date.now(),
 			credentials: [],
 			propcotts: [],
-			supporting: []
+			supporting: [],
+			notifications: {
+				'join-propcott-email': true,
+				'join-first-propcott-email': true,
+				'publish-propcott-email': true
+			}
 		});
 	}
 
@@ -62,6 +92,12 @@ class User extends Base {
 			}
 			callback();
 		});
+		
+		if(this.notifications['join-propcott-email']) new Propcott({published: true, id: id}).load((err, propcott) =>
+			sendEmail('join-propcott', `Propcotting ${propcott.target}`, {user: this, propcott: propcott}));
+		
+		if(this.notifications['join-first-propcott-email'])
+			sendEmail('join-first-propcott', 'You\'ve joined a Propcott. Now what?', {user: this});
 	}
 
 	// Do they support a propcott?
@@ -168,6 +204,15 @@ User.decorate(stored({
 	key     : user => hasher.to(user.id) + '/index.json',
 	separate: user => ['propcotts'] // Todo: These will be put into their own file
 }));
+
+User.prototype.on('register', (user, callback) => {
+	callback();
+	sendEmail('register', 'Welcome to Propcott', {user: user});
+});
+
+new User({id: 2}).load((err, user) => {
+	user.emit('register');
+});
 
 User.prototype.on('saving', (user, callback) => {
 	if(user.id) return callback();

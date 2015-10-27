@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% autoescape false %}
+<h1 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 28pt; text-align: center; margin: 0; line-height: 1.1; font-weight: normal; margin-top: 0.3em; margin-bottom: 0.5em; color:#444;">Propcotting {{ propcott.target }}</h1>
+
+{% if propcott.media_type && propcott.media_link %}
+<img src="{% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% elif propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}" style="max-width: 40%; max-height: 200px; float: right; margin-left: 1em; margin-bottom: 1em;" />
+{% endif %}
+
+<h2 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 18pt; margin: 0; line-height: 1.1; font-weight: normal; margin-top: 2em; margin-bottom: 0.5em; color:#444;">Hello {{ user.display_name || user.name }}!</h2>
+
+<p style="line-height: 1.8; color:#444; margin-top: 1em; margin-bottom: 1em;">Thanks for joining {{ propcott.title }}. This is a friendly reminder of a few things to remember:</p>
+
+<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The target</h3>
+<p style="line-height: 1.8; color:#444; margin-top: 1em; margin-bottom: 1em;">{{ propcott.target }}</p>
+
+<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The action</h3>
+<ul style="margin-bottom: 1em;">
+{% for how in propcott.how %}
+	<li style="line-height: 1.8; color:#444; margin-top: 0.5em; margin-bottom: 0.5em;">{{ how }}</li>
+{% endfor %}
+</ul>
+
+<h3 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 14pt; margin: 0; line-height: 1.1; margin-top: 2em; margin-bottom: 0.5em; color:#444;">The goal</h3>
+<p style="line-height: 1.8; color:#444; margin-top: 1em; margin-bottom: 1em;">{{ propcott.goal }}</p>
+
+<br />
+
+<p style="line-height: 1.8; text-align: center; color: #888; margin-top: 1em; margin-bottom: 1em;">Spread this propcott around the world!</p>
+
+<div style="max-width: 330px; margin: auto;">
+<p style="text-align: center; margin-top: 1em; margin-bottom: 1em;">
+	
+	<a href="mailto:?subject={{ encodeURIComponent(propcott.title) }}&amp;body=http://www.propcott.com/p/{{ propcott.slug }}" style="background-color:#0a88ff; border-radius: 2px; display: inline-block; font-size: 11px; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: bold; color: white; margin-bottom: 0.5em;">email</a>
+	
+	<a href="https://www.facebook.com/sharer/sharer.php?u=http://www.propcott.com/p/{{ propcott.slug }}" style="background-color:#306199; border-radius: 2px; display: inline-block; font-size: 11px; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: bold; color: white; margin-bottom: 0.5em;" >facebook</a>
+	
+	<a href="http://tumblr.com/share/link?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;name={{ encodeURIComponent(propcott.title) }}" style="background-color:#32506d; border-radius: 2px; display: inline-block; font-size: 11px; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: bold; color: white; margin-bottom: 0.5em;" >tumblr</a>
+	
+	<a href="http://twitter.com/share?text={{ encodeURIComponent(propcott.title) }}&amp;url=http://www.propcott.com/p/{{ propcott.slug }}&amp;hashtags=propcott" style="background-color:#26c4f1; border-radius: 2px; display: inline-block; font-size: 11px; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: bold; color: white; margin-bottom: 0.5em;" >twitter</a>
+	
+	<a href="http://www.reddit.com/submit?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;title={{ encodeURIComponent(propcott.title) }}" style="background-color:#336699; border-radius: 2px; display: inline-block; font-size: 11px; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: bold; color: white; margin-bottom: 0.5em;" >reddit</a>
+	
+	<a href="https://plus.google.com/share?url=http://www.propcott.com/p/{{ propcott.slug }}" style="background-color:#e93f2e; border-radius: 2px; display: inline-block; font-size: 11px; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: bold; color: white; margin-bottom: 0.5em;" >google+</a>
+	
+	<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% endif %}{% if propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}&amp;description={{ encodeURIComponent(propcott.title) }}" style="background-color:#b81621; border-radius: 2px; display: inline-block; font-size: 11px; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: bold; color: white; margin-bottom: 0.5em;" >pinterest</a>
+</p>
+{% endautoescape %}
+{% endblock %}

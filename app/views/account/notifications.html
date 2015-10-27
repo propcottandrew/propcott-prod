@@ -14,17 +14,17 @@
 			</tr>
 			<tr>
 				<td>Notify me when I join a Propcott</td>
-				<td><input type="checkbox" name="notifications.join-propcott.email"{% if user.notifications.join-propcott.email %} checked="true"{% endif %}></td>
+				<td><input type="checkbox" name="join-propcott-email"{% if user.notifications['join-propcott-email'] %} checked="true"{% endif %}></td>
 			</tr>
-			{% if user.supporting.length == 0 %}
+			{% if user.supporting.length >= 0 %}
 			<tr>
 				<td>Send me helpful information when I join my first Propcott</td>
-				<td><input type="checkbox" name="notifications.join-first-propcott.email"{% if user.notifications.join-first-propcott.email %} checked="true"{% endif %}></td>
+				<td><input type="checkbox" name="join-first-propcott-email"{% if user.notifications['join-first-propcott-email'] %} checked="true"{% endif %}></td>
 			</tr>
 			{% endif %}
 			<tr>
 				<td>Send me helpful information when I publish a Propcott</td>
-				<td><input type="checkbox" name="notifications.publish-propcott.email"{% if user.notifications.publish-propcott.email %} checked="true"{% endif %}></td>
+				<td><input type="checkbox" name="publish-propcott-email"{% if user.notifications['publish-propcott-email'] %} checked="true"{% endif %}></td>
 			</tr>
 			{#<tr>
 				<td>I want to receive reminders on Propcotts I have joined <select><option>Monthly</option><option>Weekly</option></select></td>

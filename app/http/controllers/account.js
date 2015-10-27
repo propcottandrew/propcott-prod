@@ -68,14 +68,18 @@ module.exports.general = function(req, res) {
 };
 
 module.exports.notifications = (req, res) => {
-	new User({id: req.session.user.id}).load((err, user) => {
-		if(err) {
-			req.flash('Could not load account info');
-			return res.redirect('/');
+	async.waterfall([
+		callback => new User(req.session.user).load(callback),
+		(user, callback) => {
+			if(req.method == 'GET') return callback(null, user);
+			user.notifications['join-propcott-email']       = !!req.body['join-propcott-email']       || undefined;
+			user.notifications['join-first-propcott-email'] = !!req.body['join-first-propcott-email'] || undefined;
+			user.notifications['publish-propcott-email']    = !!req.body['publish-propcott-email']    || undefined;
+			user.save(callback);
 		}
-		
-		console.log(req.method);
-		
+	], (err, user) => {
+		if(err) req.flash('An unexpected error occurred');
+		if(err) console.error(err);
 		res.render('account/notifications', {user: user});
 	});
 };

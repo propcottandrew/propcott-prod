@@ -61,6 +61,9 @@ module.exports.publish = (req, res) => {
 					if(err) console.error(err);
 					else new Propcott({creator: req.session.user, draft_id: draft_id}).delete(err => err && console.error(err));
 				});
+				
+				if(user.notifications['publish-propcott-email'])
+					sendEmail('publish-propcott', propcott.title, {user: user, propcott: propcott});
 			});
 		});
 	});
