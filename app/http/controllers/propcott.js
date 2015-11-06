@@ -27,7 +27,7 @@ module.exports.view = (req, res, next) => {
 		}
 		data.propcott.import(data.index);
 		if(!req.session.user || req.session.user.id != data.propcott.creator.id)
-			res.render('propcott/view', data);
+			res.render('propcott/view2', data);
 		else
 			res.render('propcott/manage', data);
 	});

@@ -17,9 +17,13 @@ var id      = require(app.decorators.id);
 var hasher  = require(app.util.hasher);
 var uuid    = require('uuid');
 
+const privates = new WeakMap();
+
 class Propcott extends Base {
 	constructor(data) {
 		super(data);
+		privates.set(this, {});
+		
 		this.defaults({
 			published: false,
 			created  : Date.now(),
@@ -70,11 +74,12 @@ class Propcott extends Base {
 	}
 
 	get slug() {
-		if(this._slug) return this._slug;
+		var priv = privates.get(this);
+		if(priv.slug) return priv.slug;
 
 		var maxlen = 75;
-
-		return this._slug = (this.title||'')
+		
+		return priv.slug = (this.title||'')
 			.toLowerCase()
 			.replace(/[_]/g, '-')
 			.replace(/[^a-zA-Z0-9\s-]/g, '')
@@ -84,6 +89,14 @@ class Propcott extends Base {
 			.replace(/-+/g, '-')
 			.substr(0, maxlen - String(this.id).length - 1)
 			+ '-' + this.id;
+	}
+	
+	get metric() {
+		var priv = privates.get(this);
+		if(priv.metric) return priv.metric;
+		return priv.metric = String(this.support.all)[0] >= 5 ?
+			`1${Array(String(this.support.all).length).join('0')}0` :
+			`5${Array(String(this.support.all).length).join('0')}`;
 	}
 
 	static find(id, callback) {

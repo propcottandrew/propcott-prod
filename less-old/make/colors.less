@@ -1,0 +1,34 @@
+.make-color(@color) {
+	@var-color: "color-@{color}";
+	@var-dark-color: "color-dark-@{color}";
+	@var-light-color: "color-light-@{color}";
+	.@{color}, .background-@{color} { background-color: @@var-color }
+	.dark-@{color}, .background-dark-@{color} { background-color: @@var-dark-color }
+	.light-@{color}, .background-light-@{color} { background-color: @@var-light-color }
+	.border-@{color} { border-color: @@var-color }
+	.border-dark-@{color} { border-color: @@var-dark-color }
+	.border-light-@{color} { border-color: @@var-light-color }
+	.@{color} { color: @color-white }
+	.dark-@{color} { color: @color-white }
+	.light-@{color} { color: @color-light-foreground }
+}
+
+.make-color(~'white');
+.make-color(~'black');
+.make-color(~'clear');
+.make-color(~'gray');
+.make-color(~'red');
+.make-color(~'redorange');
+.make-color(~'orange');
+.make-color(~'orangeyellow');
+.make-color(~'yellow');
+.make-color(~'yellowgreen');
+.make-color(~'green');
+.make-color(~'greenblue');
+.make-color(~'blue');
+.make-color(~'blueviolet');
+.make-color(~'violet');
+.make-color(~'violetred');
+
+.white { color: @color-light-foreground }
+.clear { color: @color-light-foreground }
