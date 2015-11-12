@@ -1,57 +1,74 @@
-#navigation {
+#logo {
+	overflow: hidden;
+	position: absolute;
+	width: 188px;
+	height: 62px;
+	text-indent: 188px;
+	left: 50%;
+	margin-left: -94px;
+	background-color: #eee;
+	background-image: url(http://www.propcott.com/images/logo-header.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-position: bottom 16px center;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+	border-bottom-left-radius: 50% 15px;
+	border-bottom-right-radius: 50% 15px;
+	z-index: 2;
+	transition: 200ms;
+}
+#logo:hover {
+	height: 67px;
+}
+#nav {
 	padding: 10px;
 	border-bottom: 1px solid #eee;
 	border-bottom: 1px solid rgba(0,0,0,0);
-	box-shadow: 0 0 5px -1px rgba(0,0,0,0.5);
-	background: white;
-}
-#logo {
-	position: relative;
-	width: 148px;
-	height: 32px;
-	text-indent: 148px;
-	background-image: url(http://www.propcott.com/images/logo-header.png);
-	background-repeat: no-repeat;
-	margin-right: 25px;
-	float: left;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+	background-color: white;
 	overflow: hidden;
-}
-.navigation-avatar {
-	position: relative;
-	width: 30px;
-	height: 30px;
-	line-height: 1;
-	margin: 0;
-	margin-right: -.75em;
-	margin-left: .5em;
-	left: -1px;
-	top: -1px;
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-size: cover;
-	display: inline-block;
-	border-radius: 16px;
-	vertical-align: bottom;
-}
-#navigation a {
-	font-weight: normal;
+	
+	a {
+		font-weight: normal;
+		background: transparent;
+		color: inherit;
+		cursor: pointer;
+		position: relative;
+		padding: 3px 10px;
+		display: inline-block;
+		margin-right: 5px;
+		border-radius: 18px;
+		transition: 300ms;
+		
+		&:hover {
+			background: #f7f7f7;
+			background: rgba(0,0,0,0.075);
+			text-decoration: none;
+		}
+	}
+	
+	.left {
+		float: left;
+		text-align: left;
+	}
+	
+	.right {
+		float: right;
+		text-align: right;
+	}
+	
+	.dropdown ul {
+		display: none;
+	}
+	
+	.typcn {
+		font-size: 18px;
+		vertical-align: text-top;
+	}
 }
 .navigation-item {
-	background: transparent;
-	color: inherit;
-	cursor: pointer;
-	position: relative;
-	padding: 3px 10px;
-	display: inline-block;
-	margin-right: 5px;
-	border-radius: 18px;
-	transition: 300ms;
 }
-.navigation-item:hover {
-	background: #f7f7f7;
-	background: rgba(0,0,0,0.05);
-	text-decoration: none;
-}
+.navigation-item
 .navigation-right {
 	float: right;
 	padding-right: 0;

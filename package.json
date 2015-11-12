@@ -4,9 +4,9 @@
   "description": "Reinventing Boycotts",
   "main": "index.js",
   "scripts": {
-    "start": "node-dev index",
+    "start": "node index -e dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "lessc less/style.css public/css/style.css"
+    "build": "lessc less/style.less public/css/style.css"
   },
   "author": "Evan Kennedy",
   "license": "ISC",

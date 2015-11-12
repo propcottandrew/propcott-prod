@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% block head.start %}{% endblock %}
+	<link href="/css/style.css" rel="stylesheet" type="text/css">
+	<title>{% block title %}Propcott{% endblock %}</title>
+	<style type="text/css">
+	
+	</style>
+	{% block head.end %}{% endblock %}
+</head>
+<body>
+{% block body.start %}{% endblock %}
+{% block logo %}<a href="/" id="logo">Propcott</a>{% endblock %}
+{% block navigation %}
+<div id="nav">
+	<div class="container">
+		<div class="left">
+		{% block navigation.left %}
+			<a class="navigation-item" href="/search">
+				<span class="typcn typcn-zoom"></span>
+				<span class="navigation-text">Search</span>
+			</a>
+			<a class="navigation-item" href="/explore">
+				<span class="typcn typcn-world"></span>
+				<span class="navigation-text">Explore</span>
+			</a>
+			<a class="navigation-item" href="/{% if session.draft_id %}editor{% else %}new{% endif %}">
+				<span class="typcn typcn-pen"></span>
+				<span class="navigation-text">{% if session.draft_id %}Continue Writing{% else %}Start a Propcott{% endif %}</span>
+			</a>
+		{% endblock %}
+		</div>
+		<div class="right">
+		{% block navigation.right %}
+			{% if !user %}
+				<a class="block round navigation-item" href="/login">
+					<span class="typcn typcn-user"></span>
+					<span class="navigation-text">Log In</span>
+				</a>
+			{% else %}
+				<span class="dropdown">
+					<a href="/account" class="navigation-item">
+						{% if user.avatar %}
+							<span class="navigation-avatar" style="background-image: url('{{ session.user.avatar }}');"></span>
+						{% else %}
+							<span class="typcn typcn-user"></span>
+						{% endif %}
+						<span class="navigation-text">Hi, {{ user.display_name }}</span>
+						<span class="typcn typcn-arrow-sorted-down"></span>
+					</a>
+					<ul class="dropdown-content">
+						<li><span class="typcn typcn-cog"></span> <a href="/account">Account</a></li>
+						<li><span class="typcn typcn-folder-open"></span> <a href="/account/propcotts">My Propcotts</a></li>
+						<li><span class="typcn typcn-power"></span> <a href="/logout">Log out</a></li>
+					</ul>
+				</span>
+			{% endif %}
+		{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+<div id="hero">
+{% block hero %}
+
+{% endblock %}
+</div>
+<div id="page">
+<div class="container">
+	{% block page %}
+		<ul id="actions">
+		{% block actions %}{% endblock %}
+		</ul>
+		<div id="content">
+		{% block content %}
+		<div class="row">
+			<div id="main" class="col-md-7 col-12">
+				<div id="controls">{% block controls %}{% endblock %}</div>
+				{% block main %}{% endblock %}
+			</div>
+			<div id="side" class="col-md-5 col-12">{% block side %}{% endblock %}</div>
+		</div>
+		{% endblock %}
+	{% endblock %}
+</div>
+</div>
+<div id="footer" class="container">
+	<div class="row">
+		<div class="col-12 col-sm-6">
+			<h3>Help &amp; Legal</h3>
+			<ul>
+				<li><a href="/contact">Contact</a></li>
+				<li><a href="/privacy">Privacy Policy</a></li>
+				<li><a href="/terms">Terms of Service</a></li>
+			</ul>
+		</div>
+		<div class="col-12 col-sm-6">
+			<h3>Learn More</h3>
+			<ul>
+				<li><a href="/about">About Propcott</a></li>
+				<li><a href="/creator-tips">Tips for Propcott Creators</a></li>
+				<li><a href="/supporter-tips">Tips for Propcotters</a></li>
+			</ul>
+		</div>
+	</div>
+	<p style="text-align: center;">Copyright &copy; 2015</p>
+</div>
+{% block body.end %}{% endblock %}
+</body>
+</html>
