@@ -4,108 +4,635 @@
 	{% block head.start %}{% endblock %}
 	<link href="/css/style.css" rel="stylesheet" type="text/css">
 	<title>{% block title %}Propcott{% endblock %}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">
+	html {
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+	*, *:before, *:after {
+		-webkit-box-sizing: inherit;
+		-moz-box-sizing: inherit;
+		box-sizing: inherit;
+	}
+	body {
+		font-family: sans-serif;
+		font-size: 16px;
+		margin: 0;
+		margin-top: 45px;
+		overflow-x: hidden;
+	}
+	#logo {
+		position: fixed;
+		top: 0;
+		left: 50%;
+		margin-left: -94px;
+		z-index: 11;
+		height: 57px;
+		background-position: bottom 15px center;
+		background-color: white;
+		padding: 20px 30px;
+		border-bottom-left-radius: 50% 20px;
+		border-bottom-right-radius: 50% 20px;
+		border: 6px solid #BD1417;
+		border: 0px solid rgba(0,0,0,0);
+		border-top-width: 0;
+		box-shadow: 0 0 0 6px #BD1417, 0 6px 0 1px #79201E, 0 6px 3px 1px rgba(0,0,0,0.5)
+	}
+	#logo:hover {
+		height: 62px;
+	}
+	#header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		background: #BD1417;
+		border-bottom: 1px solid #79201E;
+		box-shadow: 0 0 3px 0px rgba(0,0,0,0.5);
+		height: 45px;
+		font-size: 14px;
+		z-index: 10;
+	}
+	#header .right {
+		float: none;
+		text-align: left;
+	}
+	#nav {
+		position: fixed;
+		top: 45px;
+		left: -200px;
+		bottom: 0;
+		width: 200px;
+		transition: 500ms left;
+		background: #222;
+		z-index: 2;
+		box-shadow: 0 0 3px 0px rgba(0,0,0,0.5);
+	}
+	#menu:target ~ #header #nav {
+		left: 0;
+	}
+	#nav {
+		padding: 0;
+		border-right: 1px solid #111;
+	}
+	#nav ul {
+		padding-left: 1em;
+	}
+	#nav, #nav ul {
+		list-style: none;
+		margin: 0;
+	}
+	#header a {
+		color: white;
+		transition: 300ms background;
+		text-decoration: none;
+		border-radius: 2em;
+		display: inline-block;
+	}
+	#header a:hover {
+		background: rgba(255,255,255,0.1);
+	}
+	#nav li {
+		padding: 0;
+	}
+	#nav a {
+		display: block;
+		padding: 0.75em;
+		border-radius: 0;
+		margin: 0;
+	}
+
+	.clear:after {
+		content: '';
+		display: table;
+		clear: both;
+		zoom: 1;
+	}
+
+
+	.hamburger {
+		display: inline-block;
+		width: 1em;
+		cursor: pointer;
+		-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+		-webkit-tap-highlight-color: transparent;
+		-webkit-filter: drop-shadow(-1px -1px #90211E);
+		-moz-filter: drop-shadow(-1px -1px #90211E);
+		-ms-filter: drop-shadow(-1px -1px #90211E);
+		-o-filter: drop-shadow(-1px -1px #90211E);
+		filter: drop-shadow(-1px -1px #90211E);
+	}
+	.hamburger-helper a {
+		padding: 0.3em;
+		margin: 0.4em;
+	}
+	#menu:target ~ #header #nav ~ .hamburger-helper .hamburger {
+		-webkit-transform: rotate(0deg);
+		-moz-transform: rotate(0deg);
+		-ms-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	.hamburger .bar {
+		position: relative;
+		width: 0.8em;
+		height: 0.15em;
+		top: 0;
+		left: 0.1em;
+		margin: 0.1em 0;
+		background-color: currentColor;
+		display: block;
+		transition: 500ms all cubic-bezier(.87,-.41,.19,1.44), 0ms color, 0ms opacity;
+		border-radius: 0.15em;
+	}
+	#menu:target ~ #header #nav ~ .hamburger-helper .hamburger .bar-2 {
+		width: 0.85em;
+		left: 0.15em;
+	}
+	#menu:target ~ #header #nav ~ .hamburger-helper .hamburger .bar-1 {
+		width: 0.5em;
+		left: 0;
+		top: 0.125em;
+		-webkit-transform: rotate(-45deg);
+		-moz-transform: rotate(-45deg);
+		-ms-transform: rotate(-45deg);
+		-o-transform: rotate(-45deg);
+		transform: rotate(-45deg);
+	}
+	#menu:target ~ #header #nav ~ .hamburger-helper .hamburger .bar-3 {
+		width: 0.5em;
+		left: 0;
+		top: -0.125em;
+		-webkit-transform: rotate(45deg);
+		-moz-transform: rotate(45deg);
+		-ms-transform: rotate(45deg);
+		-o-transform: rotate(45deg);
+		transform: rotate(45deg);
+	}
+	#page {
+		position: relative;
+		transition: 500ms left;
+		left: 0;
+		padding: 1px 0;
+		margin-top: -1px;
+	}
+	#menu:target ~ #page {
+		left: 200px;
+		overflow-y: hidden;
+	}
+	#content {
+		margin: 2em 0;
+	}
+	#menu, #login, #join, #close {
+		position: fixed;
+		top:0;
+	}
+	#menu-overlay {
+		display: none;
+		position: absolute;
+		z-index: 9;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: black;
+		opacity: 0.75;
+	}
+	#menu:target ~ #page #menu-overlay {
+		display: block;
+	}
+	#nav ~ .hamburger-helper .back { display: none; }
+	#menu:target ~ #header #nav ~ .hamburger-helper .back { display: inline-block; }
+	.hamburger-helper {
+		position: relative;
+		display: inline-block;
+	}
+	#header  a.back {
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+	#hero {
+		text-align: center;
+		position: relative;
+	}
 	
+	#footer {
+		background: #111;
+		color: white;
+	}
+	#footer p, #footer ul {
+		font-size: 0.9em;
+	}
+	#footer h3 {
+		font-size: 1em;
+		margin-bottom: 0.5em;
+	}
+	#footer ul {
+		list-style: none;
+		margin-top: 0;
+		padding: 0;
+	}
+	@media(min-width: 992px) {
+		#nav {
+			position: static;
+			box-shadow: none;
+			background: none;
+			border: none;
+			width: auto;
+			overflow: visible;
+		}
+		#nav ul {
+			padding: 0;
+		}
+		#header a {
+			padding: 0.4em;
+			display: inline-block;
+			margin: 0.5em;
+			border-radius: 2em;
+			text-shadow: -1px -1px #90211E;
+		}
+		#nav li {
+			float: left;
+			position: relative;
+		}
+		#nav li.right {
+			float: right;
+		}
+		#nav ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			right: 0;
+			border: 1px solid #ddd;
+			z-index: 12;
+			background: white;
+		}
+		#nav li:hover ul {
+			display: block;
+		}
+		#nav ul a {
+			text-shadow: none;
+			color: #333;
+			border-radius: 0;
+			display: block;
+			margin: 0;
+			padding: 1em;
+			white-space: nowrap;
+		}
+		#nav ul a:hover {
+			background: #eee;
+		}
+		#nav ul li {
+			float: none;
+		}
+		#header .hamburger-helper {
+			display: none !important;
+		}
+		
+		#page {
+			transition: 0 !important;
+		}
+		#menu:target ~ #page {
+			left: 0;
+			overflow-y: visible;
+		}
+	}
+	
+	
+	.alert-info {
+		padding: .5em;
+		font-family: 'Josefin Sans',sans-serif;
+		display: inline-block;
+		background-color: #397DD8;
+		color: white;
+		font-size: 1.3em;
+		border-radius: 10px;
+		text-align: center;
+		line-height: 1;
+	}
+	.alert-container {
+		position: fixed;
+		top: 62px;
+		left: 0;
+		right: 0;
+		width: 100%;
+		z-index: 999;
+		pointer-events: none;
+		height: 0;
+		overflow: hidden;
+		-webkit-animation: fadeout 3s;
+		-moz-animation: fadeout 3s;
+		-o-animation: fadeout 3s;
+		animation: fadeout 3s;
+	}
+	.alert-container p {
+		margin: 0;
+		padding: .5em;
+		text-align: center;
+		line-height: 1;
+		font-family: 'Josefin Sans',sans-serif;
+		color: white;
+		font-size: 1.3em;
+		display: inline-block;
+		border-radius: 10px;
+	}
+	.alert-info {
+		background-color: #397DD8;
+	}
+	.alert-error {
+		background-color: rgb(117,0,0);
+	}
+	@-webkit-keyframes fadeout {
+	  0%   { height: auto; opacity: 0; margin-top: -30px; }
+	  10%  { height: auto; opacity: 1; margin-top: 0; }
+	  80%  { height: auto; opacity: 1; margin-top: 0; }
+	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	}
+	@-moz-keyframes fadeout {
+	  0%   { height: auto; opacity: 0; margin-top: -30px; }
+	  10%  { height: auto; opacity: 1; margin-top: 0; }
+	  80%  { height: auto; opacity: 1; margin-top: 0; }
+	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	}
+	@-o-keyframes fadeout {
+	  0%   { height: auto; opacity: 0; margin-top: -30px; }
+	  10%  { height: auto; opacity: 1; margin-top: 0; }
+	  80%  { height: auto; opacity: 1; margin-top: 0; }
+	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	}
+	@keyframes fadeout {
+	  0%   { height: auto; opacity: 0; margin-top: -30px; }
+	  10%  { height: auto; opacity: 1; margin-top: 0; }
+	  80%  { height: auto; opacity: 1; margin-top: 0; }
+	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	}
 	</style>
 	{% block head.end %}{% endblock %}
 </head>
 <body>
 {% block body.start %}{% endblock %}
-{% block logo %}<a href="/" id="logo">Propcott</a>{% endblock %}
-{% block navigation %}
-<div id="nav">
+<a href="/" id="logo">Propcott</a>
+<div id="close"></div>
+<div id="menu"></div>
+<div id="header">
 	<div class="container">
-		<div class="left">
-		{% block navigation.left %}
-			<a class="navigation-item" href="/search">
-				<span class="typcn typcn-zoom"></span>
-				<span class="navigation-text">Search</span>
+	<ul id="nav" class="clear" aria-label="Navigation">
+		<li><a href="/search"><span class="typcn typcn-zoom"></span> Search</a></li>
+		<li><a href="/explore"><span class="typcn typcn-world"></span> Explore</a></li>
+		<li><a href="/editor"><span class="typcn typcn-pen"></span> Start a Propcott</a></li>
+		{% if !user %}
+		<li class="right"><a href="#login"><span class="typcn typcn-user"></span> Log In</a></li>
+		{% else %}
+		<li class="right">
+			<a href="/account">
+				<span class="typcn typcn-user"></span> Hi, {{ user.display_name }}</span>
+				<span class="typcn typcn-arrow-sorted-down"></span>
 			</a>
-			<a class="navigation-item" href="/explore">
-				<span class="typcn typcn-world"></span>
-				<span class="navigation-text">Explore</span>
-			</a>
-			<a class="navigation-item" href="/{% if session.draft_id %}editor{% else %}new{% endif %}">
-				<span class="typcn typcn-pen"></span>
-				<span class="navigation-text">{% if session.draft_id %}Continue Writing{% else %}Start a Propcott{% endif %}</span>
-			</a>
-		{% endblock %}
-		</div>
-		<div class="right">
-		{% block navigation.right %}
-			{% if !user %}
-				<a class="block round navigation-item" href="/login">
-					<span class="typcn typcn-user"></span>
-					<span class="navigation-text">Log In</span>
-				</a>
-			{% else %}
-				<span class="dropdown">
-					<a href="/account" class="navigation-item">
-						{% if user.avatar %}
-							<span class="navigation-avatar" style="background-image: url('{{ session.user.avatar }}');"></span>
-						{% else %}
-							<span class="typcn typcn-user"></span>
-						{% endif %}
-						<span class="navigation-text">Hi, {{ user.display_name }}</span>
-						<span class="typcn typcn-arrow-sorted-down"></span>
-					</a>
-					<ul class="dropdown-content">
-						<li><span class="typcn typcn-cog"></span> <a href="/account">Account</a></li>
-						<li><span class="typcn typcn-folder-open"></span> <a href="/account/propcotts">My Propcotts</a></li>
-						<li><span class="typcn typcn-power"></span> <a href="/logout">Log out</a></li>
-					</ul>
-				</span>
-			{% endif %}
-		{% endblock %}
-		</div>
+			<ul>
+				<li><a href="/account"> <span class="typcn typcn-cog"></span> Account</a></li>
+				<li><a href="/account/propcotts"><span class="typcn typcn-folder-open"></span> My Propcotts</a></li>
+				<li><a href="/logout"><span class="typcn typcn-power"></span> Log out</a></li>
+			</ul>
+		</li>
+		{% endif %}
+	</ul>
+	<span class="hamburger-helper">
+	<a href="#menu"><div class="hamburger" style="font-size: 2em; color: white;" aria-label="Menu">
+		<span class="bar bar-1"></span>
+		<span class="bar bar-2"></span>
+		<span class="bar bar-3"></span>
+	</div></a>
+	<a href="#" class="back" data-back aria-label="Back"></a>
+	</span>
 	</div>
-</div>
-{% endblock %}
-<div id="hero">
-{% block hero %}
-
-{% endblock %}
 </div>
 <div id="page">
-<div class="container">
-	{% block page %}
-		<ul id="actions">
-		{% block actions %}{% endblock %}
-		</ul>
-		<div id="content">
-		{% block content %}
-		<div class="row">
-			<div id="main" class="col-md-7 col-12">
-				<div id="controls">{% block controls %}{% endblock %}</div>
-				{% block main %}{% endblock %}
-			</div>
-			<div id="side" class="col-md-5 col-12">{% block side %}{% endblock %}</div>
-		</div>
-		{% endblock %}
-	{% endblock %}
-</div>
-</div>
-<div id="footer" class="container">
-	<div class="row">
-		<div class="col-12 col-sm-6">
-			<h3>Help &amp; Legal</h3>
-			<ul>
-				<li><a href="/contact">Contact</a></li>
-				<li><a href="/privacy">Privacy Policy</a></li>
-				<li><a href="/terms">Terms of Service</a></li>
-			</ul>
-		</div>
-		<div class="col-12 col-sm-6">
-			<h3>Learn More</h3>
-			<ul>
-				<li><a href="/about">About Propcott</a></li>
-				<li><a href="/creator-tips">Tips for Propcott Creators</a></li>
-				<li><a href="/supporter-tips">Tips for Propcotters</a></li>
-			</ul>
+	<a href="#" id="menu-overlay" data-back aria-label="Back"></a>
+	{% for message in messages %}
+	<div class="alert-container">
+		<div class="container" style="text-align: center;">
+			<div class="alert-{{ message.type }}">{{ message.content }}</div>
 		</div>
 	</div>
-	<p style="text-align: center;">Copyright &copy; 2015</p>
+	{% endfor %}
+	<div id="hero">
+	{% block hero %}
+		<h1>Title</h1>
+		<p>Just a short description.</p>
+	{% endblock %}
+	</div>
+	<div class="container">
+		{% block page %}
+			<ul id="actions">
+			{% block actions %}{% endblock %}
+			</ul>
+			<div id="content">
+			{% block content %}
+			{% endblock %}
+			</div>
+		{% endblock %}
+	</div>
 </div>
+<div id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-sm-6" style="text-align: left; padding: 0 1em;">
+				<h3>We need your help!</h3>
+				<p>Starting something great isn't easy. It takes a lot of work and resources. We're willing to put in the work, but need help with funding the project. If willing, please donate!</p>
+			</div>
+			<div class="col-6 col-sm-3" style="text-align: left; padding: 0 1em;">
+				<h3>Help &amp; Legal</h3>
+				<ul>
+					<li><a href="/contact">Contact</a></li>
+					<li><a href="/privacy">Privacy Policy</a></li>
+					<li><a href="/terms">Terms of Service</a></li>
+				</ul>
+			</div>
+			<div class="col-6 col-sm-3" style="text-align: left; padding: 0 1em;">
+				<h3>Learn More</h3>
+				<ul>
+					<li><a href="/about">About Propcott</a></li>
+					<li><a href="/creator-tips">Tips for Propcott Creators</a></li>
+					<li><a href="/supporter-tips">Tips for Propcotters</a></li>
+				</ul>
+			</div>
+		</div>
+		<p style="text-align: center;">Copyright &copy; 2015</p>
+	</div>
+</div>
+<style>
+
+.popup-form {
+	position: fixed;
+	z-index: 20;
+	display: none;
+	background: white;
+	border: 1px solid #333;
+	width: 400px;
+	top: 50px;
+	left: 50%;
+	margin-left: -200px;
+}
+.popup-form * {
+	line-height: 1;
+}
+.popup-form p {
+	font-style: italic;
+	color: #aaa;
+	text-align: center;
+	padding: 0.5em 1em;
+	margin: 0;
+	border-bottom: 1px solid #bbb;
+}
+.popup-form input {
+	width: 100%;
+	padding: 1em;
+	border: 0;
+	border-bottom: 1px solid #ccc;
+	outline: 0;
+	background white;
+	transition: 300ms;
+}
+.popup-form input:hover,
+.popup-form input:focus {
+	background: #eee;
+}
+#overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 19;
+	background: black;
+	opacity: 0.75;
+	display: none;
+}
+.popup-form button,
+.popup-form .button {
+	padding: 1em;
+	background: #ddd;
+	color: #777;
+	border: 0;
+	text-align: center;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 300ms;
+	border-bottom: 1px solid #bbb;
+}
+.popup-form button:hover,
+.popup-form .button:hover {
+	color: #333;
+	background: #ccc;
+	text-decoration: none;
+}
+.popup-form .login-check:checked ~ .login-button,
+.popup-form .signup-check:checked ~ .signup-button {
+	background: #BD1417;
+	color: white;
+}
+button.facebook {
+	color: white;
+	background-color: rgb(0, 119, 255);
+}
+button.facebook:hover {
+	color: white;
+	background-color: rgb(0, 100, 200);
+}
+.popup-form .login-tooltip {
+	position: relative;
+}
+.popup-form .login-tooltip span {
+	display: none;
+	position: absolute;
+	bottom: 100%;
+	left: 1em;
+	right: 1em;
+	background: #111;
+	color: white;
+	font-style: normal;
+	padding: 1em;
+	margin-top: 0.5em;
+	pointer-events: none;
+	font-size: 0.9em;
+	line-height: 1.4em;
+	border-radius: 4px;
+	margin-bottom: .5em;
+}
+
+.login-check,
+.signup-check,
+.popup-form .login-only,
+.popup-form .signup-only {
+	display: none;
+}
+.popup-target:target + .popup-form,
+.popup-target:target ~ #overlay,
+.popup-form .login-check:checked ~ .login-only,
+.popup-form .signup-check:checked ~ .signup-only,
+.popup-form .login-tooltip a:hover + span {
+	display: block;
+}
+	#actions li > * {
+		display: block;
+		padding: 14px;
+		text-align: center;
+		text-transform: uppercase;
+		color: white;
+		background: #BD1417;
+		border-top-left-radius: 15px 50%;
+		border-bottom-left-radius: 15px 50%;
+		border: 2px dashed white;
+		box-shadow: 0 0 0 3px #BD1417;
+		position: relative;
+		left: 5px;
+		font-weight: bold;
+	}
+</style>
+
+{% if !user %}
+<div id="login" class="popup-target"></div>
+<div id="login-box" class="popup-form">
+	<div class="row">
+		<form method="POST" action="/oauth/facebook">
+			<button class="col-12 facebook" type="submit">Log in with Facebook<span class="typcn typcn-social-facebook"></span><br><small style="font-weight: normal;">This is only here for your convenience</small></button>
+		</form>
+		<p class="col-12">- or -</p>
+		<form method="POST" action="/login">
+			<input type="radio" name="login-type" id="login-login" class="login-check" value="login" checked>
+			<input type="radio" name="login-type" id="login-signup" class="signup-check" value="signup">
+			<label class="col-6 button login-button" for="login-login">Log In</label>
+			<label class="col-6 button signup-button" for="login-signup">Sign Up</label>
+			<div class="col-12"><input type="text" name="user[username]" placeholder="Username"></div>
+			<div class="col-12"><input type="password" name="user[password]" placeholder="Password"></div>
+			<div class="col-12 signup-only"><input type="password" name="password" placeholder="Confirm Password"></div>
+			<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (optional)"></div>
+			<p class="col-12 login-tooltip signup-only" style="text-align: left;"><a href="#" data-nolink style="font-size: 0.9em; color: #777; font-weight: normal;">Why do we want your email?</a><span>Remembering to avoid something(s) can be difficult. So we want to help you remember by sending you email reminders, <em>of which</em> can be edited in your notification settings. And please rest assured, <strong>we will not share your e-mail with anyone nor spam you. Seriously.</strong></span></p>
+			<button type="submit" class="col-12 login-only">Log In</button>
+			<button type="submit" class="col-12 signup-only">Sign Up</button>
+		</form>
+	</div>
+</div>
+{% endif %}
+<script type="text/javascript">
+document.addEventListener('click', function(e) {
+	if(e.target.hasAttribute('data-back')) {
+		window.history.back();
+		return false;
+	}
+	if(e.target.hasAttribute('data-nolink')) {
+		e.preventDefault();
+		return false;
+	}
+});
+</script>
 {% block body.end %}{% endblock %}
+<a href="#" id="overlay" data-back aria-label="Back"></a>
 </body>
 </html>

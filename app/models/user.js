@@ -70,7 +70,7 @@ class User extends Base {
 			callback();
 		});
 
-		if(this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) => {
+		if(this.email && this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) => {
 			if(err) console.error(err);
 			this.sendEmail('join', `Propcotting ${propcott.target}`, {propcott: propcott});
 		});
@@ -139,6 +139,7 @@ class User extends Base {
 	session() {
 		return {
 			id           : this.id,
+			username     : this.username,
 			email        : this.email,
 			display_name : this.display_name,
 			avatar       : this.avatar && {url: this.avatar},
@@ -165,7 +166,7 @@ class User extends Base {
 				provider: provider,
 				key: key
 			};
-			if(data.Item.Password) cred._password = data.Item.Password.S
+			if(data.Item.Password) cred._password = data.Item.Password.S;
 			user.credentials.push(cred);
 			callback(null, user);
 		});

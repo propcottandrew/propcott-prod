@@ -5,6 +5,9 @@ var dynamo    = require(app.aws).dynamo;
 var User      = require(app.models.user);
 
 module.exports.connect = function(req, res) {
+	if(req.body.join)
+		req.session.afterLogin = `/p/${req.body.join}/join`;
+	
 	res.redirect('https://www.facebook.com/dialog/oauth?' +
 		`client_id=${process.env.FACEBOOK_CLIENT_ID}` +
     	`&redirect_uri=${process.env.FACEBOOK_CALLBACK_URL}` +

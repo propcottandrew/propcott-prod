@@ -1,11 +1,31 @@
-{% extends '../base.html' %}
+{% extends '../base-new.html' %}
 
 {% block title %}Privacy Policy{% endblock %}
 
+{% block head.end %}
+	{% parent %}
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<style type="text/css">
+	#content {
+		padding: 2em;
+		margin: 0;
+		margin-bottom: 2em;
+	}
+	</style>
+{% endblock %}
+
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content" style="padding-top: 1em;">
+		<h1>Privacy Policy</h1>
+	</div>
+</div>
+{% endautoescape %}
+{% endblock %}
+
 {% block content %}
 <div class="container">
-	<h1>Privacy <small>Policy</small></h1>
-
 <p>This privacy policy has been compiled to better serve those who are concerned with how their 'Personally identifiable information' (PII) is being used online. PII, as used in US privacy law and information security, is information that can be used on its own or with other information to identify, contact, or locate a single person, or to identify an individual in context. Please read our privacy policy carefully to get a clear understanding of how we collect, use, protect or otherwise handle your Personally Identifiable Information in accordance with our website.</p>
 
 <h2>What personal information do we collect from the people that visit our blog, website or app?</h2>

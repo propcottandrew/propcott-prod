@@ -8,45 +8,52 @@ var Propcott  = require(app.models.propcott);
 module.exports.form = (req, res) => res.render('auth/login');
 
 module.exports.login = (req, res) => {
-	User.find('local', req.body.email, (err, user) => {
-		if(err || !user.authenticate(req.body.password)) {
+	if(req.body['login-type'] == 'login')
+		return login(req, res);
+	
+	if(req.body['login-type'] == 'signup')
+		register(req, res);
+};
+
+var login = function(req, res) {
+	User.find('local', req.body.user.username, (err, user) => {
+		if(err || !user.authenticate(req.body.user.password)) {
 			req.flash('Invalid username or password');
-			res.render('auth/login');
+			res.redirect('back');
 		} else user.load((err, user) => {
 			if(err) {
-				req.flash('Could not load user');
-				return res.render('auth/login');
+				req.flash('Server error');
+				return res.redirect('back');
 			}
-
 			req.session.user = user.session();
 			req.flash('Successfully logged in');
 			user.emit('login', err => {
 				if(err) console.info(err);
-				res.redirect(req.session.afterLogin || '/');
+				
+				if(req.body.join)
+					res.redirect(`/p/${req.body.join}/join`);
+				else
+					res.redirect(req.session.afterLogin || '/');
 			});
 		});
 	});
 };
 
-module.exports.register = function(req, res) {
-	if(!(validator.isEmail(req.body.email)
-		&& req.body.password.length
-		&& req.body.password == req.body.password_confirmation
-		&& req.body.name)) {
+var register = function(req, res) {
+	if(!(validator.isEmail(req.body.user.email)
+		&& req.body.user.password.length
+		&& req.body.user.password == req.body.password
+		&& req.body.user.name)) {
 		req.flash(MessageBag, 'input.incorrect');
-		return res.redirect('/login');
+		return res.redirect('back');
 	}
 
 	var user = new User();
-	user.link('local', req.body.email, req.body.password);
+	user.link('local', req.body.user.username, req.body.user.password);
+	
+	user.username = req.body.user.username;
+	user.email    = req.body.user.email;
 
-	delete req.body.password;
-	delete req.body.password_confirmation;
-	delete req.body['g-recaptcha-response'];
-	delete req.body.register;
-
-	for(var i in req.body) user[i] = req.body[i];
-	user.display_name = req.body.name.split(' ')[0];
 	user.save(function(err, user) {
 		if(err) {
 			req.flash(MessageBag, 'auth.registered.error');
@@ -76,7 +83,7 @@ module.exports.logout = function(req, res) {
 		res.clearCookie('sid');
 		user.emit('logout', err => {
 			if(err) console.info(err);
-			if(!req.headersSent) res.redirect('/');
+			if(!req.headersSent) res.redirect('back');
 		});
 	});
 };

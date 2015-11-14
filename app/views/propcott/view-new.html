@@ -2,6 +2,13 @@
 
 {% block title %}{% autoescape false %}{{ propcott.title }}{% endautoescape %}{% endblock %}
 
+{% block head.end %}
+	{% parent %}
+	{% if propcott.media_type %}
+	<meta name="thumbnail" content="http://{% if propcott.media_type == 'image' %}static.propcott.com/{{ propcott.media_link }}{% elseif propcott.media_type == 'video' %}img.youtube.com/vi/{{ propcott.media_link }}/hqdefault.jpg{% endif %}" />
+	{% endif %}
+{% endblock %}
+
 {% block body.end %}
 	{% parent %}
 	<div id="fb-root"></div>
@@ -24,6 +31,8 @@
 	});
 	</script>
 	<style type="text/css">
+	
+	
 	#copy-button {
 		width: 100px;
 		text-align: center;
@@ -84,16 +93,13 @@
 		color:white;
 		margin-bottom:0.5em;
 	}
-	
-	
-	
 	.headline {
 		position: relative;
 	}
 	.headline-content {
 		padding: 2em;
 		background: #111;
-		background-color: rgba(0,0,0,0.65);
+		background-color: rgba(0,0,0,0.75);
 		color: white;
 		position: relative;
 		z-index: 1;
@@ -153,7 +159,7 @@
 		font-size: 0.8em;
 	}
 	.metric p {
-		margin: 0.5em 1.2em;
+		margin: 0.5em 2.5em;
 	}
 	.metric-bar, .metric-fill {
 		position: relative;
@@ -171,6 +177,34 @@
 		width: 100% !important;
 	}
 	</style>
+	<div id="join" class="popup-target"></div>
+	<div id="join-box" class="popup-form">
+		<div class="row">
+			<form method="POST" action="/oauth/facebook">
+				<input type="hidden" name="join" value="{{ propcott.id }}">
+				<button class="col-12 facebook" type="submit">Log in with Facebook<span class="typcn typcn-social-facebook"></span><br><small style="font-weight: normal;">This is only here for your convenience</small></button>
+			</form>
+			<p class="col-12">- or -</p>
+			<form method="POST" action="/p/{{ propcott.slug }}/join">
+				<button type="submit" class="col-12" id="login-join">Maybe next time<br><small style="font-weight: normal;">Show your support, but miss out on some features</small></button>
+				<p class="col-12">- or -</p>
+			</form>
+			<form method="POST" action="/login">
+				<input type="hidden" name="join" value="{{ propcott.id }}">
+				<input type="radio" name="login-type" id="join-login" class="login-check" value="login" checked>
+				<input type="radio" name="login-type" id="join-signup" class="signup-check" value="signup">
+				<label class="col-6 button login-button" for="join-login">Log In</label>
+				<label class="col-6 button signup-button" for="join-signup">Sign Up</label>
+				<div class="col-12"><input type="text" name="user[username]" placeholder="Username"></div>
+				<div class="col-12"><input type="password" name="user[password]" placeholder="Password"></div>
+				<div class="col-12 signup-only"><input type="password" name="password" placeholder="Confirm Password"></div>
+				<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (optional)"></div>
+				<p class="col-12 login-tooltip signup-only" style="text-align: left;"><a href="#" data-nolink style="font-size: 0.9em; color: #777; font-weight: normal;">Why do we want your email?</a><span>Remembering to avoid something(s) can be difficult. So we want to help you remember by sending you email reminders, <em>of which</em> can be edited in your notification settings. And please rest assured, <strong>we will not share your e-mail with anyone nor spam you. Seriously.</strong></span></p>
+				<button type="submit" class="col-12 login-only">Log In + Join</button>
+				<button type="submit" class="col-12 signup-only">Sign Up + Join</button>
+			</form>
+		</div>
+	</div>
 {% endblock %}
 
 {% block hero %}
@@ -187,12 +221,8 @@
 					<p style="margin: 0; padding-left: 1em; line-height: 1;">propcotting<br><strong style="font-size: 3em;">{{ propcott.target }}</strong></p>
 				</div>
 			</div>
-			{% if user && supporting %}
-			<button class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0; cursor: default;"><span class="typcn typcn-tick"></span> Already joined!</button>
-			{% else %}
-			<form method="POST" action="/p/{{ propcott.slug }}/join">
-				<button type="submit" class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0;">Join!</button>
-			</form>
+			{% if !supporting %}
+			<a href="#join" class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0;"><span class="typcn typcn-plus"></span> Join!</a>
 			{% endif %}
 			{% if propcott.creator %}
 				<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.display_name }}
@@ -216,95 +246,102 @@
 {% endblock %}
 
 {% block actions %}
-<li><a href="#"><span class="typcn typcn-plus"></span><br>Join</a></li>
-<li><a href="#"><span class="typcn typcn-news"></span><br>Updates</a></li>
-<li><a href="#"><span class="typcn typcn-messages"></span><br>Comments</a></li>
+{% if supporting %}
+<li><span><span class="typcn typcn-tick"></span><br>Joined</span></li>
+{% else %}
+<li><a href="#join"><span class="typcn typcn-plus"></span><br>Join</a></li>
+{% endif %}
+<li><a href="#updates"><span class="typcn typcn-microphone"></span><br>Updates</a></li>
+<li><a href="#comments"><span class="typcn typcn-messages"></span><br>Comments</a></li>
 {% endblock %}
 
-{% block main %}
+{% block content %}
 {% autoescape false %}
-	{#<div class="ribbon">Victory!</div>#}
-	
-	<h3>Goal</h3>
-	<p>{{ propcott.goal }}</p>
-	
-	<h3>Why</h3>
-	{{ propcott.why }}
-	
-	<h3>Updates</h3>
-	{% if propcott.updates && propcott.updates.length %}
-		{% if user.id == propcott.creator.id %}
-			<textarea id="propcott-new-update"
-				  name="propcott-new-update"
-				  class="editable-region"
-				  placeholder="Update your propcotters"
-				  ></textarea>
+{#<div class="ribbon">Victory!</div>#}
+<div class="row">
+	<div class="col-12 col-md-5" style="float: right; clear: right;">
+		{% if propcott.media_type %}
+			{% if propcott.media_type == 'image' %}
+			<div style="text-align: center; background: #ddd"><img src="http://static.propcott.com/{{ propcott.media_link }}" style="max-width: 100%; max-height: 250px; vertical-align: top;"></div>
+			{% elseif propcott.media_type == 'video' %}
+			<div class="fluid-video"><div class="inner"><iframe src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe></div></div>
+			{% endif %}
 		{% endif %}
-		{% if propcott.updates && propcott.updates.length %}
-			{% for update in propcott.updates %}
-				<p>{{ update.content }}</p>
-			{% endfor %}
-		{% endif %}
-	{% else %}
-	<p style="font-size: 0.9em;"><em>Stay tuned for updates and announcements from the creator of this propcott.</em></p>
-	{% endif %}
-
-	<h3>Comments</h3>
-	<div class="fb-comments" data-href="http://www.propcott.com/p/{{ propcott.id }}" data-numposts="5"></div>
-{% endautoescape %}
-{% endblock %}
-
-{% block side %}
-{% autoescape false %}
-{% if propcott.media_type %}
-	<div class="fill">
-	{% if propcott.media_type == 'image' %}
-	<img src="http://static.propcott.com/{{ propcott.media_link }}">
-	{% elseif propcott.media_type == 'video' %}
-	<div class="fluid-video"><div class="inner"><iframe src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe></div></div>
-	{% endif %}
+		<div class="metric clear">
+			<div class="metric-bar"><div class="metric-fill" style="width: {{ propcott.support.all / propcott.metric * 100 }}%;"></div></div>
+			<p style="float: left;">{{ propcott.support.all }} propcotters</p>
+			<p style="float: right;">{{ propcott.metric - propcott.support.all }} more for {{ propcott.metric }}</p>
+		</div>
 	</div>
-{% endif %}
+	
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<h3>Goal</h3>
+		<p>{{ propcott.goal }}</p>
+	</div>
+	
+	{% if propcott.how %}
+	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+		<h3>What to do:</h3>
+		<ul id="propcott-how">
+			{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
 
-<div class="metric fill clear">
-	<div class="metric-bar"><div class="metric-fill" style="width: {{ propcott.support.all / propcott.metric * 100 }}%;"></div></div>
-	<p style="float: left;">{{ propcott.support.all }} propcotters</p>
-	<p style="float: right;">{{ propcott.metric - propcott.support.all }} more for {{ propcott.metric }}</p>
+	{% if propcott.alt %}
+	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+		<h3>Instead, try...</h3>
+		<ul id="propcott-alt">
+			{% for alt in propcott.alt %}<li>{{ alt }}</li>{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+	
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<h3>Why</h3>
+		<p>{{ propcott.why }}</p>
+	</div>
+	
+	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+		<h3>Share!</h3>
+		<p>
+			<span id="copy-label" class="typcn typcn-link"></span>
+			<button id="copy-button" data-clipboard-text="http://www.propcott.com/p/{{ propcott.slug }}">Copy link</button>
+			<span id="copy-link">http://www.propcott.com/p/{{ propcott.slug }}</span>
+		</p>
+		<p class="sharebuttons">
+			<a href="mailto:?subject={{ encodeURIComponent(propcott.title) }}&amp;body=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#0a88ff;">email</a>
+
+			<a href="https://www.facebook.com/sharer/sharer.php?u=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#306199;" target="_blank">facebook</a>
+
+			<a href="http://tumblr.com/share/link?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;name={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#32506d;" target="_blank">tumblr</a>
+
+			<a href="http://twitter.com/share?text={{ encodeURIComponent(propcott.title) }}&amp;url=http://www.propcott.com/p/{{ propcott.slug }}&amp;hashtags=propcott" class="sharebutton" style="background-color:#26c4f1;" target="_blank">twitter</a>
+
+			<a href="http://www.reddit.com/submit?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;title={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#336699;" target="_blank">reddit</a>
+
+			<a href="https://plus.google.com/share?url=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#e93f2e;" target="_blank">google+</a>
+
+			<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% endif %}{% if propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}&amp;description={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#b81621;" target="_blank">pinterest</a>
+		</p>
+	</div>
+	
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<h3 id="updates">Updates</h3>
+		{% if propcott.updates && propcott.updates.length %}
+			{% for update in propcott.updates && propcott.updates.reverse() %}
+				<p>
+					{% if update.created %}<span style="float: right; color: #777; margin: 0 0 1em 1em;">{{ date(update.created) }}</span>{% endif %}
+					{{ update.content || update }}
+				</p>
+			{% endfor %}
+		{% else %}
+			<p style="font-size: 0.9em;"><em>Stay tuned for updates and announcements from the creator of this propcott.</em></p>
+		{% endif %}
+
+		<h3 id="comments">Comments</h3>
+		<div class="fb-comments" data-href="http://www.propcott.com/p/{{ propcott.id }}" data-numposts="5"></div>
+	</div>
 </div>
-
-{% if propcott.how %}
-	<h3>What to do:</h3>
-	<ul id="propcott-how">
-		{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
-	</ul>
-{% endif %}
-
-{% if propcott.alt %}
-	<h3>Instead, try...</h3>
-	<ul id="propcott-alt">
-		{% for alt in propcott.alt %}<li>{{ alt }}</li>{% endfor %}
-	</ul>
-{% endif %}
-
-<p>
-	<span id="copy-label" class="typcn typcn-link"></span>
-	<button id="copy-button" data-clipboard-text="http://www.propcott.com/p/{{ propcott.slug }}">Copy link</button>
-	<span id="copy-link">http://www.propcott.com/p/{{ propcott.slug }}</span>
-</p>
-<p class="sharebuttons">
-	<a href="mailto:?subject={{ encodeURIComponent(propcott.title) }}&amp;body=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#0a88ff;">email</a>
-
-	<a href="https://www.facebook.com/sharer/sharer.php?u=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#306199;" target="_blank">facebook</a>
-
-	<a href="http://tumblr.com/share/link?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;name={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#32506d;" target="_blank">tumblr</a>
-
-	<a href="http://twitter.com/share?text={{ encodeURIComponent(propcott.title) }}&amp;url=http://www.propcott.com/p/{{ propcott.slug }}&amp;hashtags=propcott" class="sharebutton" style="background-color:#26c4f1;" target="_blank">twitter</a>
-
-	<a href="http://www.reddit.com/submit?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;title={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#336699;" target="_blank">reddit</a>
-
-	<a href="https://plus.google.com/share?url=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#e93f2e;" target="_blank">google+</a>
-
-	<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% endif %}{% if propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}&amp;description={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#b81621;" target="_blank">pinterest</a>
-</p>
 {% endautoescape %}
 {% endblock %}

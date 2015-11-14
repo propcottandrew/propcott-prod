@@ -1,116 +1,56 @@
-{% extends '../base.html' %}
+{% extends '../base-new.html' %}
 
 {% block title %}Login or Signup{% endblock %}
 
 {% block head.end %}
 	{% parent %}
-	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<style type="text/css">
+	.propcott-media {
+		margin-right: 1em;
+		float: left;
+		width: 120px;
+		height: 90px;
+		background-size: cover;
+	}
+	#content {
+	    display: inline-block;
+	}
+	#page {
+		text-align: center;
+	}
+	</style>
+{% endblock %}
+
+{% block hero %}
+<div class="headline">
+	<div class="headline-content" style="padding-top: 1em;">
+		<h1>Login or Signup</h1>
+	</div>
+</div>
 {% endblock %}
 
 {% block content %}
-<div class="container" style="margin-top: 1em;">
+{% autoescape false %}
+<div class="popup-form" style="display: block; position: static; margin-left: 0; border: 0;">
 	<div class="row">
-		<div class="col-12" style="vertical-align: top;">
-			<p style="text-align: center; margin-top: 0;">
-				<a href="/oauth/facebook" class="block" style="display: inline-block; border: 1px solid #eee; margin: 0.5em; padding: .5em 5em;color: white;cursor: pointer;background-color: rgb(0, 119, 255);border-radius: 10px;">Log in with Facebook <span class="typcn typcn-social-facebook"></span></a>
-			</p>
-			<div style="border-radius: 10px; padding: 1em; margin-bottom: 1em; background: white;">
-				<div class="row">
-					<div class="col-6" style="vertical-align: top;">
-						<h2 style="margin-top: 0;">Login</h2>
-						<form class="form-horizontal" role="form" method="POST">
-							{{ csrf_field }}
-			
-							<div class="form-group">
-								<label class="col-md-4 control-label">E-Mail Address</label>
-								<div class="col-md-6">
-									<input type="email" class="form-control" name="email">
-								</div>
-							</div>
-			
-							<div class="form-group">
-								<label class="col-md-4 control-label">Password</label>
-								<div class="col-md-6">
-									<input type="password" class="form-control" name="password">
-								</div>
-							</div>
-			
-							<div class="form-group">
-								<div class="col-md-6 col-md-offset-4">
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" name="remember"> Remember Me
-										</label>
-									</div>
-								</div>
-							</div>
-			
-							<div class="form-group">
-								<div class="col-md-6 col-md-offset-4">
-									<input type="submit" name="login" value="Login" class="btn btn-primary">
-									<br>
-									<a class="btn btn-link" href="/login/forgot">Forgot Your Password?</a>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="col-6" style="vertical-align: top;">
-						<h2 style="margin-top: 0;">Sign up</h2>
-						<form class="form-horizontal" role="form" method="POST" action="/register">
-							{{ csrf_field() }}
-			
-							<div class="form-group">
-								<label class="col-md-4 control-label">Name</label>
-								<div class="col-md-6">
-									<input type="text" class="form-control" name="name">
-								</div>
-							</div>
-			
-							<div class="form-group">
-								<label class="col-md-4 control-label">E-Mail Address</label>
-								<div class="col-md-6">
-									<input type="email" class="form-control" name="email">
-								</div>
-							</div>
-			
-							<div class="form-group">
-								<label class="col-md-4 control-label">Password</label>
-								<div class="col-md-6">
-									<input type="password" class="form-control" name="password">
-								</div>
-							</div>
-			
-							<div class="form-group">
-								<label class="col-md-4 control-label">Confirm Password</label>
-								<div class="col-md-6">
-									<input type="password" class="form-control" name="password_confirmation">
-								</div>
-							</div>
-			
-							<div class="g-recaptcha" data-sitekey="6Lf7aQkTAAAAAFNIggrxOMkz7cdqoUlCTRImBt6D"></div>
-							<noscript>
-								<iframe src="https://www.google.com/recaptcha/api/fallback?k=6Lf7aQkTAAAAAFNIggrxOMkz7cdqoUlCTRImBt6D"
-									frameborder="0" scrolling="no"
-									style="width: 302px; height:423px; border-style: none; margin-bottom: .25em;">
-								</iframe>
-								<div style="width: 302px; height: 60px; border-style: none; bottom: 12px; left: 25px; margin-bottom: 1em; padding: 0px; right: 25px; background: #f9f9f9; border: 1px solid #c1c1c1; border-radius: 3px;">
-									<textarea id="g-recaptcha-response" name="g-recaptcha-response"
-										class="g-recaptcha-response"
-										style="width: 250px; height: 40px; border: 1px solid #c1c1c1;
-										margin: 10px 25px; padding: 0px; resize: none;" >
-									</textarea>
-								</div>
-							</noscript>
-							<div class="form-group">
-								<div class="col-md-6 col-md-offset-4">
-									<input type="submit" name="register" value="Register" class="btn btn-primary">
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
+		<form method="POST" action="/oauth/facebook">
+			<button class="col-12 facebook" type="submit">Log in with Facebook<span class="typcn typcn-social-facebook"></span><br><small style="font-weight: normal;">This is only here for your convenience</small></button>
+		</form>
+		<p class="col-12">- or -</p>
+		<form method="POST" action="/login">
+			<input type="radio" name="login-type" id="login-login2" class="login-check" value="login" checked>
+			<input type="radio" name="login-type" id="login-signup2" class="signup-check" value="signup">
+			<label class="col-6 button login-button" for="login-login2">Log In</label>
+			<label class="col-6 button signup-button" for="login-signup2">Sign Up</label>
+			<div class="col-12"><input type="text" name="user[username]" placeholder="Username"></div>
+			<div class="col-12"><input type="password" name="user[password]" placeholder="Password"></div>
+			<div class="col-12 signup-only"><input type="password" name="password" placeholder="Confirm Password"></div>
+			<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (optional)"></div>
+			<p class="col-12 login-tooltip signup-only" style="text-align: left;"><a href="#" data-nolink style="font-size: 0.9em; color: #777; font-weight: normal;">Why do we want your email?</a><span>Remembering to avoid something(s) can be difficult. So we want to help you remember by sending you email reminders, <em>of which</em> can be edited in your notification settings. And please rest assured, <strong>we will not share your e-mail with anyone nor spam you. Seriously.</strong></span></p>
+			<button type="submit" class="col-12 login-only">Log In</button>
+			<button type="submit" class="col-12 signup-only">Sign Up</button>
+		</form>
 	</div>
 </div>
+{% endautoescape %}
 {% endblock %}

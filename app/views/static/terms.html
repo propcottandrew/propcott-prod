@@ -1,11 +1,31 @@
-{% extends '../base.html' %}
+{% extends '../base-new.html' %}
 
 {% block title %}Terms and Conditions{% endblock %}
 
+{% block head.end %}
+	{% parent %}
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<style type="text/css">
+	#content {
+		padding: 2em;
+		margin: 0;
+		margin-bottom: 2em;
+	}
+	</style>
+{% endblock %}
+
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content" style="padding-top: 1em;">
+		<h1>Terms and Conditions</h1>
+	</div>
+</div>
+{% endautoescape %}
+{% endblock %}
+
 {% block content %}
 <div class="container">
-	<h1>Web Site Terms and Conditions of Use</h1>
-
 	<h3>1. Terms</h3>
 
 	<p>By accessing this web site, you are agreeing to be bound by these web site Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this web site are protected by applicable copyright and trade mark law.</p>

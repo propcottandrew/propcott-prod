@@ -1,4 +1,94 @@
-{% extends 'base.html' %}
+{% extends 'base-new.html' %}
+
+{% block title %}Explore{% endblock %}
+
+{% block body.end %}
+	{% parent %}
+	<style type="text/css">
+	.propcott-media {
+		margin-right: 1em;
+		float: left;
+		width: 120px;
+		height: 90px;
+		background-size: cover;
+	}
+	</style>
+{% endblock %}
+
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content" style="padding-top: 1em;">
+		<h1>Explore</h1>
+	</div>
+	
+</div>
+{% endautoescape %}
+{% endblock %}
+
+{% block content %}
+{% autoescape false %}
+<div style="padding: 2em; overflow: hidden;">
+	<div class="explore-navigation">
+		<div class="tabs">
+			<a href="/explore/daily"{% if tab == 'hot' %} class="active"{% endif %}>Hot</a>
+			<a href="/explore"{% if tab == 'new' %} class="active"{% endif %}>New</a>
+		</div>
+		{% if subtab %}
+		<div class="tabs subtabs">
+			<a href="/explore/daily"{% if subtab == 'daily' %} class="active"{% endif %}>Today</a>
+			<a href="/explore/weekly"{% if subtab == 'weekly' %} class="active"{% endif %}>This Week</a>
+			<a href="/explore/monthly"{% if subtab == 'monthly' %} class="active"{% endif %}>This Month</a>
+			<a href="/explore/all"{% if subtab == 'all' %} class="active"{% endif %}>All Time</a>
+		</div>
+		{% endif %}
+	</div>
+	{% for propcott in propcotts %}
+		{% if loop.index == 4 %}
+		<div style="margin-bottom: 1em; clear: both;">
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Explore Page -->
+			<ins class="adsbygoogle"
+				style="display:block"
+				data-ad-client="ca-pub-5509225747243146"
+				data-ad-slot="1803023116"
+				data-ad-format="auto"></ins>
+			<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+		</div>
+		{% endif %}
+		<div style="margin-bottom: 1em; clear: both;">
+			<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+			<div style="overflow:hidden; font-size: .9em;">
+				<p style="float: right; text-align: right; line-height: 1.2; margin: 0 0 1em 1em;">Targeting <span style="color:rgb(215,0,0)">{{ propcott.target }}</span><br>
+				<span style="color: rgb(215,0,0);">{{ propcott.support.all }} supporters</span></p>
+				<a href="/p/{{ propcott.slug }}">{{ propcott.title || 'Untitled' }}</a>
+				<p>{{ propcott.goal }}</p>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+{% endautoescape %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 {% block head.end %}
 	{% parent %}
@@ -98,42 +188,4 @@
 		cursor: default;
 	}
 	</style>
-{% endblock %}
-
-{% block content %}
-{% autoescape false %}
-<div class="container" style="margin-top: 1em;">
-	<div class="row">
-		<div class="col-12" style="vertical-align: top;">
-			<div style="border-radius: 10px; padding: 1em; margin-bottom: 1em; background: white;">
-				<div class="explore-navigation">
-					<div class="tabs">
-						<a href="/explore/daily"{% if tab == 'hot' %} class="active"{% endif %}>Hot</a>
-						<a href="/explore"{% if tab == 'new' %} class="active"{% endif %}>New</a>
-					</div>
-					{% if subtab %}
-					<div class="tabs subtabs">
-						<a href="/explore/daily"{% if subtab == 'daily' %} class="active"{% endif %}>Today</a>
-						<a href="/explore/weekly"{% if subtab == 'weekly' %} class="active"{% endif %}>This Week</a>
-						<a href="/explore/monthly"{% if subtab == 'monthly' %} class="active"{% endif %}>This Month</a>
-						<a href="/explore/all"{% if subtab == 'all' %} class="active"{% endif %}>All Time</a>
-					</div>
-					{% endif %}
-				</div>
-				{% for propcott in propcotts %}
-					<div style="margin-bottom: 1em; clear: both;">
-						<div id="propcott-media" style="margin-right: 1em; float: left; width: 120px; height: 90px; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
-						<div style="overflow:hidden; font-size: .9em;">
-							<p style="float: right; text-align: right; line-height: 1.2; margin: 0 0 1em 1em;">Targeting <span style="color:rgb(215,0,0)">{{ propcott.target }}</span><br>
-							<span style="color: rgb(215,0,0);">{{ propcott.support.all }} supporters</span></p>
-							<a href="/p/{{ propcott.slug }}">{{ propcott.title || 'Untitled' }}</a>
-							<p>{{ propcott.goal }}</p>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-</div>
-{% endautoescape %}
 {% endblock %}
