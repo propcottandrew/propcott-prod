@@ -93,7 +93,7 @@ module.exports.join = (req, res) => {
 			req.session.joined.push(req.params.id);
 		}
 		
-		req.flash('Thank you for supporting this propcott!');
+		req.flash('Thank you for joining this propcott!');
 		res.redirect(`/p/${req.params.slug}`);
 	});
 };

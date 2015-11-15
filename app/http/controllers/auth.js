@@ -40,24 +40,29 @@ var login = function(req, res) {
 };
 
 var register = function(req, res) {
-	if(!(validator.isEmail(req.body.user.email)
-		&& req.body.user.password.length
-		&& req.body.user.password == req.body.password
-		&& req.body.user.name)) {
+	if(
+		!req.body.user.username ||
+		!req.body.user.password ||
+		!req.body.user.password == req.body.password ||
+		req.body.user.email && validator.isEmail(req.body.user.email)
+	) {
 		req.flash(MessageBag, 'input.incorrect');
 		return res.redirect('back');
 	}
 
 	var user = new User();
-	user.link('local', req.body.user.username, req.body.user.password);
-	
 	user.username = req.body.user.username;
 	user.email    = req.body.user.email;
+	user.link('local', user.username, req.body.user.password);
+	
 
 	user.save(function(err, user) {
 		if(err) {
-			req.flash(MessageBag, 'auth.registered.error');
-			return res.redirect('/login');
+			if(err.code == 'ConditionalCheckFailedException')
+				req.flash('error', 'Username already exists');
+			else
+				req.flash(MessageBag, 'auth.registered.error');
+			return res.redirect('back');
 		}
 		req.session.user = user.session();
 		req.flash(MessageBag, 'auth.registered');
