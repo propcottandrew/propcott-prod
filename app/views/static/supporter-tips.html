@@ -1,77 +1,48 @@
-{% extends '../base.html' %}
+{% extends '../base-new.html' %}
 
-{% block title %}About Propcott{% endblock %}
+{% block title %}Tips for Propcotters{% endblock %}
 
-{% block content %}
-<style>
-.left-pane {
-	max-width: 250px;
-	float: left;
-	padding: 1em 0;
-	position: relative;
-}
-.right-pane {
-	overflow: hidden;
-	position: relative;
-	z-index: 1;
-}
-.content {
-	border-radius: 10px;
-	padding: 1em;
-	margin-bottom: 1em;
-	background: white;
-}
-.left-nav {
-    font-family: 'Josefin Sans',sans-serif;
-    list-style: none;
-    padding: 0;
-    float: left;
-    text-align: right;
-    margin-top: 3px;
-    line-height: 1;
-}
-.left-nav a {
-    border-right: 3px solid #E77E8A;
-    padding: .75em .5em;
-    display: inline-block;
-    transition: 150ms linear;
-    font-size: 1.1em;
-    position: relative;
-    left: 3px;
-}
-.left-nav .active a {
-	left: 0;
-}
-.left-nav a:hover {
-	text-decoration: none;
-	left: 0;
-}
-</style>
-<div class="container" style="margin-top: 1em;">
-	<div class="left-pane">
-		<ul class="left-nav">
-			<li><a href="/about">About Propcott</a></li>
-			<li><a href="/creator-tips">Tips for Propcott Creators</a></li>
-			<li class="active"><a href="/supporter-tips">Tips for Propcotters</a></li>
-		</ul>
-	</div>
-	<div class="right-pane">
-		<div class="content">
-			<h1>Tips for Propcotters</h1>
+{% block head.end %}
+	{% parent %}
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<style type="text/css">
+	#content {
+		padding: 1em 2em;
+		margin: 0;
+		margin-bottom: 2em;
+	}
+	</style>
+{% endblock %}
 
-			<h2>Trust</h2>
-			<p>Trust your fellow propcotters will take action alongside you for the duration of the campaign.</p>
-			<p>Trust that Propcott.com will work tirelessly to help all Propcott campaigns achieve their goal.</p>
-
-			<h2>Discipline</h2>
-			<p>Combining to abstain from something is not always easy. But just remember why you're doing it and what you're doing it for. Keep the end goal in mind. If you want periodical reminders, click here to edit your notification settings.</p>
-
-			<h2>Patience</h2>
-			<p>Change doesn't happen overnight. But with patience and persistence, you can make a difference.</p>
-
-			<h2>Broadcast</h2>
-			<p>Spread the word! Inform friends and family about the campaign and take action together along with your fellow propcotters.</p>
-		</div>
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content" style="padding-top: 1em;">
+		<h1>Tips for Propcotters</h1>
 	</div>
 </div>
+{% endautoescape %}
+{% endblock %}
+
+{% block actions %}
+<li><a href="/about">About<br>Propcott</a></li>
+<li><a href="/creator-tips">Tips for<br>Propcott Creators</a></li>
+<li><a href="/supporter-tips">Tips for<br>Propcotters</a></li>
+{% endblock %}
+
+{% block content %}
+<h2>Trust</h2>
+<ul>
+	<li>Trust your fellow propcotters will take action alongside you for the duration of the campaign.</li>
+	<li>Trust that Propcott.com will work tirelessly to help all Propcott campaigns achieve their goal.</li>
+</ul>
+
+<h2>Discipline</h2>
+<p>Combining to abstain from something is not always easy. But just remember why you're doing it and what you're doing it for. Keep the end goal in mind. If you want periodical reminders, click here to edit your notification settings.</p>
+
+<h2>Patience</h2>
+<p>Change doesn't happen overnight. But with patience and persistence, you can make a difference.</p>
+
+<h2>Broadcast</h2>
+<p>Spread the word! Inform friends and family about the campaign and take action together along with your fellow propcotters.</p>
 {% endblock %}

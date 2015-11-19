@@ -1,0 +1,58 @@
+.container {
+	max-width: @container-width;
+	margin: auto;
+	padding: 0 1em;
+}
+
+.row {
+	font-size: 0;
+
+	&.pad {
+		margin: 0 -@col-padding;
+	}
+}
+
+.make-grid(@postfix: ~'', @i: 1) when (@i =< @grid-columns) {
+	.row {
+		.col@{postfix}-@{i} {
+			display: inline-block;
+			position: relative;
+			font-size: @font-size;
+			vertical-align: top;
+			width: (@i * 100% / @grid-columns);
+		}
+		&.pad {
+			.col@{postfix}-@{i} {
+				padding: 0 @col-padding;
+			}
+		}
+		.push@{postfix}-@{i} {
+			left: (@i * 100% / @grid-columns);
+		}
+		.pull@{postfix}-@{i} {
+			left: -(@i * 100% / @grid-columns);
+		}
+		.lpad@{postfix}-@{i} {
+			margin-left: (@i * 100% / @grid-columns);
+		}
+		.rpad@{postfix}-@{i} {
+			margin-right: (@i * 100% / @grid-columns);
+		}
+	}
+
+	.make-grid(@postfix, (@i + 1));
+}
+
+.make-grid();
+
+@media (min-width: @screen-sm-min) {
+	.make-grid(~'-sm');
+}
+
+@media (min-width: @screen-md-min) {
+	.make-grid(~'-md');
+}
+
+@media (min-width: @screen-lg-min) {
+	.make-grid(~'-lg');
+}

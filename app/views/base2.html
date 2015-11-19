@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% block head.start %}{% endblock %}
+	<link href="/style/style.css" rel="stylesheet" type="text/css">
+	<title>{% block title %}Propcott{% endblock %}</title>
+	<style>
+	body {
+		padding-top: 52px;
+	}
+	#navigation {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 2;
+	}
+	.dropdown {
+		position: relative;
+		display: inline-block;
+	}
+	.dropdown-content {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		background: white;
+		border: 1px solid #ddd;
+		box-shadow: 0 0 3px -1px rgba(0,0,0,0.2);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-radius: 5px;
+		transition: 200ms;
+		visibility: hidden;
+		opacity: 0;
+	}
+	.dropdown:hover .dropdown-content {
+		opacity: 1;
+		visibility: visible;
+	}
+	.dropdown-content a {
+		display: block;
+		padding: .25em 1em;
+		white-space: nowrap;
+		font-family: 'Josefin Sans',sans-serif;
+	}
+	.dropdown-content a:hover {
+		background: #f7f7f7;
+		text-decoration: none;
+	}
+	#footer {
+		background: #111;
+		padding: 1em;
+		color: white;
+		text-align: left;
+	}
+	#footer h3, #footer ul, #footer p {
+		font-size: 0.8em;
+	}
+	#footer p {
+		margin: 0.5em 0;
+	}
+	#footer h3 {
+		margin: 0;
+	}
+	#footer ul {
+		margin: 0.5em 0;
+		list-style: none;
+		padding: 0;
+	}
+	</style>
+	{% block head.end %}{% endblock %}
+</head>
+<body>
+{% block body.start %}{% endblock %}
+{% block navigation %}
+<div id="navigation">
+	<div class="container">
+		{% block navigation.left %}
+			<a href="/"><div id="logo"></div></a>
+			<a class="navigation-item" href="/search">
+				<span class="navigation-text">Search</span>
+				<span class="typcn typcn-zoom"></span>
+			</a>
+			<a class="navigation-item" href="/explore">
+				<span class="navigation-text">Explore</span>
+				<span class="typcn typcn-world"></span>
+			</a>
+			<a class="navigation-item" href="/{% if session.draft_id %}editor{% else %}new{% endif %}">
+				<span class="navigation-text">{% if session.draft_id %}Continue Writing{% else %}Start a Propcott{% endif %}</span>
+				<span class="typcn typcn-pen"></span>
+			</a>
+		{% endblock %}
+		<div class="navigation-right">
+			{% block navigation.right %}
+				{% if !user %}
+					<a class="block round navigation-item" href="/login">
+						<span class="navigation-text">Log In</span>
+						<span class="typcn typcn-user"></span>
+					</a>
+				{% else %}
+					<span class="dropdown">
+						<a href="/account" class="block round navigation-item">
+							<span class="navigation-text">Hi, {{ user.display_name }}</span>
+							{% if user.avatar %}
+							<span class="navigation-avatar" style="background-image: url('{{ session.user.avatar }}');"></span>
+							{% else %}
+							<span class="typcn typcn-user"></span>
+							{% endif %}
+						</a>
+						<ul class="dropdown-content">
+							<li><a href="/account">Account</a></li>
+							<li><a href="/account/propcotts">My Propcotts</a></li>
+							<li><a href="/logout">Log out</a></li>
+						</ul>
+					</span>
+				{% endif %}
+			{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+<div id="content">
+{% block content %}{% endblock %}
+</div>
+<div id="footer" class="container">
+	<div class="row">
+		<div class="col-12 col-sm-6">
+			<h3>Help &amp; Legal</h3>
+			<ul>
+				<li><a href="/contact">Contact</a></li>
+				<li><a href="/privacy">Privacy Policy</a></li>
+				<li><a href="/terms">Terms of Service</a></li>
+			</ul>
+		</div>
+		<div class="col-12 col-sm-6">
+			<h3>Learn More</h3>
+			<ul>
+				<li><a href="/about">About Propcott</a></li>
+				<li><a href="/creator-tips">Tips for Propcott Creators</a></li>
+				<li><a href="/supporter-tips">Tips for Propcotters</a></li>
+			</ul>
+		</div>
+	</div>
+	<p style="text-align: center;">Copyright &copy; 2015</p>
+</div>
+{% block body.end %}{% endblock %}
+</body>
+</html>

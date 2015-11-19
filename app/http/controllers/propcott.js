@@ -3,12 +3,33 @@ var User     = require(app.models.user);
 var dynamo   = require(app.aws).dynamo;
 var async    = require('async');
 
+var months = [
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December'
+];
+
 module.exports.view = (req, res, next) => {
 	async.parallel({
 		propcott: callback => new Propcott({published: true, id: req.params.id}).load(callback),
 		index: callback => Propcott.find(req.params.id, callback),
 		supporting: callback => {
-			if(!req.session.user) return callback();
+			if(!req.session.user) {
+				if(req.session.joined && req.session.joined.indexOf(req.params.id) != -1)
+					return callback(null, true);
+				
+				return callback();
+			}
+			
 			dynamo.query({
 				TableName: 'Supporters',
 				ExpressionAttributeValues: {
@@ -26,6 +47,12 @@ module.exports.view = (req, res, next) => {
 			return next('route');
 		}
 		data.propcott.import(data.index);
+		
+		data.date = function(timestamp) {
+			var d = new Date(timestamp);
+			return `${months[d.getMonth()].substr(0,3)} ${d.getDate()}, ${d.getFullYear()}`;
+		}
+		
 		if(!req.session.user || req.session.user.id != data.propcott.creator.id)
 			res.render('propcott/view', data);
 		else
@@ -58,9 +85,15 @@ module.exports.edit = (req, res) => {
 };
 
 module.exports.join = (req, res) => {
-	new User(req.session.user).support(req.params.id, req.body.previous_support == '1', err => {
+	new User(req.session.user || {id: -1}).support(req.params.id, req.body.previous_support == '1', err => {
 		if(err) console.error(err);
-		req.flash('Thank you for supporting this propcott!');
+		
+		if(!req.session.user) {
+			req.session.joined = req.session.joined || [];
+			req.session.joined.push(req.params.id);
+		}
+		
+		req.flash('Thank you for joining this propcott!');
 		res.redirect(`/p/${req.params.slug}`);
 	});
 };

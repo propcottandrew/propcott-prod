@@ -19,10 +19,10 @@ module.exports = function(app) {
 	
 	app.get ('/login',    m.guest, c.auth.form);
 	app.post('/login',    m.guest, c.auth.login);
-	app.post('/register', m.guest, c.auth.register);
 	app.get ('/logout',   m.user,  c.auth.logout);
 
 	app.get ('/oauth/facebook',          c.oauth.connect);
+	app.post('/oauth/facebook',          c.oauth.connect);
 	app.get ('/oauth/facebook/callback', c.oauth.callback);
 
 	app.get ('/account', m.user, c.account.general);
@@ -42,9 +42,10 @@ module.exports = function(app) {
 //	app.get ('/v/:slug',                 m.ownDraft, c.propcott.view);
 	app.get ('/p/:slug',                 m.slugToId, c.propcott.view);
 	app.get ('/p/:slug/edit',   m.userR, m.slugToId, c.propcott.edit);
-	app.post('/p/:slug/join',   m.userR, m.slugToId, c.propcott.join);
 	app.post('/p/:slug/update', m.userR, m.slugToId, c.propcott.update);
 //	app.get ('/p/:slug/delete', m.userR, m.slugToId, c.propcott.remove);
+	app.get ('/p/:slug/join',   m.slugToId, c.propcott.join);
+	app.post('/p/:slug/join',   m.slugToId, c.propcott.join);
 
 	app.get ('/new',                     c.editor.fresh);
 	app.get ('/editor',                  c.editor.edit);

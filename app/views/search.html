@@ -1,4 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'base-new.html' %}
+
+{% block title %}Search{% endblock %}
 
 {% block head.end %}
 	{% parent %}
@@ -97,31 +99,71 @@
 		background: rgb(215,0,0);
 		cursor: default;
 	}
+	.gsc-selected-option-container {
+		width: auto !important;
+	}
+	#searchbox {
+		border-bottom: 1px solid #ccc;
+	}
+	#searchbox input, #searchbox button {
+		line-height: 1;
+		padding: 1em;
+		font-size: 1em;
+		background: #fff;
+		border: 0;
+		height: 50px;
+	}
+	#searchbox input {
+		width: 100%;
+		outline: 0;
+	}
+	#searchbox div {
+		overflow: hidden;
+	}
+	#searchbox button {
+		float: right;
+		font-weight: bold;
+		background: #BD1417;
+		color: white;
+		
+	}
 	</style>
+{% endblock %}
+
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content" style="padding-top: 1em;">
+		<h1>Search</h1>
+	</div>
+</div>
+{% endautoescape %}
 {% endblock %}
 
 {% block content %}
 {% autoescape false %}
-<div class="container" style="margin-top: 1em;">
-	<div class="row">
-		<div class="col-12" style="vertical-align: top;">
-			<div style="border-radius: 10px; padding: 1em; margin-bottom: 1em; background: white;">
-				<script>
-				  (function() {
-				    var cx = '009157398294654063874:u478ee71jci';
-				    var gcse = document.createElement('script');
-				    gcse.type = 'text/javascript';
-				    gcse.async = true;
-				    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-				        '//cse.google.com/cse.js?cx=' + cx;
-				    var s = document.getElementsByTagName('script')[0];
-				    s.parentNode.insertBefore(gcse, s);
-				  })();
-				</script>
-				<gcse:search></gcse:search>
-			</div>
-		</div>
-	</div>
+<div id="searchbox">
+<form method="GET" action="/search">
+<button type="submit">Search</button>
+<div>
+<input type="text" name="q" placeholder="Start typing..." value="{{ query }}" autofocus>
 </div>
+</form>
+</div>
+{% if query %}
+<script>
+  (function() {
+    var cx = '009157398294654063874:u478ee71jci';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//cse.google.com/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<gcse:searchresults-only></gcse:searchresults-only>
+{% endif %}
 {% endautoescape %}
 {% endblock %}

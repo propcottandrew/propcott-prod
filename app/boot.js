@@ -5,7 +5,7 @@ var cookieParser  = require('cookie-parser');
 var cons          = require('consolidate');
 var express       = require('express');
 var fs            = require('fs');
-var program = require('commander');
+var program       = require('commander');
 
 var router        = require(app.http.router);
 var flash         = require(app.express.messaging);
@@ -13,9 +13,10 @@ var dynamoSession = require(app.express.dynamoSessionStore)(session);
 
 program
 	.version('0.0.1')
-	.option('-p, --port <n>', 'Port to', parseInt)
+	.option('-p, --port <n>', 'Port to listen on', parseInt)
+	.option('-e, --env <value>', 'Environment (prod, dev)')
 	.parse(process.argv);
-
+console.log(program.port, program.env == 'dev');
 module.exports = (function(app) {
 	app.use(express.static('public'));
 
@@ -56,9 +57,13 @@ module.exports = (function(app) {
 
 	app.engine('html', cons.swig);
 	app.set('view engine', 'html');
-	app.enable('view cache');
 	app.set('views', __dirname + '/views');
 	//app.set('layout', 'layout');
+	
+	if(program.env == 'dev')
+		app.disable('view cache');
+	else
+		app.enable ('view cache');
 
 	// Test data for homepage
 	app.use(function(req, res, next) {

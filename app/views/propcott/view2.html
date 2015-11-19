@@ -1,0 +1,307 @@
+{% extends '../base2.html' %}
+
+{% block title %}{% autoescape false %}{{ propcott.title }}{% endautoescape %}{% endblock %}
+
+{% block body.end %}
+	{% parent %}
+	<div id="fb-root"></div>
+	<script type="text/javascript" id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.3&amp;appId=1475586926065669"></script>
+	<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
+	<script type="text/javascript">
+	var client = new ZeroClipboard( document.getElementById("copy-button") );
+	client.on("ready", function(readyEvent) {
+		var timeout, text;
+		client.on("aftercopy", function(event) {
+			if(timeout) timeout = clearTimeout(timeout), 0;
+			else text = event.target.innerHTML;
+
+			event.target.innerHTML = '<span class="typcn typcn-tick"></span>';
+
+			timeout = setTimeout(function() {
+				event.target.innerHTML = text;
+			}, 1000);
+		});
+	});
+	</script>
+	<style type="text/css">
+	#copy-button {
+		width: 100px;
+		text-align: center;
+		float: right;
+		border: 1px solid #ddd;
+		background: #e7e7e7;
+		padding: .5em;
+		font-size: 1em;
+		line-height: 1;
+	}
+	#copy-button span {
+		font-size: 1em;
+		line-height: 1;
+	}
+	#copy-link {
+		text-size: .9em;
+		background: white;
+		padding: .5em;
+		border: 1px solid #ddd;
+		border-right: 0;
+		line-height: 1;
+		display: inline-block;
+		overflow: hidden;
+		display: block;
+		white-space: nowrap;
+	}
+	#copy-label {
+		float: left;
+		display: inline-block;
+		font-size: 1.5em;
+		line-height: 1;
+		padding: .166em;
+	}
+	#propcott-updates {
+		background-color: white;
+		box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+		margin-bottom: 1em;
+		padding-bottom: 1px;
+	}
+	.propcott-update {
+		border-top: 1px solid #eee;
+		padding: 0 1em;
+	}
+	.sharebuttons {
+		text-align: center;
+		margin: 1em auto;
+		max-width :330px;
+	}
+	.sharebutton {
+		border-radius:2px;
+		display:inline-block;
+		font-size:11px;
+		padding:10px;
+		text-align:center;
+		text-decoration:none;
+		text-transform:uppercase;
+		font-weight:bold;
+		color:white;
+		margin-bottom:0.5em;
+	}
+	
+	
+	
+	.headline {
+		position: relative;
+	}
+	.headline-content {
+		padding: 2em;
+		background: #111;
+		background-color: rgba(0,0,0,0.65);
+		color: white;
+		position: relative;
+		z-index: 1;
+		text-align: center;
+	}
+	.headline-background {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: cover;
+		overflow: hidden;
+		-webkit-filter: blur(5px);
+		filter: blur(5px);
+	}
+	.join-button {
+		display: block;
+		color: white;
+		background: red;
+		border: 0px;
+		border-radius: 10px;
+	}
+	.ribbon {
+		background: #BD1417;
+		position: relative;
+		color: white;
+		display: block;
+		padding: .5em 1em;
+		text-align: center;
+		font-size: 1.2em;
+		font-weight: bold;
+	}
+	.ribbon:before, .ribbon:after {
+		position: absolute;
+		top: .6em;
+		bottom: -0.6em;
+		content: ' ';
+		border: 1.25em solid #A0181A;
+	}
+	.ribbon:before {
+		right: 100%;
+		border-right-width: 6px;
+		border-left-width: 16px;
+		border-left-color: #eee;
+	}
+	.ribbon:after {
+		left: 100%;
+		border-left-width: 6px;
+		border-right-width: 16px;
+		border-right-color: #eee;
+	}
+	.metric {
+		font-weight: bold;
+		font-size: 0.8em;
+	}
+	.metric p {
+		margin: 0.5em 1.2em;
+	}
+	.metric-bar, .metric-fill {
+		position: relative;
+		display: block;
+		height: 4px;
+	}
+	.metric-fill {
+		background-color: #BD1417;
+	}
+	.fb-comments {
+		margin: 1em 0;
+		display: block;
+	}
+	.fb-comments, .fb-comments * {
+		width: 100% !important;
+	}
+	</style>
+{% endblock %}
+
+{% block content %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content">
+		<div class="container">
+			<h1 id="propcott-title" style="margin-top: 0;">{{ propcott.title }}</h1>
+			<div class="row" style="margin: 0; margin-top: 1em;">
+				<div class="col-6" style="vertical-align: top;">
+					<p style="line-height: 1; text-align: right; margin: 0; border-right: 1px solid white; padding-right: 1em;"><strong style="font-size: 3em;">{{ propcott.support.all }}</strong><br>propcotters</p>
+				</div>
+				<div class="col-6" style="vertical-align: top; text-align: left;">
+					<p style="margin: 0; padding-left: 1em; line-height: 1;">propcotting<br><strong style="font-size: 3em;">{{ propcott.target }}</strong></p>
+				</div>
+			</div>
+			{% if user && supporting %}
+			<button class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0; cursor: default;"><span class="typcn typcn-tick"></span> Already joined!</button>
+			{% else %}
+			<form method="POST" action="/p/{{ propcott.slug }}/join">
+				<button type="submit" class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0;">Join!</button>
+			</form>
+			{% endif %}
+			{% if propcott.creator %}
+				<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.display_name }}
+				{% if propcott.creator.org %} from
+					{% if propcott.creator.org_link %}
+						<a style="color: white;" href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
+					{% else %}
+						<strong>{{ propcott.creator.org }}</strong>
+					{% endif %}
+				{% endif %}
+				</p>
+			{% endif %}
+		</div>
+	</div>
+	
+	{% if propcott.media_type %}
+	<div class="headline-background" style="background-image: url('{% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% elseif propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/hqdefault.jpg{% endif %}');"></div>
+	{% endif %}
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-7 push-md-5 col-12">
+			<div class="content">
+				{#<div class="ribbon">Victory!</div>#}
+				
+				<h3>Goal</h3>
+				<p>{{ propcott.goal }}</p>
+				
+				<h3>Why</h3>
+				{{ propcott.why }}
+				
+				<h3>Updates</h3>
+				{% if propcott.updates && propcott.updates.length %}
+					{% if user.id == propcott.creator.id %}
+						<textarea id="propcott-new-update"
+							  name="propcott-new-update"
+							  class="editable-region"
+							  placeholder="Update your propcotters"
+							  ></textarea>
+					{% endif %}
+					{% if propcott.updates && propcott.updates.length %}
+						{% for update in propcott.updates %}
+							<p>{{ update.content }}</p>
+						{% endfor %}
+					{% endif %}
+				{% else %}
+				<p style="font-size: 0.9em;"><em>Stay tuned for updates and announcements from the creator of this propcott.</em></p>
+				{% endif %}
+
+				<h3>Comments</h3>
+				<div class="fb-comments" data-href="http://www.propcott.com/p/{{ propcott.id }}" data-numposts="5"></div>
+			</div>
+		</div>
+		<div class="col-md-5 pull-md-7 col-12">
+			<div class="content">
+				{% if propcott.media_type %}
+					<div class="fill">
+					{% if propcott.media_type == 'image' %}
+					<img src="http://static.propcott.com/{{ propcott.media_link }}">
+					{% elseif propcott.media_type == 'video' %}
+					<div class="fluid-video"><div class="inner"><iframe src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe></div></div>
+					{% endif %}
+					</div>
+				{% endif %}
+				
+				<div class="metric fill clear">
+					<div class="metric-bar"><div class="metric-fill" style="width: {{ propcott.support.all / propcott.metric * 100 }}%;"></div></div>
+					<p style="float: left;">{{ propcott.support.all }} propcotters</p>
+					<p style="float: right;">{{ propcott.metric - propcott.support.all }} more for {{ propcott.metric }}</p>
+				</div>
+				
+				{% if propcott.how %}
+					<h3>What to do:</h3>
+					<ul id="propcott-how">
+						{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
+					</ul>
+				{% endif %}
+
+				{% if propcott.alt %}
+					<h3>Instead, try...</h3>
+					<ul id="propcott-alt">
+						{% for alt in propcott.alt %}<li>{{ alt }}</li>{% endfor %}
+					</ul>
+				{% endif %}
+
+					<p>
+						<span id="copy-label" class="typcn typcn-link"></span>
+						<button id="copy-button" data-clipboard-text="http://www.propcott.com/p/{{ propcott.slug }}">Copy link</button>
+						<span id="copy-link">http://www.propcott.com/p/{{ propcott.slug }}</span>
+					</p>
+					<p class="sharebuttons">
+						<a href="mailto:?subject={{ encodeURIComponent(propcott.title) }}&amp;body=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#0a88ff;">email</a>
+
+						<a href="https://www.facebook.com/sharer/sharer.php?u=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#306199;" target="_blank">facebook</a>
+
+						<a href="http://tumblr.com/share/link?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;name={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#32506d;" target="_blank">tumblr</a>
+
+						<a href="http://twitter.com/share?text={{ encodeURIComponent(propcott.title) }}&amp;url=http://www.propcott.com/p/{{ propcott.slug }}&amp;hashtags=propcott" class="sharebutton" style="background-color:#26c4f1;" target="_blank">twitter</a>
+
+						<a href="http://www.reddit.com/submit?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;title={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#336699;" target="_blank">reddit</a>
+
+						<a href="https://plus.google.com/share?url=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#e93f2e;" target="_blank">google+</a>
+
+						<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% endif %}{% if propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}&amp;description={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#b81621;" target="_blank">pinterest</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endautoescape %}
+{% endblock %}

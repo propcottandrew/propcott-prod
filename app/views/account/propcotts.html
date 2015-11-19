@@ -1,51 +1,71 @@
-{% extends 'base.html' %}
+{% extends '../base-new.html' %}
 
 {% block title %}My Propcotts{% endblock %}
 
-{% block account.main %}
-<div class="account-block">
-	{% if drafts.length %}
-	<h2>Propcotts <small>I haven't published yet</small></h2>
-	<ul>
-	{% for propcott in drafts %}
-		<div style="margin-bottom: 1em; clear: both;">
-			<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
-			<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
-				<a href="/d/{{ propcott.draft_id }}">{{ propcott.title || 'Untitled' }}</a>
-			</div>
-		</div>
-	{% endfor %}
-	</ul>
-	{% endif %}
-	
-	<div style="clear:both;"></div>
-	
-	{% if propcotts.length %}
-	<h2>Propcotts <small>I created</small></h2>
-	<ul>
-	{% for propcott in propcotts %}
-		<div style="margin-bottom: 1em; clear: both;">
-			<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
-			<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
-				<a href="/p/{{ propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
-			</div>
-		</div>
-	{% endfor %}
-	</ul>
-	{% endif %}
+{% block head.end %}
+	{% parent %}
+	<style type="text/css">
+		#content {
+			min-height: 320px;
+			padding: 0 2em;
+		}
+	</style>
+{% endblock %}
 
-	<div style="clear:both;"></div>
-{#
-	<h2>Propcotts <small>I support</small></h2>
-	
-	<ul>
-	system maintenance...
-	</ul>
-	<h2>My Victories</h2>
-	
-	<ul>
-	system maintenance...
-	</ul>
-#}
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content" style="padding-top: 1em;">
+		<h1>My Propcotts</h1>
+	</div>
 </div>
+{% endautoescape %}
+{% endblock %}
+
+{% block actions %}
+<li><a href="/account"><span class="typcn typcn-cog"></span><br>General</a></li>
+<li><a href="/account/notifications"><span class="typcn typcn-bell"></span><br>Notifications</a></li>
+<li><a href="/account/propcotts"><span class="typcn typcn-folder"></span><br>My Propcotts</a></li>
+{% endblock %}
+
+{% block content %}
+{% if drafts.length %}
+<h2>Propcotts <small>I haven't published yet</small></h2>
+{% for propcott in drafts %}
+	<div style="margin-bottom: 1em;" class="clear">
+		<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+		<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
+			<a href="/d/{{ propcott.draft_id }}">{{ propcott.title || 'Untitled' }}</a>
+		</div>
+	</div>
+{% endfor %}
+{% endif %}
+
+<div style="clear:both;"></div>
+
+{% if propcotts.length %}
+<h2>Propcotts <small>I created</small></h2>
+{% for propcott in propcotts %}
+	<div style="margin-bottom: 1em;" class="clear">
+		<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+		<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
+			<a href="/p/{{ propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
+		</div>
+	</div>
+{% endfor %}
+{% endif %}
+
+<div style="clear:both;"></div>
+{#
+<h2>Propcotts <small>I support</small></h2>
+
+<ul>
+system maintenance...
+</ul>
+<h2>My Victories</h2>
+
+<ul>
+system maintenance...
+</ul>
+#}
 {% endblock %}

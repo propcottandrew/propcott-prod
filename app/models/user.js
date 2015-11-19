@@ -8,6 +8,7 @@ var hasher   = require(app.util.hasher);
 var dynamo   = require(app.aws).dynamo;
 var ses      = require(app.aws).ses;
 var bcrypt   = require('bcryptjs');
+var async    = require('async');
 var swig     = require('swig');
 
 class User extends Base {
@@ -70,7 +71,7 @@ class User extends Base {
 			callback();
 		});
 
-		if(this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) => {
+		if(this.email && this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) => {
 			if(err) console.error(err);
 			this.sendEmail('join', `Propcotting ${propcott.target}`, {propcott: propcott});
 		});
@@ -96,7 +97,7 @@ class User extends Base {
 	link(provider, key, password) {
 		// Todo: deal with ones that are already linked
 		if(this.credentials.filter((c => (c.provider == provider && c.key == key))).length) return; // already exists
-
+console.log('linking', provider, key, password);
 		this.credentials.push({
 			provider : provider,
 			key      : key,
@@ -139,6 +140,7 @@ class User extends Base {
 	session() {
 		return {
 			id           : this.id,
+			username     : this.username,
 			email        : this.email,
 			display_name : this.display_name,
 			avatar       : this.avatar && {url: this.avatar},
@@ -165,13 +167,16 @@ class User extends Base {
 				provider: provider,
 				key: key
 			};
-			if(data.Item.Password) cred._password = data.Item.Password.S
+			if(data.Item.Password) cred._password = data.Item.Password.S;
 			user.credentials.push(cred);
 			callback(null, user);
 		});
 	}
 
 	sendEmail(event, subject, data, callback) {
+		if(!this.email)
+			return;
+		
 		data = data || {};
 		data.user = this;
 		
@@ -219,24 +224,29 @@ User.prototype.on('saving', (user, callback) => {
 });
 
 User.prototype.on('saved', (user, callback) => {
-	callback();
-
-	(user.credentials.removed||[]).forEach(c => {
-		dynamo.deleteItem({
-			TableName: User.table,
-			Key: {
-				Key: {S: c._oldKey || c.key},
-				Provider: {S: c.provider}
-			}
-		}, err => err && console.error(err));
-	});
-
-	user.credentials.forEach(c => {
-		if(!c._state) return;
-
-		if(c._state == 'changed') {
+	var queue = async.queue((task, next) => task(err => {
+		if(!err)
+			return next();
+		
+		queue.kill();
+		callback(err);
+	}));
+	queue.drain = callback;
+	
+	queue.push(
+		((user.credentials.removed||[]).map(c => callback => {
+			dynamo.deleteItem({
+				TableName: User.table,
+				Key: {
+					Key: {S: c._oldKey || c.key},
+					Provider: {S: c.provider}
+				}
+			}, callback);
+		}))
+		.concat(user.credentials.filter(c => c._state == 'changed').map(c => callback => {
 			dynamo.updateItem({
 				TableName: User.table,
+				ConditionExpression: 'attribute_not_exists(#key)',
 				UpdateExpression: 'SET #key = :key',
 				ExpressionAttributeNames: {'#key': 'Key'},
 				ExpressionAttributeValues: {':key': {S: c.key}},
@@ -244,15 +254,16 @@ User.prototype.on('saved', (user, callback) => {
 					Key: {S: c._oldKey},
 					Provider: {S: c.provider}
 				}
-			}, function(err, data) {
-				if(err) console.error(err);
-				else delete user._state.changedCredentials[i];
+			}, err => {
+				if(!err) delete c._state;
+				callback(err);
 			});
-		}
-
-		if(c._state == 'added') {
+		}))
+		.concat(user.credentials.filter(c => c._state == 'added').map(c => callback => {
 			var params = {
 				TableName: User.table,
+				ConditionExpression: 'attribute_not_exists(#key)',
+				ExpressionAttributeNames: {'#key': 'Key'},
 				Item: {
 					Key     : {S: c.key},
 					Provider: {S: c.provider},
@@ -262,12 +273,12 @@ User.prototype.on('saved', (user, callback) => {
 
 			if(c._password) params.Item.Password = {S: bcrypt.hashSync(c._password)};
 
-			dynamo.putItem(params, function(err, data) {
-				if(err) console.error(err);
-				else delete c._state;
+			dynamo.putItem(params, err => {
+				if(!err) delete c._state;
+				callback(err);
 			});
-		}
-	});
+		}))
+	);
 });
 
 module.exports = User;
