@@ -127,11 +127,11 @@ module.exports.propcotts = (req, res) => {
 		drafts: callback => s3.listObjects({
 			Bucket: 'drafts.data.propcott.com',
 			Prefix: `${hasher.to(req.session.user.id)}/`
-		}, callback),
+		}, callback)/*,
 		supporting: callback => dynamo.query({
 			TableName: 'Supporting',
 			IndexName: ''
-		})
+		})*/
 	}, (err, data) => {
 		if(err) return console.error(err);
 		var len = data.drafts.Prefix.length;

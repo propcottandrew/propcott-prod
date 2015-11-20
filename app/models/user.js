@@ -70,6 +70,8 @@ class User extends Base {
 			}
 			callback();
 		});
+		
+		//this.supporting.push(id);
 
 		if(this.email && this.notifications['join-email']) new Propcott({published: true, id: id}).load((err, propcott) => {
 			if(err) console.error(err);
@@ -142,8 +144,6 @@ class User extends Base {
 			id           : this.id,
 			username     : this.username,
 			email        : this.email,
-			display_name : this.display_name,
-			avatar       : this.avatar && {url: this.avatar},
 			notifications: this.notifications,
 			permissions  : this.permissions
 		};
