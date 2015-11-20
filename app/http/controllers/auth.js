@@ -22,6 +22,7 @@ var login = function(req, res) {
 			res.redirect('back');
 		} else user.load((err, user) => {
 			if(err) {
+				console.log(err);
 				req.flash('Server error');
 				return res.redirect('back');
 			}

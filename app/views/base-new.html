@@ -183,20 +183,6 @@
 		position: fixed;
 		top:0;
 	}
-	#menu-overlay {
-		display: none;
-		position: absolute;
-		z-index: 9;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: black;
-		opacity: 0.75;
-	}
-	#menu:target ~ #page #menu-overlay {
-		display: block;
-	}
 	#nav ~ .hamburger-helper .back { display: none; }
 	#menu:target ~ #header #nav ~ .hamburger-helper .back { display: inline-block; }
 	.hamburger-helper {
@@ -408,7 +394,6 @@
 </div>
 <div id="page">
 	{% block page.start %}{% endblock %}
-	<a href="#" id="menu-overlay" data-back aria-label="Back"></a>
 	{% for message in messages %}
 	<div class="alert-container">
 		<div class="container" style="text-align: center;">
@@ -646,7 +631,7 @@ document.addEventListener('click', function(e) {
 	}
 });
 </script>
-<a href="#" id="overlay" data-back aria-label="Back"></a>
 {% block body.end %}{% endblock %}
+<a href="#" id="overlay" data-back aria-label="Back"></a>
 </body>
 </html>

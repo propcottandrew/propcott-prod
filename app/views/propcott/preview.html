@@ -1,94 +1,236 @@
-{% extends '../base.html' %}
+{% extends '../base-new.html' %}
 
-{% block title %}{{ propcott.title }}{% endblock %}
+{% block title %}{% autoescape false %}{{ propcott.title }}{% endautoescape %}{% endblock %}
 
-{% block body.end %}
+{% block head.end %}
+	{% parent %}
 	<style type="text/css">
-	body {
-		background: #eee;
+	#copy-button {
+		width: 100px;
+		text-align: center;
+		float: right;
+		border: 1px solid #ddd;
+		background: #e7e7e7;
+		padding: .5em;
+		font-size: 1em;
+		line-height: 1;
 	}
-	#propcott-alt, #propcott-how {
+	#copy-button span {
+		font-size: 1em;
+		line-height: 1;
+	}
+	#copy-link {
+		font-size: .9em;
+		background: white;
+		padding: .5em;
+		border: 1px solid #ddd;
+		border-right: 0;
+		line-height: 1;
+		display: inline-block;
+		overflow: hidden;
+		display: block;
+		white-space: nowrap;
+	}
+	#copy-label {
+		float: left;
+		display: inline-block;
+		font-size: 1.5em;
+		line-height: 1;
+		padding: .166em;
+	}
+	#propcott-updates {
+		background-color: white;
+		box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+		margin-bottom: 1em;
+		padding-bottom: 1px;
+	}
+	.propcott-update {
+		border-top: 1px solid #eee;
+		padding: 0 1em;
+	}
+	.sharebuttons {
+		text-align: center;
+		margin: 1em auto;
+		max-width :330px;
+	}
+	.sharebutton {
+		border-radius:2px;
+		display:inline-block;
+		font-size:11px;
+		padding:10px;
+		text-align:center;
+		text-decoration:none;
+		text-transform:uppercase;
+		font-weight:bold;
+		color:white;
+		margin-bottom:0.5em;
+	}
+	.headline {
+		position: relative;
+	}
+	.headline-content {
+		padding: 2em;
+		background: #111;
+		background-color: rgba(0,0,0,0.75);
+		color: white;
+		position: relative;
+		z-index: 1;
+		text-align: center;
+	}
+	.headline-background {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: cover;
+		overflow: hidden;
+		-webkit-filter: blur(5px);
+		filter: blur(5px);
+	}
+	.join-button {
+		display: block;
+		color: white;
+		background: red;
+		border: 0px;
+		border-radius: 10px;
+	}
+	.ribbon {
+		background: #BD1417;
+		position: relative;
+		color: white;
+		display: block;
+		padding: .5em 1em;
+		text-align: center;
+		font-size: 1.2em;
 		font-weight: bold;
-		margin-top: 0;
+	}
+	.ribbon:before, .ribbon:after {
+		position: absolute;
+		top: .6em;
+		bottom: -0.6em;
+		content: ' ';
+		border: 1.25em solid #A0181A;
+	}
+	.ribbon:before {
+		right: 100%;
+		border-right-width: 6px;
+		border-left-width: 16px;
+		border-left-color: #eee;
+	}
+	.ribbon:after {
+		left: 100%;
+		border-left-width: 6px;
+		border-right-width: 16px;
+		border-right-color: #eee;
+	}
+	.metric {
+		font-weight: bold;
+		font-size: 0.8em;
+	}
+	.metric p {
+		margin: 0.5em 2.5em;
+	}
+	.metric-bar, .metric-fill {
+		position: relative;
+		display: block;
+		height: 4px;
+	}
+	.metric-fill {
+		background-color: #BD1417;
+	}
+	.fb-comments {
+		margin: 1em 0;
+		display: block;
+	}
+	.fb-comments, .fb-comments * {
+		width: 100% !important;
 	}
 	</style>
 {% endblock %}
 
+{% block actions %}
+<li><a href="/editor/cancel"><span class="typcn typcn-times"></span><br>Cancel</a></li>
+<li><a href="/editor"><span class="typcn typcn-pen"></span><br>Edit</a></li>
+<li><a href="/editor/save" onclick="return confirm('Are you sure you want to save this propcott?');"><span class="typcn typcn-cloud-storage"></span><br>Save</a></li>
+{% endblock %}
+
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content">
+		<div class="container">
+			<h1 id="propcott-title" style="margin-top: 0;">{{ propcott.title }}</h1>
+			<div class="row" style="margin: 0; margin-top: 1em;">
+				<div class="col-6" style="vertical-align: top;">
+					<p style="line-height: 1; text-align: right; margin: 0; border-right: 1px solid white; padding-right: 1em;"><strong style="font-size: 3em;">0</strong><br>propcotters</p>
+				</div>
+				<div class="col-6" style="vertical-align: top; text-align: left;">
+					<p style="margin: 0; padding-left: 1em; line-height: 1;">propcotting<br><strong style="font-size: 3em;">{{ propcott.target }}</strong></p>
+				</div>
+			</div>
+			{% if propcott.creator %}
+				<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.display_name }}
+				{% if propcott.creator.org %} from
+					{% if propcott.creator.org_link %}
+						<a style="color: white;" href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
+					{% else %}
+						<strong>{{ propcott.creator.org }}</strong>
+					{% endif %}
+				{% endif %}
+				</p>
+			{% endif %}
+		</div>
+	</div>
+	
+	{% if propcott.media_type %}
+	<div class="headline-background" style="background-image: url('{% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% elseif propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/hqdefault.jpg{% endif %}');"></div>
+	{% endif %}
+</div>
+{% endautoescape %}
+{% endblock %}
+
 {% block content %}
 {% autoescape false %}
-<div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
-	<div class="container">
-		<a class="block round navigation-item" href="/editor/cancel">
-			<span class="navigation-text">Cancel</span>
-			<span class="typcn typcn-cancel"></span>
-		</a>
-		<a class="block round navigation-item" href="/editor">
-			<span class="navigation-text">Edit</span>
-			<span class="typcn typcn-pencil"></span>
-		</a>
-		<a class="block round navigation-item" href="/editor/save" onclick="return confirm('Are you sure you want to publish this propcott?');">
-			<span class="navigation-text">Save</span>
-			<span class="typcn typcn-cloud-storage"></span>
-		</a>
+<div class="row">
+	<div class="col-12 col-md-5" style="float: right; clear: right;">
+		{% if propcott.media_type %}
+			{% if propcott.media_type == 'image' %}
+			<div style="text-align: center; background: #ddd"><img src="http://static.propcott.com/{{ propcott.media_link }}" style="max-width: 100%; max-height: 250px; vertical-align: top;"></div>
+			{% elseif propcott.media_type == 'video' %}
+			<div class="fluid-video"><div class="inner"><iframe src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe></div></div>
+			{% endif %}
+		{% endif %}
 	</div>
-</div>
+	
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<h3>Goal</h3>
+		<p>{{ propcott.goal }}</p>
+	</div>
+	
+	{% if propcott.how %}
+	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+		<h3>What to do:</h3>
+		<ul id="propcott-how">
+			{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
 
-<div class="container">
-	<div class="row">
-		<div class="col-7 push-5">
-			<div id="propcott" class="propcott-full">
-				<div id="propcott-featured-image">
-					<h1 id="propcott-title" style="font-size: {{ propcott.title_size }}">{{ propcott.title }}</h1>
-				</div>
-				<div id="propcott-content">
-					<p style="margin: 1em;">Propcotting <span style="color: rgb(215,0,0);">{{ propcott.target }}</span></p>
-
-					<hr />
-
-					<h2 class="headline">Goal</h2>
-					<p style="margin: 1em;">{{ propcott.goal }}</p>
-
-					<hr />
-
-					<h2 class="headline">Why</h2>
-					<div style="margin: 0 1em;">{{ propcott.why }}</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-5 pull-7">
-			<div id="propcott-sidebar">
-				{% if propcott.media_type == 'image' %}
-				<div id="propcott-media" style="background-image: url('http://static.propcott.com/{{ propcott.media_link }}');"></div>
-				{% elseif propcott.media_type == 'video' %}
-				<div id="propcott-media">
-					<iframe style="width: 100%; height: 250px;" src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe>
-				</div>
-				{% else %}
-				<div id="propcott-media"></div>
-				{% endif %}
-
-				<div style="margin: .5em 1em 1em 0">
-
-					<h2 style="font-size: 1.6em;margin: 1em 0 0 0;">Join <small>this propcott!</small></h2>
-
-					{% if propcott.how %}
-						<p style="margin-bottom: 0;">What to do:</p>
-						<ul id="propcott-how">
-							{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
-						</ul>
-					{% endif %}
-
-					{% if propcott.alt %}
-						<p style="margin-bottom: 0;">Instead, you may want to try...</p>
-						<ul id="propcott-alt">
-							{% for alt in propcott.alt %}<li>{{ alt }}</li>{% endfor %}
-						</ul>
-					{% endif %}
-
-					<p><button type="button" class="block join-button">Join!</button></p>
-				</div>
-			</div>
-		</div>
+	{% if propcott.alt %}
+	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+		<h3>Instead, try...</h3>
+		<ul id="propcott-alt">
+			{% for alt in propcott.alt %}<li>{{ alt }}</li>{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+	
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<h3>Why</h3>
+		<p>{{ propcott.why }}</p>
 	</div>
 </div>
 {% endautoescape %}

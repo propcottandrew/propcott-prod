@@ -7,32 +7,7 @@
 	{% if propcott.media_type %}
 	<meta name="thumbnail" content="http://{% if propcott.media_type == 'image' %}static.propcott.com/{{ propcott.media_link }}{% elseif propcott.media_type == 'video' %}img.youtube.com/vi/{{ propcott.media_link }}/hqdefault.jpg{% endif %}" />
 	{% endif %}
-{% endblock %}
-
-{% block body.end %}
-	{% parent %}
-	<div id="fb-root"></div>
-	<script type="text/javascript" id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.3&amp;appId=1475586926065669"></script>
-	<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
-	<script type="text/javascript">
-	var client = new ZeroClipboard( document.getElementById("copy-button") );
-	client.on("ready", function(readyEvent) {
-		var timeout, text;
-		client.on("aftercopy", function(event) {
-			if(timeout) timeout = clearTimeout(timeout), 0;
-			else text = event.target.innerHTML;
-
-			event.target.innerHTML = '<span class="typcn typcn-tick"></span>';
-
-			timeout = setTimeout(function() {
-				event.target.innerHTML = text;
-			}, 1000);
-		});
-	});
-	</script>
 	<style type="text/css">
-	
-	
 	#copy-button {
 		width: 100px;
 		text-align: center;
@@ -48,7 +23,7 @@
 		line-height: 1;
 	}
 	#copy-link {
-		text-size: .9em;
+		font-size: .9em;
 		background: white;
 		padding: .5em;
 		border: 1px solid #ddd;
@@ -177,6 +152,29 @@
 		width: 100% !important;
 	}
 	</style>
+{% endblock %}
+
+{% block body.end %}
+	{% parent %}
+	<div id="fb-root"></div>
+	<script type="text/javascript" id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.3&amp;appId=1475586926065669"></script>
+	<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
+	<script type="text/javascript">
+	var client = new ZeroClipboard( document.getElementById("copy-button") );
+	client.on("ready", function(readyEvent) {
+		var timeout, text;
+		client.on("aftercopy", function(event) {
+			if(timeout) timeout = clearTimeout(timeout), 0;
+			else text = event.target.innerHTML;
+
+			event.target.innerHTML = '<span class="typcn typcn-tick"></span>';
+
+			timeout = setTimeout(function() {
+				event.target.innerHTML = text;
+			}, 1000);
+		});
+	});
+	</script>
 	<div id="join" class="popup-target"></div>
 	<div id="join-box" class="popup-form">
 		<div class="row">

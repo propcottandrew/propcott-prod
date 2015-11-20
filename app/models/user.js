@@ -97,7 +97,7 @@ class User extends Base {
 	link(provider, key, password) {
 		// Todo: deal with ones that are already linked
 		if(this.credentials.filter((c => (c.provider == provider && c.key == key))).length) return; // already exists
-console.log('linking', provider, key, password);
+
 		this.credentials.push({
 			provider : provider,
 			key      : key,

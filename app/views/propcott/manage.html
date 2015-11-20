@@ -7,88 +7,6 @@
 	{% if propcott.media_type %}
 	<meta name="thumbnail" content="http://{% if propcott.media_type == 'image' %}static.propcott.com/{{ propcott.media_link }}{% elseif propcott.media_type == 'video' %}img.youtube.com/vi/{{ propcott.media_link }}/hqdefault.jpg{% endif %}" />
 	{% endif %}
-{% endblock %}
-
-{% block body.end %}
-	{% parent %}
-	<div id="fb-root"></div>
-	<script type="text/javascript" id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.3&amp;appId=1475586926065669"></script>
-	<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
-	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
-	<script type="text/javascript">
-	document.getElementById('propcott-new-update').placeholder = '<p>' + document.getElementById('propcott-new-update').placeholder + '</p>';
-	CKEDITOR.plugins.add('post_update', {
-		init: function(editor) {
-			editor.addCommand('post_update', {
-				exec: function(editor) {
-					var form = document.createElement('form');
-					form.method = 'POST';
-					form.action = '/p/{{ propcott.slug }}/update';
-
-					(function make(list) {
-						for(var i in list) {
-							var input = document.createElement('input');
-							input.name = i;
-							input.value = list[i];
-							form.appendChild(input);
-						}
-					})({
-						content: editor.getData(),
-						action: 'update',
-						'_token': '{{ csrf_token() }}'
-					});
-
-					document.body.appendChild(form);
-					form.submit();
-				}
-			});
-
-			editor.ui.addButton('post_update', {
-				label: 'Post Update',
-				command: 'post_update',
-			});
-		}
-	});
-	var editor = CKEDITOR.replace('propcott-new-update', {
-		height: 'auto',
-		extraPlugins: 'confighelper,post_update',
-		title: ''
-	}).on('change', function() {
-		this.updateElement();
-	});
-
-	document.getElementById('updates-button').onclick = function() {
-		var elem = document.getElementById('updates'), last;
-		(function Scroll_To(elem, pos) {
-			var y = elem.scrollTop;
-			y += Math.round((pos - y) * 0.3);
-			if (last == y || Math.abs(y-pos) < 2) {
-				elem.scrollTop = pos;
-				CKEDITOR.instances['propcott-new-update'].focus();
-				return;
-			}
-			last = y;
-			elem.scrollTop = y;
-			setTimeout(Scroll_To, 40, elem, pos);
-		})(document.body, elem.offsetTop);
-		return false;
-	};
-	
-	var client = new ZeroClipboard( document.getElementById("copy-button") );
-	client.on("ready", function(readyEvent) {
-		var timeout, text;
-		client.on("aftercopy", function(event) {
-			if(timeout) timeout = clearTimeout(timeout), 0;
-			else text = event.target.innerHTML;
-
-			event.target.innerHTML = '<span class="typcn typcn-tick"></span>';
-
-			timeout = setTimeout(function() {
-				event.target.innerHTML = text;
-			}, 1000);
-		});
-	});
-	</script>
 	<style type="text/css">
 	.cke_button__post_update .cke_button_icon {
 		display: none;
@@ -125,7 +43,7 @@
 		line-height: 1;
 	}
 	#copy-link {
-		text-size: .9em;
+		font-size: .9em;
 		background: white;
 		padding: .5em;
 		border: 1px solid #ddd;
@@ -254,6 +172,88 @@
 		width: 100% !important;
 	}
 	</style>
+{% endblock %}
+
+{% block body.end %}
+	{% parent %}
+	<div id="fb-root"></div>
+	<script type="text/javascript" id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.3&amp;appId=1475586926065669"></script>
+	<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
+	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
+	<script type="text/javascript">
+	document.getElementById('propcott-new-update').placeholder = '<p>' + document.getElementById('propcott-new-update').placeholder + '</p>';
+	CKEDITOR.plugins.add('post_update', {
+		init: function(editor) {
+			editor.addCommand('post_update', {
+				exec: function(editor) {
+					var form = document.createElement('form');
+					form.method = 'POST';
+					form.action = '/p/{{ propcott.slug }}/update';
+
+					(function make(list) {
+						for(var i in list) {
+							var input = document.createElement('input');
+							input.name = i;
+							input.value = list[i];
+							form.appendChild(input);
+						}
+					})({
+						content: editor.getData(),
+						action: 'update',
+						'_token': '{{ csrf_token() }}'
+					});
+
+					document.body.appendChild(form);
+					form.submit();
+				}
+			});
+
+			editor.ui.addButton('post_update', {
+				label: 'Post Update',
+				command: 'post_update',
+			});
+		}
+	});
+	var editor = CKEDITOR.replace('propcott-new-update', {
+		height: 'auto',
+		extraPlugins: 'confighelper,post_update',
+		title: ''
+	}).on('change', function() {
+		this.updateElement();
+	});
+
+	document.getElementById('updates-button').onclick = function() {
+		var elem = document.getElementById('updates'), last;
+		(function Scroll_To(elem, pos) {
+			var y = elem.scrollTop;
+			y += Math.round((pos - y) * 0.3);
+			if (last == y || Math.abs(y-pos) < 2) {
+				elem.scrollTop = pos;
+				CKEDITOR.instances['propcott-new-update'].focus();
+				return;
+			}
+			last = y;
+			elem.scrollTop = y;
+			setTimeout(Scroll_To, 40, elem, pos);
+		})(document.body, elem.offsetTop);
+		return false;
+	};
+	
+	var client = new ZeroClipboard( document.getElementById("copy-button") );
+	client.on("ready", function(readyEvent) {
+		var timeout, text;
+		client.on("aftercopy", function(event) {
+			if(timeout) timeout = clearTimeout(timeout), 0;
+			else text = event.target.innerHTML;
+
+			event.target.innerHTML = '<span class="typcn typcn-tick"></span>';
+
+			timeout = setTimeout(function() {
+				event.target.innerHTML = text;
+			}, 1000);
+		});
+	});
+	</script>
 {% endblock %}
 
 
