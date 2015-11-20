@@ -67,9 +67,7 @@ class Propcott extends Base {
 	setCreator(user) {
 		this.creator = {
 			id           : user.id,
-			display_name : user.display_name,
-			org          : user.org,
-			org_link     : user.org_link
+			display_name : user.username
 		};
 	}
 

@@ -39,6 +39,9 @@ module.exports.publish = (req, res) => {
 		var draft_id = draft.draft_id;
 		delete draft.draft_id;
 		draft.published = true;
+		
+		if(!draft.target) delete draft.target;
+		if(!draft.industry) delete draft.industry;
 
 		draft.support = {
 			daily   : 0,

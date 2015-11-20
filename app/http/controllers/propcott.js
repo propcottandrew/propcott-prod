@@ -43,7 +43,7 @@ module.exports.view = (req, res, next) => {
 		}
 	}, (err, data) => {
 		if(err) {
-			console.error(err);
+			console .error(err);
 			return next('route');
 		}
 		data.propcott.import(data.index);
