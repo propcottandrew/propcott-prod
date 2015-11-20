@@ -1,4 +1,4 @@
-{% extends '../base.html' %}
+{% extends '../base-new.html' %}
 
 {% block title %}Start a Propcott{% endblock %}
 
@@ -26,7 +26,7 @@
 			position: absolute;
 			top: 0;
 			left: 0.55em;
-			line-height: 1.5;
+			line-height: 1;
 		}
 		#propcott-media .dropzone {
 			height: 250px;
@@ -61,6 +61,165 @@
 		#propcott-media.filled:hover .dropzone {
 			opacity: 1;
 		}
+		.headline-content {
+			padding: 2em;
+			background: #111;
+			background-color: rgba(0,0,0,0.75);
+			color: white;
+			position: relative;
+			z-index: 1;
+			text-align: center;
+		}
+		#headline-background {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: cover;
+			overflow: hidden;
+			-webkit-filter: blur(5px);
+			filter: blur(5px);
+		}
+		#propcott-title {
+			font-family: 'Montserrat', sans-serif;
+			line-height: 1;
+			font-size: 32px;
+			margin-bottom: 21px;
+			background: transparent;
+			border: none;
+			resize: none;
+			outline: none;
+			width: 100%;
+			text-align: center;
+		}
+		#propcott-media {
+			height: 250px;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-color: #ffffff;
+			margin: 0 1em 1em 0;
+		}
+		.question-mark {
+			display: inline-block;
+			position: relative;
+			text-align: center;
+			cursor: default;
+			margin-left: 10px;
+			position: absolute;
+			right: 2em;
+			top: 1.4em;
+			z-index: 1;
+		}
+		.question-mark-icon {
+			font-size: 14px;
+			font-weight: bold;
+			color: white;
+			vertical-align: text-bottom;
+			z-index: 1;
+			position: relative;
+			width: 20px;
+			height: 20px;
+			background: #333;
+			border-radius: 10px;
+			display: block;
+		}
+		.question-mark-container {
+			width: 300px;
+			height: 8em;
+			max-width: 20px;
+			max-height: 20px;
+			overflow: hidden;
+			position: absolute;
+			top: 0;
+			right: 0;
+			transition: 300ms;
+			border-radius: 10px;
+			pointer-events: none;
+		}
+		.question-mark-text {
+			pointer-events: all;
+			background: #333;
+			border-radius: 10px;
+			color: white;
+			font-family: 'Josefin Sans',sans-serif;
+			line-height: 1.2;
+			text-align: left;
+			display: block;
+			width: 300px;
+			padding: .5em;
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+		.question-mark-text:before {
+			content: '';
+			display: block;
+			float: right;
+			width: 20px;
+			height: 10px;
+		}
+		.question-mark:hover .question-mark-container {
+			max-width: 300px;
+			max-height: 5em;
+		}
+		h3 small {
+			font-family: sans-serif;
+			font-size: 16px;
+			font-weight: normal;
+		}
+		.editable-region {
+			width: 100%;
+			border: none;
+			padding: 0;
+			resize: none;
+			outline: none;
+			background: transparent;
+		}
+		.cke_editable, .cke_contents, .cke_inner, .cke_top, .cke {
+			background: transparent !important;
+			border: none !important;
+			border-radius: 0 !important;
+			margin: 0 !important;
+			padding: 0 !important;
+		}
+		.cke_editable {
+			height: auto !important;
+		}
+		.cke_toolgroup {
+			margin: 0 !important;
+			padding: 0 !important;
+			border-radius: 0 !important;
+			border: 0 !important;
+		}
+		.cke_toolbar_separator {
+			background-color: #eee !important;
+			margin: .1em 0px !important;
+			height: 3.25em !important;
+			width: 1px !important;
+		}
+		a.cke_button {
+			border: 0 !important;
+			border-radius: 0 !important;
+			padding: 1em !important;
+			cursor: pointer !important;
+		}
+		.cke_button_on {
+			background: #92bce0 !important;
+			background-color: #eee !important;
+			box-shadow: inset 0 -3px rgba(207, 60, 60, 1) !important;
+		}
+		.autosize {
+			display: block;
+			overflow: auto;
+			resize: none;
+			width: 100%;
+			height: 4em;
+			vertical-align: text-bottom;
+		}
 	</style>
 	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 {% endblock %}
@@ -76,7 +235,8 @@ function chooseVideo() {
 		document.getElementById('propcott-media_type').value = 'video';
 		document.getElementById('propcott-media_link').value = id;
 
-		document.getElementById('propcott-media').style.backgroundImage = 'url(http://img.youtube.com/vi/' + id + '/mqdefault.jpg)';
+		document.getElementById('propcott-media').style.backgroundImage = 'url(http://img.youtube.com/vi/' + id + '/hqdefault.jpg)';
+		document.getElementById('headline-background').style.backgroundImage = 'url(http://img.youtube.com/vi/' + id + '/hqdefault.jpg)';
 		document.getElementById('propcott-media').className = 'filled';
 	}
 }
@@ -99,6 +259,7 @@ function upload(file) {
 		document.getElementById('propcott-media_link').value = data.path;
 
 		document.getElementById('propcott-media').style.backgroundImage = 'url(//static.propcott.com/' + data.path + ')';
+		document.getElementById('headline-background').style.backgroundImage = 'url(//static.propcott.com/' + data.path + ')';
 		document.getElementById('propcott-media').className = 'filled';
 	}
 
@@ -142,6 +303,8 @@ CKEDITOR.replace('alt', {
 	autoUpdateElement: false
 });
 
+var verb = '', event = window.addEventListener || (verb = 'on', window.attachEvent);
+
 for(var e=document.querySelectorAll('.autosize'), i=0; i<e.length; i++) (function(elem) {
 	var verb = '', event = window.addEventListener || (verb = 'on', window.attachEvent);
 	event.call(elem, verb + 'input', (function resize() {
@@ -160,36 +323,7 @@ for(var e=document.querySelectorAll('textarea'), i=0; i<e.length; i++) (function
 	});
 })(e[i]);
 
-var verb = '', event = window.addEventListener || (verb = 'on', window.attachEvent);
-var origSize = 48;
-var oldLength;
-event.call(document.getElementById('propcott-title'), verb + 'input', function() {
-	if(!oldLength || oldLength > this.value.length) {
-		console.log(this.clientHeight <= 250, parseFloat(this.style.fontSize), origSize);
-		while(this.clientHeight <= 250 && parseFloat(this.style.fontSize) <= origSize) {
-			this.style.fontSize = Math.min(origSize, parseFloat(this.style.fontSize || origSize) / .95) + 'px';
-			if(parseFloat(this.style.fontSize) >= origSize) break;
-			this.rows = '1';
-			this.style.overflowY = 'hidden';
-		    this.style.height = 'auto';
-		    this.style.height = this.scrollHeight + 'px';
-		}
-		oldLength = this.value.length;
-	}
-
-	while(this.clientHeight > 250) {
-		this.style.fontSize = parseFloat(this.style.fontSize || origSize) * .95 + 'px';
-		this.rows = '1';
-		this.style.overflowY = 'hidden';
-	    this.style.height = 'auto';
-	    this.style.height = this.scrollHeight + 'px';
-	}
-});
-
-event.call(document.getElementById('propcott-form'), verb + 'submit', function() {
-	console.log(document.getElementById('propcott-title_size').value, document.getElementById('propcott-title').style.fontSize);
-	document.getElementById('propcott-title_size').value = document.getElementById('propcott-title').style.fontSize;
-
+event.call(document.getElementById('propcott-form'), verb + 'submit', function(e) {
 	document.getElementById('propcott-why').innerHTML =
 		CKEDITOR.instances['propcott-why'].getData();
 
@@ -199,257 +333,229 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function()
 	document.getElementById('propcott-alt').innerHTML =
 		CKEDITOR.instances['propcott-alt'].getData().replace(/<\/p><p>/g, '\n').replace(/<\/p>|<p>/g, '');
 });
-
 </script>
+{% endblock %}
+
+{% block actions %}
+<li><button type="submit" name="action" value="cancel"><span class="typcn typcn-times"></span><br>Cancel</button></li>
+<li><button type="submit" name="action" value="preview"><span class="typcn typcn-tick"></span><br>Preview</button></li>
+<li><button type="submit" name="action" value="save"><span class="typcn typcn-pin"></span><br>Save</button></li>
+{% endblock %}
+
+{% block page.start %}<form method="POST" action="/editor/handle" id="propcott-form">{% endblock %}
+{% block page.end %}</form>{% endblock %}
+
+{% block hero %}
+{% autoescape false %}
+<div class="headline">
+	<div class="headline-content">
+		<div class="container">
+			<textarea id="propcott-title"
+					  name="title"
+					  class="autosize"
+					  placeholder="Enter a title"
+					  maxlength="255"
+					  >{{ propcott.title }}</textarea>
+			{% if propcott.creator %}
+				<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.display_name }}
+				{% if propcott.creator.org %} from
+					{% if propcott.creator.org_link %}
+						<a style="color: white;" href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
+					{% else %}
+						<strong>{{ propcott.creator.org }}</strong>
+					{% endif %}
+				{% endif %}
+				</p>
+			{% endif %}
+		</div>
+	</div>
+
+	<div id="headline-background"{% if propcott.media_type %} style="background-image: url('{% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% elseif propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/hqdefault.jpg{% endif %}');"{% endif %}></div>
+</div>
+{% endautoescape %}
 {% endblock %}
 
 {% block content %}
 {% autoescape false %}
-<form method="POST" action="/editor/handle" id="propcott-form">
-<div class="navigation" style="background-color: #397DD8; color: #ffffff;" data-sticky="0">
-	<div class="container">
-		<button class="block round navigation-item" type="submit" name="action" value="cancel" style="margin-left: -.75em;">
-			<span class="navigation-text">Cancel</span>
-			<span class="typcn typcn-times"></span>
-		</button>
-		<button class="block round navigation-item" type="submit" name="action" value="preview">
-			<span class="navigation-text">Preview</span>
-			<span class="typcn typcn-tick"></span>
-		</button>
-		<button class="block round navigation-item" type="submit" name="action" value="save">
-			<span class="navigation-text">Save</span>
-			<span class="typcn typcn-pin"></span>
-		</button>
-	</div>
-</div>
-
-<div class="container">
-	<div class="row">
-		<div class="col-7 push-5">
-			<div id="propcott" class="propcott-full">
-				<div id="propcott-featured-image">
-					<input type="hidden" name="title_size" id="propcott-title_size">
-					<textarea id="propcott-title"
-							  name="title"
-							  class="autosize"
-							  placeholder="Enter a title"
-							  style="font-size: {{ propcott.title_size }}"
-							  maxlength="255"
-							  >{{ propcott.title }}</textarea>
-				</div>
-				<div id="propcott-content">
-					<div class="propcott-outside-placeholder">
-						<div class="propcott-outside">
-							<h2>Who <br /><small>is your intended target?</small></h2>
-							<span class="question-mark">
-								<span class="question-mark-icon">?</span>
-								<span class="question-mark-container">
-									<span class="question-mark-text">We structured Propcott to target each target one at a time to ensure higher effectiveness</span>
-								</span>
-							</span>
-						</div>
-					</div>
-
-					<p style="position: absolute; margin: 1em; pointer-events: none; color: rgb(215,0,0);">Propcotting </p>
-					<textarea id="propcott-target"
-							  name="target"
-							  class="editable-region autosize"
-							  placeholder="corporation, person, organization etc."
-							  style="text-indent:6.2em;"
-							  >{{ propcott.target }}</textarea>
-
-					<hr />
-
-					<p style="font-style: italic;padding: 1em;margin: 0; cursor: default;" id="industry-container">What industry are they in?
-					<select id="propcott-industry"
-					        name="industry"
-							style="font-style: normal; border: 0; outline: 0; padding:.5em; background: rgba(0,0,0,0.025); cursor: pointer;">
-						{% if propcott.industry %}
-						<optgroup label="Saved Industry">
-							<option value="{{ propcott.industry }}">{{ propcott.industry }}</option>
-						</optgroup>
-						<optgroup label="All Industries">
-						{% else %}
-						<option>Choose an Industry</option>
-						{% endif %}
-						<option>Other</option>
-						<option>Accounting</option>
-						<option>Advertising</option>
-						<option>Aerospace</option>
-						<option>Agriculture</option>
-						<option>Aircraft</option>
-						<option>Airline</option>
-						<option>Apparel &amp; Accessories</option>
-						<option>Automotive</option>
-						<option>Banking</option>
-						<option>Biotechnology</option>
-						<option>Broadcasting</option>
-						<option>Brokerage</option>
-						<option>Call Centers</option>
-						<option>Cargo Handling</option>
-						<option>Chemical</option>
-						<option>Computer</option>
-						<option>Consulting</option>
-						<option>Consumer Products</option>
-						<option>Cosmetics</option>
-						<option>Defense</option>
-						<option>Department Stores</option>
-						<option>Education</option>
-						<option>Electronics</option>
-						<option>Energy</option>
-						<option>Entertainment &amp; Leisure</option>
-						<option>Executive Search</option>
-						<option>Financial Services</option>
-						<option>Food, Beverage &amp; Tobacco</option>
-						<option>Grocery</option>
-						<option>Health Care</option>
-						<option>Internet Publishing</option>
-						<option>Investment Banking</option>
-						<option>Legal</option>
-						<option>Manufacturing</option>
-						<option>Motion Picture &amp; Video</option>
-						<option>Music</option>
-						<option>Newspaper Publishers</option>
-						<option>Online Auctions</option>
-						<option>Pension Funds</option>
-						<option>Pharmaceuticals</option>
-						<option>Private Equity</option>
-						<option>Publishing</option>
-						<option>Real Estate</option>
-						<option>Retail &amp; Wholesale</option>
-						<option>Securities &amp; Commodity Exchanges</option>
-						<option>Service</option>
-						<option>Soap &amp; Detergent</option>
-						<option>Software</option>
-						<option>Sports</option>
-						<option>Technology</option>
-						<option>Telecommunications</option>
-						<option>Television</option>
-						<option>Transportation</option>
-						<option>Trucking</option>
-						<option>Venture Capital</option>
-						{% if propcott.industry %}
-						</optgroup>
-						{% endif %}
-					</select></p>
-
-					<hr />
-
-					<div class="propcott-outside-placeholder">
-						<div class="propcott-outside">
-							<h2>What <br /><small>is the goal of your propcott?</small></h2>
-							<span class="question-mark">
-								<span class="question-mark-icon">?</span>
-								<span class="question-mark-container">
-									<span class="question-mark-text">i.e. To change a policy of a company, To simply stop etc.</span>
-								</span>
-							</span>
-						</div>
-					</div>
-
-					<textarea id="propcott-goal"
-							  name="goal"
-							  class="editable-region autosize"
-							  placeholder="What do you hope to accomplish?"
-							  >{{ propcott.goal }}</textarea>
-
-					<hr />
-
-					<div class="propcott-outside-placeholder">
-						<div class="propcott-outside">
-							<h2>Why <br /><small>should others join?</small></h2>
-							<span class="question-mark">
-								<span class="question-mark-icon">?</span>
-								<span class="question-mark-container">
-									<span class="question-mark-text">What compelled you to start this and why should others join you?</span>
-								</span>
-							</span>
-						</div>
-					</div>
-
-					<textarea id="propcott-why"
-							  name="why"
-							  class="editable-region autosize"
-							  placeholder="Background / Description"
-							  >{{ propcott.why }}</textarea>
-
-					<hr />
-
-					<div class="propcott-outside-placeholder">
-						<div class="propcott-outside">
-							<h2>How <br /><small>can we take action?</small></h2>
-							<span class="question-mark">
-								<span class="question-mark-icon">?</span>
-								<span class="question-mark-container">
-									<span class="question-mark-text">i.e. do not purchase this product, do not watch this movie, do not click, do not attend, etc.</span>
-								</span>
-							</span>
-						</div>
-					</div>
-
-					<textarea id="propcott-how"
-							  name="how"
-							  class="editable-region autosize"
-							  placeholder="Course of action"
-							  >{{ propcott.how.join(String.fromCharCode(10)) }}</textarea>
-
-					<hr />
-
-					<div class="propcott-outside-placeholder">
-						<div class="propcott-outside">
-							<h2><small>Alternative <br />(optional)</small></h2>
-							<span class="question-mark">
-								<span class="question-mark-icon">?</span>
-								<span class="question-mark-container">
-									<span class="question-mark-text">Wisely choose a viable replacement to the target</span>
-								</span>
-							</span>
-						</div>
-					</div>
-
-					<textarea id="propcott-alt"
-							  name="alt"
-							  class="editable-region autosize"
-							  placeholder="Provide an alternative to the target"
-							  >{{ propcott.alt.join(String.fromCharCode(10)) }}</textarea>
-
-					<hr>
-
-					<div style="padding: .5em 1em; text-align: center;">
-						<button class="block radius navigation-item" type="submit" name="action" value="preview">
-							<span class="navigation-text">Preview</span>
-							<span class="typcn typcn-tick"></span>
-						</button>
-						<button class="block radius navigation-item" type="submit" name="action" value="save">
-							<span class="navigation-text">Save Propcott</span>
-							<span class="typcn typcn-pin"></span>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-5 pull-7">
-			<div id="propcott-sidebar">
-				{% if propcott.media_type == 'image' %}
-				<div id="propcott-media" style="background-image: url('http://static.propcott.com/{{ propcott.media_link }}');" class="filled">
-				{% elseif propcott.media_type == 'video' %}
-				<div id="propcott-media" style="background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');" class="filled">
-				{% else %}
-				<div id="propcott-media">
-				{% endif %}
-					<div class="dropzone">
-						drag and drop image here<br>or<br>
-						<button type="button" onclick="document.getElementById('media-photo').click()">upload<br>image</button>
-						<button type="button" onclick="chooseVideo()">embed<br>youtube</button>
-						<input type="hidden" name="media_type" value="{{ propcott.media_type }}" id="propcott-media_type">
-						<input type="hidden" name="media_link" value="{{ propcott.media_link }}" id="propcott-media_link">
-						<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
-					</div>
-				</div>
+<div class="row">
+	<div class="col-12 col-md-5" style="float: right; clear: right;">
+		{% if propcott.media_type == 'image' %}
+		<div id="propcott-media" style="background-image: url('http://static.propcott.com/{{ propcott.media_link }}');" class="filled">
+		{% elseif propcott.media_type == 'video' %}
+		<div id="propcott-media" style="background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');" class="filled">
+		{% else %}
+		<div id="propcott-media">
+		{% endif %}
+			<div class="dropzone">
+				drag and drop image here<br>or<br>
+				<button type="button" onclick="document.getElementById('media-photo').click()">upload<br>image</button>
+				<button type="button" onclick="chooseVideo()">embed<br>youtube</button>
+				<input type="hidden" name="media_type" value="{{ propcott.media_type }}" id="propcott-media_type">
+				<input type="hidden" name="media_link" value="{{ propcott.media_link }}" id="propcott-media_link">
+				<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
 			</div>
 		</div>
 	</div>
+
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<h3>Who <small>is your intended target?</small></h3>
+		<span class="question-mark">
+			<span class="question-mark-icon">?</span>
+			<span class="question-mark-container">
+				<span class="question-mark-text">We structured Propcott to target each target one at a time to ensure higher effectiveness</span>
+			</span>
+		</span>
+
+		<p style="position: absolute; margin: 0 0.5em 0 0; pointer-events: none; color: rgb(215,0,0);">Propcotting </p>
+		<textarea id="propcott-target"
+				  name="target"
+				  class="editable-region autosize"
+				  placeholder="corporation, person, organization etc."
+				  style="text-indent:6.2em;"
+				  >{{ propcott.target }}</textarea>
+	</div>
+
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<p style="font-style: italic;padding: 0;margin: 0; cursor: default;" id="industry-container">What industry are they in?
+		<select id="propcott-industry"
+		        name="industry"
+				style="font-style: normal; border: 0; outline: 0; padding:.5em; background: rgba(0,0,0,0.025); cursor: pointer;">
+			{% if propcott.industry %}
+			<optgroup label="Saved Industry">
+				<option value="{{ propcott.industry }}" selected>{{ propcott.industry }}</option>
+			</optgroup>
+			<optgroup label="All Industries">
+			{% else %}
+			<option value="" hidden selected>Choose an Industry</option>
+			{% endif %}
+			<option>Other</option>
+			<option>Accounting</option>
+			<option>Advertising</option>
+			<option>Aerospace</option>
+			<option>Agriculture</option>
+			<option>Aircraft</option>
+			<option>Airline</option>
+			<option>Apparel &amp; Accessories</option>
+			<option>Automotive</option>
+			<option>Banking</option>
+			<option>Biotechnology</option>
+			<option>Broadcasting</option>
+			<option>Brokerage</option>
+			<option>Call Centers</option>
+			<option>Cargo Handling</option>
+			<option>Chemical</option>
+			<option>Computer</option>
+			<option>Consulting</option>
+			<option>Consumer Products</option>
+			<option>Cosmetics</option>
+			<option>Defense</option>
+			<option>Department Stores</option>
+			<option>Education</option>
+			<option>Electronics</option>
+			<option>Energy</option>
+			<option>Entertainment &amp; Leisure</option>
+			<option>Executive Search</option>
+			<option>Financial Services</option>
+			<option>Food, Beverage &amp; Tobacco</option>
+			<option>Grocery</option>
+			<option>Health Care</option>
+			<option>Internet Publishing</option>
+			<option>Investment Banking</option>
+			<option>Legal</option>
+			<option>Manufacturing</option>
+			<option>Motion Picture &amp; Video</option>
+			<option>Music</option>
+			<option>Newspaper Publishers</option>
+			<option>Online Auctions</option>
+			<option>Pension Funds</option>
+			<option>Pharmaceuticals</option>
+			<option>Private Equity</option>
+			<option>Publishing</option>
+			<option>Real Estate</option>
+			<option>Retail &amp; Wholesale</option>
+			<option>Securities &amp; Commodity Exchanges</option>
+			<option>Service</option>
+			<option>Soap &amp; Detergent</option>
+			<option>Software</option>
+			<option>Sports</option>
+			<option>Technology</option>
+			<option>Telecommunications</option>
+			<option>Television</option>
+			<option>Transportation</option>
+			<option>Trucking</option>
+			<option>Venture Capital</option>
+			{% if propcott.industry %}
+			</optgroup>
+			{% endif %}
+		</select></p>
+	</div>
+
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<h3>What <small>is the goal of your propcott?</small></h3>
+		<span class="question-mark">
+			<span class="question-mark-icon">?</span>
+			<span class="question-mark-container">
+				<span class="question-mark-text">i.e. To change a policy of a company, To simply stop etc.</span>
+			</span>
+		</span>
+		<textarea id="propcott-goal"
+		  name="goal"
+		  class="editable-region autosize"
+		  placeholder="What do you hope to accomplish?"
+		  >{{ propcott.goal }}</textarea>
+	</div>
+
+	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right;">
+		<h3>How <small>can we take action?</small></h3>
+		<span class="question-mark">
+			<span class="question-mark-icon">?</span>
+			<span class="question-mark-container">
+				<span class="question-mark-text">i.e. do not purchase this product, do not watch this movie, do not click, do not attend, etc.</span>
+			</span>
+		</span>
+
+		<textarea id="propcott-how"
+				  name="how"
+				  class="editable-region autosize"
+				  placeholder="Course of action"
+				  >{{ propcott.how.join(String.fromCharCode(10)) }}</textarea>
+	</div>
+
+	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right;">
+		<h3>Alternative <small>(optional)</small></h3>
+		<span class="question-mark">
+			<span class="question-mark-icon">?</span>
+			<span class="question-mark-container">
+				<span class="question-mark-text">Wisely choose a viable replacement to the target</span>
+			</span>
+		</span>
+
+		<textarea id="propcott-alt"
+				  name="alt"
+				  class="editable-region autosize"
+				  placeholder="Provide an alternative to the target"
+				  >{{ propcott.alt.join(String.fromCharCode(10)) }}</textarea>
+	</div>
+
+	<div class="col-12 col-md-7" style="padding: 0 2em;">
+		<div class="propcott-outside-placeholder">
+			<div class="propcott-outside">
+				<h3>Why <small>should others join?</small></h3>
+				<span class="question-mark">
+					<span class="question-mark-icon">?</span>
+					<span class="question-mark-container">
+						<span class="question-mark-text">What compelled you to start this and why should others join you?</span>
+					</span>
+				</span>
+			</div>
+		</div>
+
+		<textarea id="propcott-why"
+				  name="why"
+				  class="editable-region autosize"
+				  placeholder="Background / Description"
+				  >{{ propcott.why }}</textarea>
+	</div>
 </div>
-</form>
 {% endautoescape %}
 {% endblock %}

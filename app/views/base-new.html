@@ -152,24 +152,18 @@
 		left: 0.15em;
 	}
 	#menu:target ~ #header #nav ~ .hamburger-helper .hamburger .bar-1 {
-		width: 0.5em;
-		left: 0;
-		top: 0.125em;
-		-webkit-transform: rotate(-45deg);
-		-moz-transform: rotate(-45deg);
-		-ms-transform: rotate(-45deg);
-		-o-transform: rotate(-45deg);
-		transform: rotate(-45deg);
+		-webkit-transform: rotate(-45deg) scaleX(0.5) translateX(-0.6em) translateY(-0.075em);
+		-moz-transform: rotate(-45deg) scaleX(0.5) translateX(-0.6em) translateY(-0.075em);
+		-ms-transform: rotate(-45deg) scaleX(0.5) translateX(-0.6em) translateY(-0.075em);
+		-o-transform: rotate(-45deg) scaleX(0.5) translateX(-0.6em) translateY(-0.075em);
+		transform: rotate(-45deg) scaleX(0.5) translateX(-0.6em) translateY(-0.075em);
 	}
 	#menu:target ~ #header #nav ~ .hamburger-helper .hamburger .bar-3 {
-		width: 0.5em;
-		left: 0;
-		top: -0.125em;
-		-webkit-transform: rotate(45deg);
-		-moz-transform: rotate(45deg);
-		-ms-transform: rotate(45deg);
-		-o-transform: rotate(45deg);
-		transform: rotate(45deg);
+		-webkit-transform: rotate(45deg) scaleX(0.5) translateX(-0.6em) translateY(0.075em);
+		-moz-transform: rotate(45deg) scaleX(0.5) translateX(-0.6em) translateY(0.075em);
+		-ms-transform: rotate(45deg) scaleX(0.5) translateX(-0.6em) translateY(0.075em);
+		-o-transform: rotate(45deg) scaleX(0.5) translateX(-0.6em) translateY(0.075em);
+		transform: rotate(45deg) scaleX(0.5) translateX(-0.6em) translateY(0.075em);
 	}
 	#page {
 		position: relative;
@@ -221,7 +215,7 @@
 		text-align: center;
 		position: relative;
 	}
-	
+
 	#footer {
 		background: #111;
 		color: white;
@@ -294,7 +288,7 @@
 		#header .hamburger-helper {
 			display: none !important;
 		}
-		
+
 		#page {
 			transition: 0 !important;
 		}
@@ -303,8 +297,8 @@
 			overflow-y: visible;
 		}
 	}
-	
-	
+
+
 	.alert-info, .alert-error {
 		padding: .5em;
 		font-family: 'Josefin Sans',sans-serif;
@@ -322,14 +316,14 @@
 		left: 0;
 		right: 0;
 		width: 100%;
-		z-index: 999;
+		z-index: 9;
 		pointer-events: none;
 		height: 0;
 		overflow: hidden;
-		-webkit-animation: fadeout 3s;
-		-moz-animation: fadeout 3s;
-		-o-animation: fadeout 3s;
-		animation: fadeout 3s;
+		-webkit-animation: fadeout 4s;
+		-moz-animation: fadeout 4s;
+		-o-animation: fadeout 4s;
+		animation: fadeout 4s;
 	}
 	.alert-container p {
 		margin: 0;
@@ -349,28 +343,28 @@
 		background-color: #BD1417;
 	}
 	@-webkit-keyframes fadeout {
-	  0%   { height: auto; opacity: 0; margin-top: -30px; }
-	  10%  { height: auto; opacity: 1; margin-top: 0; }
-	  80%  { height: auto; opacity: 1; margin-top: 0; }
-	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	  0%   { height: auto; top: -30px; }
+	  10%  { height: auto; top: 62px; }
+	  80%  { height: auto; top: 62px; }
+	  100% { height: auto; top: -30px; }
 	}
 	@-moz-keyframes fadeout {
-	  0%   { height: auto; opacity: 0; margin-top: -30px; }
-	  10%  { height: auto; opacity: 1; margin-top: 0; }
-	  80%  { height: auto; opacity: 1; margin-top: 0; }
-	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	  0%   { height: auto; top: -30px; }
+	  10%  { height: auto; top: 62px; }
+	  80%  { height: auto; top: 62px; }
+	  100% { height: auto; top: -30px; }
 	}
 	@-o-keyframes fadeout {
-	  0%   { height: auto; opacity: 0; margin-top: -30px; }
-	  10%  { height: auto; opacity: 1; margin-top: 0; }
-	  80%  { height: auto; opacity: 1; margin-top: 0; }
-	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	  0%   { height: auto; top: -30px; }
+	  10%  { height: auto; top: 62px; }
+	  80%  { height: auto; top: 62px; }
+	  100% { height: auto; top: -30px; }
 	}
 	@keyframes fadeout {
-	  0%   { height: auto; opacity: 0; margin-top: -30px; }
-	  10%  { height: auto; opacity: 1; margin-top: 0; }
-	  80%  { height: auto; opacity: 1; margin-top: 0; }
-	  100% { height: auto; opacity: 0; margin-top: -30px; }
+	  0%   { height: auto; top: -30px; }
+	  10%  { height: auto; top: 62px; }
+	  80%  { height: auto; top: 62px; }
+	  100% { height: auto; top: -30px; }
 	}
 	</style>
 	{% block head.end %}{% endblock %}
@@ -413,6 +407,7 @@
 	</div>
 </div>
 <div id="page">
+	{% block page.start %}{% endblock %}
 	<a href="#" id="menu-overlay" data-back aria-label="Back"></a>
 	{% for message in messages %}
 	<div class="alert-container">
@@ -438,6 +433,7 @@
 			</div>
 		{% endblock %}
 	</div>
+	{% block page.end %}{% endblock %}
 </div>
 <div id="footer">
 	<div class="container">
@@ -468,6 +464,7 @@
 		<p style="text-align: center;">Copyright &copy; 2015</p>
 	</div>
 </div>
+
 <style>
 
 .popup-form {
@@ -593,6 +590,7 @@ button.facebook:hover {
 }
 	#actions li > * {
 		display: block;
+		width: 100%;
 		padding: 14px;
 		text-align: center;
 		text-transform: uppercase;
@@ -605,6 +603,10 @@ button.facebook:hover {
 		position: relative;
 		left: 5px;
 		font-weight: bold;
+	}
+	#actions li > *:hover {
+		left: 3px;
+		text-decoration: underline;
 	}
 </style>
 
@@ -644,7 +646,7 @@ document.addEventListener('click', function(e) {
 	}
 });
 </script>
-{% block body.end %}{% endblock %}
 <a href="#" id="overlay" data-back aria-label="Back"></a>
+{% block body.end %}{% endblock %}
 </body>
 </html>
