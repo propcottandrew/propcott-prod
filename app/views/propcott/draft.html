@@ -152,9 +152,8 @@
 {% endblock %}
 
 {% block actions %}
-<li><a href="/editor/cancel"><span class="typcn typcn-times"></span><br>Cancel</a></li>
-<li><a href="/editor"><span class="typcn typcn-pen"></span><br>Edit</a></li>
-<li><a href="/editor/save" onclick="return confirm('Are you sure you want to save this propcott?');"><span class="typcn typcn-cloud-storage"></span><br>Save</a></li>
+<li><a href="/d/{{ propcott.draft_id }}/edit"><span class="typcn typcn-pen"></span><br>Edit</a></li>
+<li><a href="/d/{{ propcott.draft_id }}/publish" onclick="return confirm('Are you sure you want to publish this propcott?');"><span class="typcn typcn-cloud-storage"></span><br>Publish</a></li>
 {% endblock %}
 
 {% block hero %}
