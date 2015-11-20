@@ -222,15 +222,17 @@
 			{% if !supporting %}
 			<a href="{% if user %}/p/{{ propcott.slug }}/join{% else %}#join{% endif %}" class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0;"><span class="typcn typcn-plus"></span> Join!</a>
 			{% endif %}
-			<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.username }}
-			{% if propcott.creator.org %} from
-				{% if propcott.creator.org_link %}
-					<a style="color: white;" href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
-				{% else %}
-					<strong>{{ propcott.creator.org }}</strong>
+			{% if propcott.creator && propcott.creator.username %}
+				<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.username }}
+				{% if propcott.creator.org %} from
+					{% if propcott.creator.org_link %}
+						<a style="color: white;" href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
+					{% else %}
+						<strong>{{ propcott.creator.org }}</strong>
+					{% endif %}
 				{% endif %}
+				</p>
 			{% endif %}
-			</p>
 		</div>
 	</div>
 	
