@@ -371,7 +371,7 @@
 		{% else %}
 		<li class="right">
 			<a href="/account">
-				<span class="typcn typcn-user"></span> Hi, {{ user.display_name || user.username }}</span>
+				<span class="typcn typcn-user"></span> Hi, {{ user.username || 'User' }}</span>
 				<span class="typcn typcn-arrow-sorted-down"></span>
 			</a>
 			<ul>

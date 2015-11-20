@@ -1,11 +1,12 @@
 var User     = require(app.models.user);
 var hasher   = require(app.util.hasher);
 var s3       = require(app.aws).s3;
+var dynamo   = require(app.aws).dynamo;
 var Propcott = require(app.models.propcott);
 var async    = require('async');
 
 module.exports.updateGeneral = function(req, res) {
-	new User({id: req.session.user.id}).load((err, user) => {
+	new User(req.session.user).load((err, user) => {
 		if(err) {
 			console.error(err);
 			req.flash('Could not update account');
@@ -18,43 +19,54 @@ module.exports.updateGeneral = function(req, res) {
 			res.redirect('/account');
 			return;
 		}
-		if(req.body.password) {
-			user.unlink('local', user.email);
-			user.link('local', req.body.email || user.email, req.body.password);
-		} else if(req.body.email) {
-			user.relink('local', user.email, req.body.email);
+		
+		var updateSession = false;
+		
+		if(req.body.username && !user.username) {
+			user.relink('local', user.email, req.body.username);
+			user.username = req.body.username;
+			updateSession = true;
 		}
-
-		delete req.body.password;
-		delete req.body.password_verify;
-
-		for(var i in req.body) user[i] = req.body[i];
+		
+		if(!user.username && req.body.email != user.email) {
+			user.relink('local', user.email, req.body.email);
+			user.email = req.body.email;
+			updateSession = true;
+		}
+		
+		user.email = req.body.email;
+		
+		if(req.body.password) {
+			user.unlink('local', user.username || user.email);
+			user.link('local', user.username || user.email, req.body.password);
+			updateSession = true;
+		}
+		
+		delete user.org;
+		delete user.name;
+		delete user.zip;
+		delete user.display_name;
+		delete user.org_link;
+		delete user['birth-month'];
+		delete user['birth-year'];
+		delete user.gender;
 
 		user.save(function(err, user) {
+			if(!err && updateSession)
+				req.session.user = user.session();
+
 			if(err)
 				req.flash('Could not update account');
 			else
 				req.flash('Account updated successfully');
+			
 			res.render('account/general', {user: user});
 		});
 	});
-/*	$this->validate($request, [
-		'email' => 'email',
-	]);
-
-	var user = req.session.user;
-
-	foreach(['name', 'display_name', 'email', 'zip', 'gender', 'org', 'org_link'] as $prop)
-		$user->{$prop} = $request->{$prop};
-
-	if($request->has('birth-month') && $request->has('birth-year')) $user->birthday = date("Y-m-d", mktime(0, 0, 0, $request->get('birth-month') , 1, $request->get('birth-year')));
-
-	user.save();
-	req.flash('Account updated successfully!');*/
 };
 
 module.exports.general = function(req, res) {
-	var user = new User({id: req.session.user.id});
+	var user = new User(req.session.user);
 
 	user.load(function(err, user) {
 		if(err) {
@@ -97,7 +109,7 @@ module.exports.notifications = (req, res) => {
 
 module.exports.propcotts = (req, res) => {
 	/*async.parallel({
-		user: callback => new User({id: req.session.user.id}).load(callback),
+		user: callback => new User(req.session.user).load(callback),
 		drafts: callback => s3.listObjects({
 			Bucket: 'drafts.data.propcott.com',
 			Prefix: `${hasher.to(req.session.user.id)}/`
@@ -111,11 +123,15 @@ module.exports.propcotts = (req, res) => {
 	});*/
 	
 	async.parallel({
-		user: callback => new User({id: req.session.user.id}).load(callback),
+		user: callback => new User(req.session.user).load(callback),
 		drafts: callback => s3.listObjects({
 			Bucket: 'drafts.data.propcott.com',
 			Prefix: `${hasher.to(req.session.user.id)}/`
-		}, callback)
+		}, callback),
+		supporting: callback => dynamo.query({
+			TableName: 'Supporting',
+			IndexName: ''
+		})
 	}, (err, data) => {
 		if(err) return console.error(err);
 		var len = data.drafts.Prefix.length;

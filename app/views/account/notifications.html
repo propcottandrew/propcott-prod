@@ -7,7 +7,14 @@
 	<style type="text/css">
 		#content {
 			min-height: 320px;
-			padding: 0 2em;
+			padding: 2em;
+		}
+		th {
+			font-weight: normal;
+			text-align: left;
+		}
+		th, td {
+			padding: 0.5em;
 		}
 	</style>
 {% endblock %}
@@ -37,15 +44,15 @@
 		</tr>
 		<tr>
 			<td>I want to be notified as soon as I join a Propcott</td>
-			<td><input type="checkbox" name="join-email"{% if user.notifications['join-email'] %} checked="true"{% endif %}></td>
+			<td style="text-align: center"><input type="checkbox" name="join-email"{% if user.notifications['join-email'] %} checked="true"{% endif %}></td>
 		</tr>
 		<tr>
 			<td>I want to be notified as soon as I publish a Propcott</td>
-			<td><input type="checkbox" name="publish-email"{% if user.notifications['publish-email'] %} checked="true"{% endif %}></td>
+			<td style="text-align: center"><input type="checkbox" name="publish-email"{% if user.notifications['publish-email'] %} checked="true"{% endif %}></td>
 		</tr>
 		<tr>
 			<td>I want to receive reminders on Propcotts I have joined <select name="reminders-time"><option{% if user.notifications['reminders-time'] == 'Monthly' %} selected="true"{% endif %}>Monthly</option><option{% if user.notifications['reminders-time'] == 'Weekly' %} selected="true"{% endif %}>Weekly</option></select></td>
-			<td><input type="checkbox" name="reminders-email"{% if user.notifications['reminders-email'] %} checked="true"{% endif %}></td>
+			<td style="text-align: center"><input type="checkbox" name="reminders-email"{% if user.notifications['reminders-email'] %} checked="true"{% endif %}></td>
 		</tr>
 		{#<tr>
 			<td>I want to receive updates on Propcotts I have joined</td>

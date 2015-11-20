@@ -127,7 +127,7 @@ class User extends Base {
 			if(c._state && c._state == 'added') {
 				c.key = newKey;
 			} else {
-				if(c._state && c._state != 'changed') c._oldKey = oldKey;
+				if(!c._state || c._state != 'changed') c._oldKey = oldKey;
 				c.key    = newKey;
 				c._state = 'changed';
 			}
@@ -232,7 +232,6 @@ User.prototype.on('saved', (user, callback) => {
 		callback(err);
 	}));
 	queue.drain = callback;
-	
 	queue.push(
 		((user.credentials.removed||[]).map(c => callback => {
 			dynamo.deleteItem({
@@ -244,19 +243,37 @@ User.prototype.on('saved', (user, callback) => {
 			}, callback);
 		}))
 		.concat(user.credentials.filter(c => c._state == 'changed').map(c => callback => {
-			dynamo.updateItem({
+			dynamo.getItem({
 				TableName: User.table,
-				ConditionExpression: 'attribute_not_exists(#key)',
-				UpdateExpression: 'SET #key = :key',
-				ExpressionAttributeNames: {'#key': 'Key'},
-				ExpressionAttributeValues: {':key': {S: c.key}},
 				Key: {
 					Key: {S: c._oldKey},
 					Provider: {S: c.provider}
 				}
-			}, err => {
-				if(!err) delete c._state;
-				callback(err);
+			}, (err, data) => {
+				if(err)
+					return callback(err);
+				
+				data.Item.Key.S = c.key;
+				dynamo.putItem({
+					TableName: User.table,
+					ConditionExpression: 'attribute_not_exists(#key)',
+					ExpressionAttributeNames: {'#key': 'Key'},
+					Item: data.Item
+				}, err => {
+					if(err)
+						return callback(err);
+					
+					dynamo.deleteItem({
+						TableName: User.table,
+						Key: {
+							Key: {S: c._oldKey},
+							Provider: {S: c.provider}
+						}
+					}, err => {
+						if(!err) delete c._state;
+						callback(err);
+					});
+				});
 			});
 		}))
 		.concat(user.credentials.filter(c => c._state == 'added').map(c => callback => {

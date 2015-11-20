@@ -16,11 +16,14 @@ program
 	.option('-p, --port <n>', 'Port to listen on', parseInt)
 	.option('-e, --env <value>', 'Environment (prod, dev)')
 	.parse(process.argv);
-console.log(program.port, program.env == 'dev');
+
 module.exports = (function(app) {
 	app.use(express.static('public'));
 
-	app.use(bodyParser());
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({
+		extended: true
+	}));
 	app.use(cookieParser(process.env.APP_SECRET));
 	app.use(flash());
 	app.use(passport.initialize());

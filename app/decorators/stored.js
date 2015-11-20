@@ -34,10 +34,6 @@ module.exports = options => {
 			async.series([
 				callback => this.emit('loading', callback),
 				callback => {
-					console.log('loading', {
-						Bucket: options.bucket(this),
-						Key: options.key(this)
-					});
 					s3.getObject({
 						Bucket: options.bucket(this),
 						Key: options.key(this)

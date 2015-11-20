@@ -220,19 +220,17 @@
 				</div>
 			</div>
 			{% if !supporting %}
-			<a href="#join" class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0;"><span class="typcn typcn-plus"></span> Join!</a>
+			<a href="{% if user %}/p/{{ propcott.slug }}/join{% else %}#join{% endif %}" class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0;"><span class="typcn typcn-plus"></span> Join!</a>
 			{% endif %}
-			{% if propcott.creator %}
-				<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.display_name }}
-				{% if propcott.creator.org %} from
-					{% if propcott.creator.org_link %}
-						<a style="color: white;" href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
-					{% else %}
-						<strong>{{ propcott.creator.org }}</strong>
-					{% endif %}
+			<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.username }}
+			{% if propcott.creator.org %} from
+				{% if propcott.creator.org_link %}
+					<a style="color: white;" href="{{ propcott.creator.org_link }}">{{ propcott.creator.org }}</a>
+				{% else %}
+					<strong>{{ propcott.creator.org }}</strong>
 				{% endif %}
-				</p>
 			{% endif %}
+			</p>
 		</div>
 	</div>
 	
@@ -247,7 +245,7 @@
 {% if supporting %}
 <li><span><span class="typcn typcn-tick"></span><br>Joined</span></li>
 {% else %}
-<li><a href="#join"><span class="typcn typcn-plus"></span><br>Join</a></li>
+<li><a href="{% if user %}/p/{{ propcott.slug }}/join{% else %}#join{% endif %}"><span class="typcn typcn-plus"></span><br>Join</a></li>
 {% endif %}
 <li><a href="#updates"><span class="typcn typcn-microphone"></span><br>Updates</a></li>
 <li><a href="#comments"><span class="typcn typcn-messages"></span><br>Comments</a></li>

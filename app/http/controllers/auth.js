@@ -55,7 +55,6 @@ var register = function(req, res) {
 	user.username = req.body.user.username;
 	user.email    = req.body.user.email;
 	user.link('local', user.username, req.body.user.password);
-	
 
 	user.save(function(err, user) {
 		if(err) {
@@ -71,7 +70,11 @@ var register = function(req, res) {
 			if(err) console.info(err);
 			user.emit('login', err => {
 				if(err) console.info(err);
-				res.redirect(req.session.afterLogin || '/');
+				
+				if(req.body.join)
+					res.redirect(`/p/${req.body.join}/join`);
+				else
+					res.redirect(req.session.afterLogin || '/');
 			});
 		});
 	});

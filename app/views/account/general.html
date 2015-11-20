@@ -7,7 +7,15 @@
 	<style type="text/css">
 		#content {
 			min-height: 320px;
-			padding: 0 2em;
+			padding: 2em;
+		}
+		th {
+			font-weight: normal;
+			text-align: left;
+		}
+		th, td {
+			padding: 0.5em;
+			vertical-align: top;
 		}
 	</style>
 {% endblock %}
@@ -37,12 +45,15 @@
 
 		<table>
 			<tr>
-				<th>Name</th>
-				<td><input type="text" name="name" value="{{ user.name }}"></td>
-			</tr>
-			<tr>
-				<th>Display Name</th>
-				<td><input type="text" name="display_name" value="{{ user.display_name }}"></td>
+				<th>Username</th>
+				<td>
+					{% if user.username %}
+					{{ user.username }}
+					{% else %}
+					<input type="text" name="username" value="" placeholder="You can only do this once">
+					<p style="font-weight: bold; margin: 0; font-size: 0.8em;">You will use this username to log in from now on.</p>
+					{% endif %}
+				</td>
 			</tr>
 			<tr>
 				<th>Email address</th>
@@ -53,54 +64,8 @@
 				<td><input type="password" name="password"></td>
 			</tr>
 			<tr>
-				<th>Repeat</th>
+				<th>Repeat Password</th>
 				<td><input type="password" name="password_verify"></td>
-			</tr>
-			<tr>
-				<th>Zip Code</th>
-				<td><input type="text" name="zip" value="{{ user.zip }}"></td>
-			</tr>
-			<tr>
-				<th>Organization</th>
-				<td><input type="text" name="org" value="{{ user.org }}"></td>
-			</tr>
-			<tr>
-				<th>Organization Website</th>
-				<td><input type="text" name="org_link" value="{{ user.org_link }}"></td>
-			</tr>
-			<tr>
-				<th>Birthday</th>
-				<td>
-				<select name="birth-month">
-					{% if user.birth_month %}
-					<optgroup label="Selected"><option value="{{ user.birth_month }}">{{ ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][user.birth_month] }}</option></optgroup>
-					<optgroup label="All Months">
-					{% endif %}
-					<option value="1">January</option>
-					<option value="2">February</option>
-					<option value="3">March</option>
-					<option value="4">April</option>
-					<option value="5">May</option>
-					<option value="6">June</option>
-					<option value="7">July</option>
-					<option value="8">August</option>
-					<option value="9">September</option>
-					<option value="10">October</option>
-					<option value="11">November</option>
-					<option value="12">December</option>
-					{% if user.birth_month %}
-					</optgroup>
-					{% endif %}
-				</select>
-				<input name="birth-year" placeholder="Year" maxlength="4" style="width: 6ex;" onchange="if(/[^d]/.test(this.value)) this.value=this.value.replace(/[^\d]/g,'')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="{{ user.birth_year || '' }}">
-				</td>
-			</tr>
-			<tr>
-				<th>Gender</th>
-				<td><select name="gender">
-					<option value="1"{% if user.gender == 1 %} selected="true"{% endif %}>Male</option>
-					<option value="0"{% if user.gender == 0 %} selected="true"{% endif %}>Female</option>
-				</select></td>
 			</tr>
 		</table>
 		<p><input type="submit" value="Update"></p>
