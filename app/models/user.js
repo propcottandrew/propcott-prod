@@ -45,7 +45,7 @@ class User extends Base {
 	support(id, previous, callback) {
 		dynamo.putItem({
 			TableName: 'Supporters',
-			ConditionExpression: 'attribute_not_exists(PropcottId)',
+			ConditionExpression: this.id != -1 ? 'attribute_not_exists(PropcottId)' : undefined,
 			Item: {
 				PropcottId: {N: String(id)},
 				UserId: {N: String(this.id)},
