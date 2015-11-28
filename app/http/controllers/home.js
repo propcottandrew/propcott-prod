@@ -1,7 +1,7 @@
 var Propcott = require(app.models.propcott);
 var async    = require('async');
 
-var featured = 8;
+var featured = 26;
 
 var indexOn = (index, callback) => {
 	var i = 0;
