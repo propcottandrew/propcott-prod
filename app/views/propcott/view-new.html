@@ -184,11 +184,6 @@
 				<input type="hidden" name="join" value="{{ propcott.id }}">
 				<button class="col-12 facebook" type="submit">Log in with Facebook<span class="typcn typcn-social-facebook"></span><br><small style="font-weight: normal;">This is only here for your convenience</small></button>
 			</form>
-			<p class="col-12">- or -</p>
-			<form method="POST" action="/p/{{ propcott.slug }}/join">
-				<button type="submit" class="col-12" id="login-join">Maybe next time<br><small style="font-weight: normal;">Show your support, but miss out on some features</small></button>
-				<p class="col-12">- or -</p>
-			</form>
 			<form method="POST" action="/login">
 				<input type="hidden" name="join" value="{{ propcott.id }}">
 				<input type="radio" name="login-type" id="join-login" class="login-check" value="login" checked>

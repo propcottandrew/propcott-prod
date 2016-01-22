@@ -31,7 +31,7 @@
 		title: 'Do not watch any NCAA sport until the NCAA revokes its nonprofit status!!',
 		creator: {
 			id: 1,
-			name: 'ronUP',
+			name: 'boycottNCAA',
 			org: 'Boycott NCAA',
 			link: 'https://www.facebook.com/pages/Boycott-NCAA/965824740106486'
 		},
@@ -66,7 +66,7 @@
 		title: 'Save your health. Stop Eating at McDonald\'s!!',
 		creator: {
 			id: 1,
-			name: 'Anderson',
+			name: 'boycottmcd',
 			org: 'No McDonald\'s',
 			link: 'https://www.facebook.com/endmcdonalds'
 		},
@@ -85,7 +85,7 @@
 		title: 'Don\'t watch ANY NCAA or college sports until NCAA pledges to pay a decent wage to student athletes',
 		creator: {
 			id: 1,
-			name: 'ronUP',
+			name: 'BoycottNCAA',
 			org: 'Boycott NCAA',
 			link: 'https://www.facebook.com/pages/Boycott-NCAA/965824740106486'
 		},
@@ -104,7 +104,7 @@
 		title: 'Urging Reddit not to censor content or else there will continue to be a loss of users!!',
 		creator: {
 			id: 1,
-			name: 'Dreww',
+			name: 'boycottreddit',
 			org: 'Boycott Reddit',
 			link: 'https://www.facebook.com/pages/Boycott-Reddit/109983302671706'
 		},
