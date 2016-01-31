@@ -274,19 +274,6 @@
 	
 	{% if propcott.how %}
 	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
-	  {% if propcott.id == 27 || propcott.id == 29 %}
-	  <div style="margin: 0 -2em; text-align: center; position: relative;">
-  	  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- Propcott View Page -->
-      <ins class="adsbygoogle"
-           style="display:inline-block;width:320px;height:100px"
-           data-ad-client="ca-pub-5509225747243146"
-           data-ad-slot="2141084710"></ins>
-      <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-    </div>
-    {% endif %}
 		<h3>What to do:</h3>
 		<ul id="propcott-how">
 			{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
@@ -330,6 +317,19 @@
 
 			<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% endif %}{% if propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}&amp;description={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#b81621;" target="_blank">pinterest</a>
 		</p>
+	  {% if propcott.id == 27 || propcott.id == 29 %}
+	  <div style="margin: 0 -2em; text-align: center; position: relative;">
+  	  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- Propcott View Page -->
+      <ins class="adsbygoogle"
+           style="display:inline-block;width:320px;height:100px"
+           data-ad-client="ca-pub-5509225747243146"
+           data-ad-slot="2141084710"></ins>
+      <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    {% endif %}
 	</div>
 	
 	<div class="col-12 col-md-7" style="padding: 0 2em;">
