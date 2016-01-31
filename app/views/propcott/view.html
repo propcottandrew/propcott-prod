@@ -274,6 +274,19 @@
 	
 	{% if propcott.how %}
 	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+	  {% if propcott.id == 27 || propcott.id == 29 %}
+	  <div style="margin: 0 -2em; text-align: center; position: relative;">
+  	  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- Propcott View Page -->
+      <ins class="adsbygoogle"
+           style="display:inline-block;width:320px;height:100px"
+           data-ad-client="ca-pub-5509225747243146"
+           data-ad-slot="2141084710"></ins>
+      <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    {% endif %}
 		<h3>What to do:</h3>
 		<ul id="propcott-how">
 			{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
