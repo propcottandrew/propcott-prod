@@ -2,11 +2,11 @@
 
 {% block content %}
 {% autoescape false %}
-<h1 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 18pt; text-align: center; margin: 0; line-height: 1.1; font-weight: normal; margin-top: 0.3em; margin-bottom: 0.5em; color:#444;"><a style="color: inherit" href="http://www.propcott.com/{{ propcott.slug }}">{{ propcott.title }}</a></h1>
+<h1 style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 18pt; text-align: center; margin: 0; line-height: 1.1; font-weight: normal; margin-top: 0.3em; margin-bottom: 0.5em; color:#444;"><a style="color: inherit" href="http://www.propcott.com/p/{{ propcott.slug }}">{{ propcott.title }}</a></h1>
 
 <p style="font-family: 'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size: 12pt; text-align: center; margin: 0; line-height: 1.1; font-weight: bold; margin-top: 0.3em; margin-bottom: 0.75em; color:#444;">has posted an update/announcement:</p>
 
-<p>{{ snippet }}... <a href="http://www.propcott.com/{{ propcott.slug }}">Read the full update.</a></p>
+<p>{{ snippet }}... <a href="http://www.propcott.com/p/{{ propcott.slug }}">Read the full update.</a></p>
 
 {% endautoescape %}
 {% endblock %}
