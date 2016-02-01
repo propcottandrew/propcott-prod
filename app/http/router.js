@@ -1,6 +1,9 @@
 var c = require(app.http.controllers.index);
 var m = require(app.http.middleware.index);
 
+var Propcott = require(app.models.propcott);
+var User = require(app.models.user);
+
 module.exports = function(app) {
 	['about', 'contact', 'privacy', 'terms', 'creator-tips', 'supporter-tips'].forEach(page => {
 		app.get(`/${page}`, (req, res) => res.render(`static/${page}`));

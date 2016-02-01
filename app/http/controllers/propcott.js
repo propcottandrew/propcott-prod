@@ -100,14 +100,32 @@ module.exports.join = (req, res) => {
 
 module.exports.update = (req, res) => {
 	new Propcott({published: true, id: req.params.id}).load((err, propcott) => {
-		propcott.updates.push({created: Date.now(), content: req.body.content});
+	  var update = {created: Date.now(), content: req.body.content};
+		propcott.updates.push(update);
+		
+		var snippet = update.content.split(' ');
+		snippet.length = 5;
+		snippet = snippet.join(' ');
+		
 		propcott.save(err => {
 			if(err) {
 				req.flash('An unexpected error occured');
 				return res.redirect('back');
 			}
+			
 			req.flash('You have updated your supporters!');
 			res.redirect(`/p/${req.params.slug}`);
+			
+			propcott.supporters((err, data) => {
+        data.Items.forEach(v => {
+          new User({id: parseInt(v.UserId.N, 10)}).load((err, user) => {
+            user.sendEmail('update', 'Update for ' + propcott.title, {
+              propcott: propcott,
+              snippet: snippet
+            });
+          });
+        });
+      });
 		});
 	});
 };

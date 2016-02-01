@@ -1,16 +1,7 @@
 'use strict';
 
-/*
-var dynamo = local('framework/dynamo');
-var s3 = local('framework/s3');
-var Store = local('models/store');
-var Model = local('models/base');
-var fs = require('fs');
-var hasher = local('framework/hasher');
-*/
-
 var Base    = require(app.models.base);
-var aws     = require(app.aws);
+var dynamo  = require(app.aws).dynamo;
 var stored  = require(app.decorators.stored);
 var indexed = require(app.decorators.indexed.index);
 var id      = require(app.decorators.id);
@@ -31,37 +22,15 @@ class Propcott extends Base {
 		});
 	}
 
-	// if query is null, get all supporters
-	supporters(params, callback) {
-		params = params || {};
-		params.Item = params.Item || {};
-		params.TableName = 'Supporters';
-		//params.ExpressionAttributeValues = {
-		//	':0': {S: }
-		//}
-		params.KeyConditionExpression = 'PropcottId=';
-
+	// get all supporters
+	supporters(callback) {
 		dynamo.query({
-			TableName: 'Supporters',
-			Item: {
-				PropcottId: {N: String(id)},
-				UserId: {N: String(this.id)},
-				Created: {N: String(Date.now())}
-			}
-		}, err => {
-			if(err) console.error(err);
-			else {
-				Propcott.index.update({hash: 0, range: id}, {
-					support: {
-						daily: '#+1',
-						weekly: '#+1',
-						monthly: '#+1',
-						all: '#+1'
-					}
-				}, err => err && console.error(err));
-			}
-			callback();
-		});
+		  TableName: 'Supporters',
+		  KeyConditionExpression: 'PropcottId=:0',
+		  ExpressionAttributeValues: {
+		    ':0': {N: String(this.id)}
+		  }
+		}, callback);
 	}
 
 	setCreator(user) {
