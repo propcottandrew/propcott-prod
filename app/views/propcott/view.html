@@ -336,9 +336,9 @@
 		<h3 id="updates">Updates</h3>
 		{% if propcott.updates && propcott.updates.length %}
 			{% for update in propcott.updates && propcott.updates.reverse() %}
-				<p>
+				<p style="clear: both">
 					{% if update.created %}<span style="float: right; color: #777; margin: 0 0 1em 1em;">{{ date(update.created) }}</span>{% endif %}
-					{{ update.content || update }}
+					{% if update.created %}{{ update.content }}{% else %}{{ update }}{% endif %}
 				</p>
 			{% endfor %}
 		{% else %}

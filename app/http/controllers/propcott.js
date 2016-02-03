@@ -46,8 +46,11 @@ module.exports.view = (req, res, next) => {
 			console .error(err);
 			return next('route');
 		}
+		delete data.index.updates;
+		delete data.index.published;
+		delete data.index.created;
 		data.propcott.import(data.index);
-		
+		console.log(data.propcott);
 		data.date = function(timestamp) {
 			var d = new Date(timestamp);
 			return `${months[d.getMonth()].substr(0,3)} ${d.getDate()}, ${d.getFullYear()}`;
@@ -85,6 +88,13 @@ module.exports.edit = (req, res) => {
 };
 
 module.exports.join = (req, res) => {
+	if(!req.session.user) {
+		//console.log(JSON.stringify(req.headers));
+		console.log(req.connection.remoteAddress);
+		res.send('Thank you for the support, but the anonymous join feature was being abused and must be taken offline until it can be made secure.');
+		return;
+	}
+
 	new User(req.session.user || {id: -1}).support(req.params.id, req.body.previous_support == '1', err => {
 		if(err) console.error(err);
 		

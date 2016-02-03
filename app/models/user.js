@@ -43,6 +43,7 @@ class User extends Base {
 
 	// Add support for a propcott
 	support(id, previous, callback) {
+//console.log('support from user', id);
 		dynamo.putItem({
 			TableName: 'Supporters',
 			ConditionExpression: this.id != -1 ? 'attribute_not_exists(PropcottId)' : undefined,
@@ -57,14 +58,14 @@ class User extends Base {
 			else {
 				var params = {
 					support: {
-						daily: '#+1',
-						weekly: '#+1',
-						monthly: '#+1',
+						//daily: '#+1',
+						//weekly: '#+1',
+						//monthly: '#+1',
 						all: '#+1'
 					}
 				};
 
-				if(previous) params.support.previous = '#+1';
+				//if(previous) params.support.previous = '#+1';
 
 				Propcott.index.update({hash: 0, range: id}, params, err => err && console.error(err));
 			}
