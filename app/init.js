@@ -13,17 +13,19 @@ for(var key in prefixes) (function(fn, prefix) {
 
 global.noop = function() {};
 
-Object.prototype.decorate = function(property, decorator) { // decorate([property,] decorator)
-	if(!decorator && typeof property == 'function') {
-		decorator = property;
-		decorator(this);
-	} else {
-		if(!(property in this)) return console.error('[' + 'WARN'.yellow + ']', 'Could not invoke decorator on', '"' + property + '"');
-		var descriptor = Object.getOwnPropertyDescriptor(this, property);
-		descriptor = decorator(this, property, descriptor) || descriptor;
-		Object.defineProperty(this, property, descriptor);
+Object.defineProperty(Object.prototype, 'decorate', {
+	value: function(property, decorator) { // decorate([property,] decorator)
+		if(!decorator && typeof property == 'function') {
+			decorator = property;
+			decorator(this);
+		} else {
+			if(!(property in this)) return console.error('[' + 'WARN'.yellow + ']', 'Could not invoke decorator on', '"' + property + '"');
+			var descriptor = Object.getOwnPropertyDescriptor(this, property);
+			descriptor = decorator(this, property, descriptor) || descriptor;
+			Object.defineProperty(this, property, descriptor);
+		}
 	}
-};
+});
 
 // need to make this recurse better
 // when we reach something with a replacer, add value to array and continue

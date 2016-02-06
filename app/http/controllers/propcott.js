@@ -46,11 +46,14 @@ module.exports.view = (req, res, next) => {
 			console .error(err);
 			return next('route');
 		}
+		
 		delete data.index.updates;
 		delete data.index.published;
 		delete data.index.created;
 		data.propcott.import(data.index);
-		console.log(data.propcott);
+		
+		data.propcott.ads = true;
+		
 		data.date = function(timestamp) {
 			var d = new Date(timestamp);
 			return `${months[d.getMonth()].substr(0,3)} ${d.getDate()}, ${d.getFullYear()}`;
