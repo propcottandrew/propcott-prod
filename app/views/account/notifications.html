@@ -54,11 +54,10 @@
 			<td>I want to receive reminders on Propcotts I have joined <select name="reminders-time"><option{% if user.notifications['reminders-time'] == 'Monthly' %} selected="true"{% endif %}>Monthly</option><option{% if user.notifications['reminders-time'] == 'Weekly' %} selected="true"{% endif %}>Weekly</option></select></td>
 			<td style="text-align: center"><input type="checkbox" name="reminders-email"{% if user.notifications['reminders-email'] %} checked="true"{% endif %}></td>
 		</tr>
-		{#<tr>
+		<tr>
 			<td>I want to receive updates on Propcotts I have joined</td>
-			<td><input type="checkbox" name="updates-email"></td>
-			<td><input type="checkbox" name="updates-sms"></td>
-		</tr>#}
+			<td style="text-align: center"><input type="checkbox" name="updates-email"{% if user.notifications['updates-email'] %} checked="true"{% endif %}></td>
+		</tr>
 		{#<tr>
 			<td>I want to be notified when a Propcott I joined is successful</td>
 			<td><input type="checkbox" name="successful-email"></td>

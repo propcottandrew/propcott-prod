@@ -132,7 +132,7 @@ module.exports.update = (req, res) => {
 			propcott.supporters((err, data) => {
         data.Items.forEach(v => {
           new User({id: parseInt(v.UserId.N, 10)}).load((err, user) => {
-            user.sendEmail('update', 'Update for ' + propcott.title, {
+          	if(user.notifications['updates-email']) user.sendEmail('update', 'Update for ' + propcott.title, {
               propcott: propcott,
               snippet: snippet
             });

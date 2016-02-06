@@ -22,6 +22,7 @@ class User extends Base {
 			notifications: {
 				'join-email': true,
 				'publish-email': true,
+				'updates-email': true,
 				'reminders-email': true,
 				'reminders-time': 'Weekly'
 			}
