@@ -151,6 +151,13 @@
 	.fb-comments, .fb-comments * {
 		width: 100% !important;
 	}
+	.update-card {
+		border: 1px solid #eee;
+		border-radius: 5px;
+		background: #f7f7f7;
+		padding: 0 1em;
+		margin: 1em 0;
+	}
 	</style>
 {% endblock %}
 
@@ -174,6 +181,7 @@
 			}, 1000);
 		});
 	});
+	
 	</script>
 	<div id="join" class="popup-target"></div>
 	<div id="join-box" class="popup-form">
@@ -333,18 +341,47 @@
 	</div>
 	
 	<div class="col-12 col-md-7" style="padding: 0 2em;">
-		<h3 id="updates">Updates</h3>
+		<h3 id="updates">Updates &amp; Announcements</h3>
+		<div id="updates-container">
 		{% if propcott.updates && propcott.updates.length %}
 			{% for update in propcott.updates && propcott.updates.reverse() %}
-				<p style="clear: both">
-					{% if update.created %}<span style="float: right; color: #777; margin: 0 0 1em 1em;">{{ date(update.created) }}</span>{% endif %}
-					{% if update.created %}{{ update.content }}{% else %}{{ update }}{% endif %}
-				</p>
+				<div class="update-card">
+				{% if update.created %}
+					{% if update.created %}<p style="float: right; color: #777; margin-left: 10px; margin-bottom: 10px;">{{ date(update.created) }}</p>{% endif %}
+					{% if update.title %}<h4>{{ update.title }}</h4>{% endif %}
+					{{ update.content }}
+				{% else %}
+					<p>{{ update }}</p>
+				{% endif %}
+				</div>
 			{% endfor %}
 		{% else %}
 			<p style="font-size: 0.9em;"><em>Stay tuned for updates and announcements from the creator of this propcott.</em></p>
 		{% endif %}
-
+		</div>
+		<p style="display: none;" id="show-all-updates"><a href="#" onclick="show_updates(); return false;">Show all updates</a></p>
+		<script type="text/javascript">
+		var e = document.getElementById('updates-container').childNodes;
+		var updates = [];
+		
+		for(var i=0; i<e.length; i++)
+			if(e[i].className == 'update-card')
+				updates.push(e[i]);
+		
+		for(var i=1; i<updates.length; i++)
+			updates[i].style.display = 'none';
+		
+		if(updates.length > 1)
+			document.getElementById('show-all-updates').style.display = '';
+		
+		function show_updates() {
+			for(var i=1; i<updates.length; i++)
+				updates[i].style.display = '';
+			
+			document.getElementById('show-all-updates').style.display = 'none';
+		}
+		</script>
+		
 		<h3 id="comments">Comments</h3>
 		<div class="fb-comments" data-href="http://www.propcott.com/p/{{ propcott.id }}" data-numposts="5"></div>
 	</div>

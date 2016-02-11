@@ -115,7 +115,12 @@ module.exports.join = (req, res) => {
 
 module.exports.update = (req, res) => {
 	new Propcott({published: true, id: req.params.id}).load((err, propcott) => {
-	  var update = {created: Date.now(), content: req.body.content};
+		var update = {
+			created: Date.now(),
+			content: req.body.content,
+			title: req.body.title
+		};
+		
 		propcott.updates.push(update);
 		
 		var snippet = update.content.split(' ');

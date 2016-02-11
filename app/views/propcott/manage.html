@@ -171,6 +171,53 @@
 	.fb-comments, .fb-comments * {
 		width: 100% !important;
 	}
+	.update-card {
+		border: 1px solid #eee;
+		border-radius: 5px;
+		background: #f7f7f7;
+		padding: 0 1em;
+		margin: 1em 0;
+	}
+	.cke_editable, .cke_contents, .cke_inner, .cke_top, .cke {
+		background: transparent !important;
+		border: none !important;
+		border-radius: 0 !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	.cke_editable {
+		height: auto !important;
+	}
+	.cke_toolgroup {
+		margin: 0 !important;
+		padding: 0 !important;
+		border-radius: 0 !important;
+		border: 0 !important;
+	}
+	.cke_toolbar_separator {
+		background-color: #eee !important;
+		margin: .1em 0px !important;
+		height: 3.25em !important;
+		width: 1px !important;
+	}
+	a.cke_button {
+		border: 0 !important;
+		border-radius: 0 !important;
+		padding: 1em !important;
+		cursor: pointer !important;
+	}
+	.cke_button_on {
+		background: #92bce0 !important;
+		background-color: #eee !important;
+		box-shadow: inset 0 -3px rgba(207, 60, 60, 1) !important;
+	}
+	#cke_propcott-new-update .cke_contents {
+		padding: 0 1em !important;
+	}
+	#cke_propcott-new-update .cke_top {
+		background: white !important;
+		border-bottom: 1px solid #eee !important;
+	}
 	</style>
 {% endblock %}
 
@@ -199,6 +246,7 @@
 						}
 					})({
 						content: editor.getData(),
+						title: document.getElementById('propcott-new-update-title').value,
 						action: 'update',
 						'_token': '{{ csrf_token() }}'
 					});
@@ -368,18 +416,54 @@
 	</div>
 	
 	<div class="col-12 col-md-7" style="padding: 0 2em;">
-		<h3 id="updates">Updates</h3>
-		<textarea id="propcott-new-update"
-		  name="propcott-new-update"
-		  class="editable-region"
-		  placeholder="Update your propcotters"
-		  ></textarea>
+		<h3 id="updates">Updates &amp; Announcements</h3>
+		<div style="border: 1px solid #eee; background: #f7f7f7; border-radius: 5px;">
+			<input type="text"
+			  id="propcott-new-update-title"
+			  name="propcott-new-update-title"
+			  style="font-weight: bold; font-family: inherit; font-size: 1em; width: 100%; padding: 1em; border: 0; border-bottom: 1px solid #eee; background: transparent;"
+			  placeholder="Update title">
+			<textarea id="propcott-new-update"
+			  name="propcott-new-update"
+			  class="editable-region"
+			  placeholder="Update your propcotters"
+			  ></textarea>
+		</div>
+		<div id="updates-container">
 		{% for update in propcott.updates && propcott.updates.reverse() %}
-			<p>
-				{% if update.created %}<span style="float: right; color: #777; margin: 0 0 1em 1em;">{{ date(update.created) }}</span>{% endif %}
-				{{ update.content || update }}
-			</p>
+			<div class="update-card">
+			{% if update.content %}
+				{% if update.created %}<p style="float: right; color: #777; margin-left: 10px; margin-bottom: 10px;">{{ date(update.created) }}</p>{% endif %}
+				{% if update.title %}<h4>{{ update.title }}</h4>{% endif %}
+				{{ update.content }}
+			{% else %}
+				<p>{{ update }}</p>
+			{% endif %}
+			</div>
 		{% endfor %}
+		</div>
+		<p style="display: none;" id="show-all-updates"><a href="#" onclick="show_updates(); return false;">Show all updates</a></p>
+		<script type="text/javascript">
+		var e = document.getElementById('updates-container').childNodes;
+		var updates = [];
+		
+		for(var i=0; i<e.length; i++)
+			if(e[i].className == 'update-card')
+				updates.push(e[i]);
+		
+		for(var i=1; i<updates.length; i++)
+			updates[i].style.display = 'none';
+		
+		if(updates.length > 1)
+			document.getElementById('show-all-updates').style.display = '';
+		
+		function show_updates() {
+			for(var i=1; i<updates.length; i++)
+				updates[i].style.display = '';
+			
+			document.getElementById('show-all-updates').style.display = 'none';
+		}
+		</script>
 
 		<h3 id="comments">Comments</h3>
 		<div class="fb-comments" data-href="http://www.propcott.com/p/{{ propcott.id }}" data-numposts="5"></div>
