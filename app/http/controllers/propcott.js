@@ -43,14 +43,16 @@ module.exports.view = (req, res, next) => {
 		}
 	}, (err, data) => {
 		if(err) {
-			console .error(err);
+			console.error(err);
 			return next('route');
 		}
 		
-		delete data.index.updates;
-		delete data.index.published;
-		delete data.index.created;
-		data.propcott.import(data.index);
+		if(data.index) {
+			delete data.index.updates;
+			delete data.index.published;
+			delete data.index.created;
+			data.propcott.import(data.index);
+		}
 		
 		data.propcott.ads = true;
 		

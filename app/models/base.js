@@ -31,8 +31,13 @@ class Base {
 			Object.getOwnPropertyNames(from)
 				.filter(prop => from.hasOwnProperty(prop))
 				.forEach(prop => {
-					if(typeof(from[prop]) == 'object' && from[prop] != null) {
-						if(typeof(to[prop]) == 'undefined') to[prop] = {};
+					if(typeof from[prop] == 'object' && from[prop] != null) {
+						if(typeof to[prop] == 'undefined') {
+							if(from[prop].length)
+								to[prop] = [];
+							else
+								to[prop] = {};
+						}
 						copy(to[prop], from[prop]);
 					} else to[prop] = from[prop];
 				});
