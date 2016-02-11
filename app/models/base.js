@@ -32,7 +32,7 @@ class Base {
 				.filter(prop => from.hasOwnProperty(prop))
 				.forEach(prop => {
 					if(typeof from[prop] == 'object' && from[prop] != null) {
-						if(typeof to[prop] == 'undefined') {
+						if(typeof to[prop] != 'object' || to[prop] == null) {
 							if(from[prop].length)
 								to[prop] = [];
 							else
