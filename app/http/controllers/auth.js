@@ -45,7 +45,7 @@ var register = function(req, res) {
 		!req.body.user.username ||
 		!req.body.user.password ||
 		!req.body.user.password == req.body.password ||
-		req.body.user.email && !validator.isEmail(req.body.user.email)
+		!req.body.user.email || !validator.isEmail(req.body.user.email) //Making email required
 	) {
 		req.flash(MessageBag, 'input.incorrect');
 		return res.redirect('back');

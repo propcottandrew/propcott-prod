@@ -6,10 +6,13 @@
 	<title>{% block title %}Propcott{% endblock %}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">
+	input:focus, select:focus, textarea:focus, button:focus{outline: none;}
 	html {
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
+		min-height:100%;
+		
 	}
 	*, *:before, *:after {
 		-webkit-box-sizing: inherit;
@@ -29,26 +32,24 @@
 		left: 50%;
 		margin-left: -94px;
 		z-index: 11;
-		height: 57px;
+		height: 52px;
 		background-position: bottom 15px center;
 		background-color: white;
 		padding: 20px 30px;
 		border-bottom-left-radius: 50% 20px;
 		border-bottom-right-radius: 50% 20px;
-		border: 6px solid #BD1417;
-		border: 0px solid rgba(0,0,0,0);
 		border-top-width: 0;
-		box-shadow: 0 0 0 6px #BD1417, 0 6px 0 1px #79201E, 0 6px 3px 1px rgba(0,0,0,0.5)
+		transition: 0.05s;
 	}
 	#logo:hover {
-		height: 62px;
+		height: 57px;
 	}
 	#header {
+		/*previously background: #BD1417;*/
 		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;
-		background: #BD1417;
 		border-bottom: 1px solid #79201E;
 		box-shadow: 0 0 3px 0px rgba(0,0,0,0.5);
 		height: 45px;
@@ -56,8 +57,9 @@
 		z-index: 10;
 	}
 	#header .right {
-		float: none;
+		float: left;
 		text-align: left;
+
 	}
 	#nav {
 		position: fixed;
@@ -74,7 +76,7 @@
 		left: 0;
 	}
 	#nav {
-		padding: 0;
+		padding: 0 1em;
 		border-right: 1px solid #111;
 	}
 	#nav ul {
@@ -88,11 +90,13 @@
 		color: white;
 		transition: 300ms background;
 		text-decoration: none;
-		border-radius: 2em;
+		border-radius: 0em;
 		display: inline-block;
 	}
-	#header a:hover {
-		background: rgba(255,255,255,0.1);
+	#header .left a:hover, #header .whiteHover:hover {
+		
+		color: #A55D5D;
+		
 	}
 	#nav li {
 		padding: 0;
@@ -169,7 +173,7 @@
 		position: relative;
 		transition: 500ms left;
 		left: 0;
-		padding: 1px 0;
+		padding: 0px 0;
 		margin-top: -1px;
 	}
 	#menu:target ~ #page {
@@ -178,6 +182,7 @@
 	}
 	#content {
 		margin: 2em 0;
+		border: 0;
 	}
 	#menu, #login, #join, #close {
 		position: fixed;
@@ -200,6 +205,7 @@
 	#hero {
 		text-align: center;
 		position: relative;
+
 	}
 
 	#footer {
@@ -230,11 +236,11 @@
 		#nav ul {
 			padding: 0;
 		}
-		#header a {
-			padding: 0.4em;
+		#nav a {
+			padding: 12.6px 12.6px 9px 12.6px;
+			margin-bottom: 3.6px;
 			display: inline-block;
-			margin: 0.5em;
-			border-radius: 2em;
+			
 			text-shadow: -1px -1px #90211E;
 		}
 		#nav li {
@@ -252,10 +258,12 @@
 			border: 1px solid #ddd;
 			z-index: 12;
 			background: white;
+
 		}
 		#nav li:hover ul {
 			display: block;
 		}
+		/*when logged in, the dropdown menu on right*/
 		#nav ul a {
 			text-shadow: none;
 			color: #333;
@@ -267,6 +275,14 @@
 		}
 		#nav ul a:hover {
 			background: #eee;
+			color: #A55D5D;
+
+		}
+		#header .left a:hover, #header .whiteHover:hover {
+			border-bottom: 2px solid #fff;
+			background: inherit;
+			color: white;
+			margin-bottom: 1.6px;
 		}
 		#nav ul li {
 			float: none;
@@ -295,6 +311,9 @@
 		border-radius: 10px;
 		text-align: center;
 		line-height: 1;
+		border: 1px solid #333 !important;
+		box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+		margin: 10px !important;
 	}
 	.alert-container {
 		position: fixed;
@@ -313,7 +332,7 @@
 	}
 	.alert-container p {
 		margin: 0;
-		padding: .5em;
+		padding: 1em;
 		text-align: center;
 		line-height: 1;
 		font-family: 'Josefin Sans',sans-serif;
@@ -323,10 +342,11 @@
 		border-radius: 10px;
 	}
 	.alert-info {
-		background-color: #397DD8;
+		background-color: #fff !important;
+		color: #677999 !important;
 	}
 	.alert-error {
-		background-color: #BD1417;
+		background-color: #8c4d4d !important;
 	}
 	@-webkit-keyframes fadeout {
 	  0%   { height: auto; top: -30px; }
@@ -353,6 +373,8 @@
 	  100% { height: auto; top: -30px; }
 	}
 	</style>
+	<!--Adding bootstrap minified css by cdn link-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -369,16 +391,18 @@
 <div id="close"></div>
 <div id="menu"></div>
 <div id="header">
-	<div class="container">
+	<div class="container-fluid navContainer">
 	<ul id="nav" class="clear" aria-label="Navigation">
-		<li><a href="/search"><span class="typcn typcn-zoom"></span> Search</a></li>
-		<li><a href="/explore"><span class="typcn typcn-world"></span> Explore</a></li>
-		<li><a href="/editor"><span class="typcn typcn-pen"></span> Start a Propcott</a></li>
+		<span class = "left">
+			<li><a href="/search"><span class="typcn typcn-zoom"></span> Search</a></li>
+			<li><a href="/explore"><span class="typcn typcn-world"></span> Explore</a></li>
+			<li><a href="/editor"><span class="typcn typcn-pen"></span> Start a Propcott</a></li>
+		</span>
 		{% if !user %}
-		<li class="right"><a href="#login"><span class="typcn typcn-user"></span> Log In</a></li>
+		<li class="right"><a href="#login" class = "whiteHover"><span class="typcn typcn-user"></span> Log In</a></li>
 		{% else %}
 		<li class="right">
-			<a href="/account">
+			<a href="/account" class = "whiteHover">
 				<span class="typcn typcn-user"></span> Hi, {{ user.username || 'User' }}</span>
 				<span class="typcn typcn-arrow-sorted-down"></span>
 			</a>
@@ -400,7 +424,8 @@
 	</span>
 	</div>
 </div>
-<div id="page">
+<div id="page" style = "background: #E8E8E8">
+	
 	{% block page.start %}{% endblock %}
 	{% for message in messages %}
 	<div class="alert-container">
@@ -415,7 +440,7 @@
 		<p>Just a short description.</p>
 	{% endblock %}
 	</div>
-	<div class="container">
+		<div class = "container-fluid universal">
 		{% block page %}
 			<ul id="actions">
 			{% block actions %}{% endblock %}
@@ -425,54 +450,121 @@
 			{% endblock %}
 			</div>
 		{% endblock %}
-	</div>
+		</div>
 	{% block page.end %}{% endblock %}
 </div>
+<style>
+	html/*footer is weird right now, doing this for now*/
+	{
+		background: #2B2C2A;
+	}
+	#footer
+	{
+		padding-top: 30px;
+		padding-bottom: 6px;
+	}
+	#footer ul li
+	{
+		display:inline-block;
+		color: #D3CFC6;
+		padding-right: 5px;
+	}
+	#footer ul
+	{
+		padding-left: 5px;
+	}
+	#footer h3
+	{
+		margin-top: 0em;
+		font-size: 20px;
+		
+	}
+	#footer .leftSide
+	{
+		padding-right: 120px;
+	}
+	/*screen sizes smaller than 1200px*/
+	@media screen and (max-width: 1200px)
+	{
+		#footer ul li
+		{	
+			padding-right: 5px;
+		}
+		#footer ul
+		{
+			padding-left:0px;
+		}
+
+	}
+</style>
 <div id="footer">
-	<div class="container">
-		<div class="row">
+	<div class="container-fluid footerContainer" style = "padding: 0 1em">
+		<div class="row" style = "padding-bottom: 10px;">
 			<!--div class="col-12 col-sm-6" style="text-align: left; padding: 0 1em;">
 				<h3>We need your help!</h3>
 				<p>Starting something great isn't easy. It takes a lot of work and resources. We're willing to put in the work, but need help with funding the project. If willing, please donate!</p>
 			</div-->
-			<div class="col-12 col-sm-3"></div>
-			<div class="col-6 col-sm-3" style="text-align: left; padding: 0 1em;">
-				<h3>Help &amp; Legal</h3>
-				<ul>
-					<li><a href="/contact">Contact</a></li>
-					<li><a href="/privacy">Privacy Policy</a></li>
-					<li><a href="/terms">Terms of Service</a></li>
-				</ul>
+			<div class="col-0 col-md-3" style = "width: 20%"></div>
+			<div class="col-12 col-md-3" style="text-align:left;padding: 0 0em;">
+				<div>
+					
+						<h3 class = "leftSide" style = "display:inline-block;">Help &amp; Legal</h3>
+					<div style = "text-align: left">
+					<ul>
+						<li><a href="/contact">Contact</a></li>
+						<li><a href="/privacy">Privacy Policy</a></li>
+						<li><a href="/terms">Terms of Service</a></li>
+						
+					</ul>
+					</div>
+				</div>
 			</div>
-			<div class="col-6 col-sm-3" style="text-align: left; padding: 0 1em;">
-				<h3>Learn More</h3>
+			<div class="col-12 col-md-6" style="text-align:left;padding: 0 0em;">
+				<div>
+					<div style = "">
+						
+						<h3 style = "display:inline-block">Learn More</h3>
+					</div>
+					<div style = "text-align: left">
+					<ul>
+						<li><a href="/about">About Propcott</a></li>
+						<li><a href="/creator-tips">Tips for Propcott Creators</a></li>
+						<li><a href="/supporter-tips">Tips for Propcotters</a></li>
+						<li style="text-align: center;color: #A55D5D;padding-right: 0">Copyright &copy; 2015</li>
+					</ul>
+					</div>
+				</div>
+			</div>
+			<!--
+			<div class="col-6 col-md-0" style="text-align: left; padding: 0 0em 0em 2em;">
+				<h3 style = "padding-left: 7px">Learn More</h3>
 				<ul>
 					<li><a href="/about">About Propcott</a></li>
 					<li><a href="/creator-tips">Tips for Propcott Creators</a></li>
 					<li><a href="/supporter-tips">Tips for Propcotters</a></li>
 				</ul>
 			</div>
-			<div class="col-12 col-sm-3"></div>
+			<div class="col-12 col-sm-1"></div>-->
 		</div>
-		<p style="text-align: center;">Copyright &copy; 2015</p>
+		
 	</div>
 </div>
 
 <style>
 
+/*Login*/
 .popup-form {
 	position: fixed;
 	z-index: 20;
 	display: none;
-	background: white;
-	border: 1px solid #333;
-	width: 400px;
-	top: 50px;
+	background: rgb(0,0,0,0);
+	top: 25%;
 	left: 50%;
 	margin-left: -200px;
 }
 .popup-form * {
 	line-height: 1;
+	
 }
 .popup-form p {
 	font-style: italic;
@@ -481,6 +573,7 @@
 	padding: 0.5em 1em;
 	margin: 0;
 	border-bottom: 1px solid #bbb;
+	background: #fff;
 }
 .popup-form input {
 	width: 100%;
@@ -502,8 +595,8 @@
 	right: 0;
 	bottom: 0;
 	z-index: 19;
-	background: black;
-	opacity: 0.75;
+	background: #292f33;
+	opacity: 0.60;
 	display: none;
 }
 .popup-form button,
@@ -517,21 +610,23 @@
 	cursor: pointer;
 	transition: 300ms;
 	border-bottom: 1px solid #bbb;
+	margin-bottom: 0;
+	opacity: 1;
 }
 .popup-form button:hover,
 .popup-form .button:hover {
-	color: #333;
-	background: #ccc;
+	color: #A55D5D;
 	text-decoration: none;
 }
 .popup-form .login-check:checked ~ .login-button,
 .popup-form .signup-check:checked ~ .signup-button {
-	background: #BD1417;
-	color: white;
+	color: #A55D5D;
 }
-button.facebook {
+button.facebook {/*previously background-color: rgb(0,119,225)*/
 	color: white;
-	background-color: rgb(0, 119, 255);
+	background: rgba(59, 89, 152, 0.95);
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
 }
 button.facebook:after {
 	font-weight: normal;
@@ -541,11 +636,14 @@ button.facebook:after {
     margin-top: 4px;
     display: block;
     content: 'This is only here for your convenience...';
-    font-size: 0.8em;
+    font-size: 0.7em;
 }
 button.facebook:hover {
 	color: white;
 	background-color: rgb(0, 100, 200);
+	background: #2e4677;
+	opacity: 1;
+	box-shadow: 0px 0px 10px 2px rgb(0,0,0,0.9);
 }
 .popup-form .login-tooltip {
 	position: relative;
@@ -574,6 +672,17 @@ button.facebook:hover {
 .popup-form .signup-only {
 	display: none;
 }
+.popup-form .login-only,
+.popup-form .signup-only{
+	background: #A55D5D;
+	color: white;
+	border-bottom: none;
+}
+.popup-form .login-only:hover,
+.popup-form .signup-only:hover{
+	background: #8c4d4d;
+	color: white;
+}
 .popup-target:target + .popup-form,
 .popup-target:target ~ #overlay,
 .popup-form .login-check:checked ~ .login-only,
@@ -584,24 +693,128 @@ button.facebook:hover {
 	#actions li > * {
 		display: block;
 		width: 100%;
-		padding: 14px;
+		padding: 7px 20px;
 		text-align: center;
 		text-transform: uppercase;
-		color: white;
-		background: #BD1417;
-		border-top-left-radius: 15px 50%;
-		border-bottom-left-radius: 15px 50%;
-		border: 2px dashed white;
-		box-shadow: 0 0 0 3px #BD1417;
+		color: #fff;
+
+		border-top-left-radius: 4px;
+		border-bottom-left-radius: 4px;
+		border: 2px solid #aaa;
+
 		position: relative;
 		left: 5px;
 		font-weight: bold;
+		height: 60px;
 	}
 	#actions li > *:hover {
-		left: 3px;
-		text-decoration: underline;
 	}
-</style>
+	/*Universal CSS (classes used in html templates)*/
+	/*If device screen is larger than or equal to 992px*/
+	@media (min-device-width: 992px) 
+	{
+    	.container-fluid.universal, .container-fluid.navContainer, .container-fluid.footerContainer
+    	{
+       		max-width: 1150px;
+       	}
+   	}
+   	/*If browser window width is larger than or equal to 1300px (cannot be reached by laptops)*/
+	@media (min-width: 1300px) 
+	{
+    	.container-fluid.universal, .container-fluid.navContainer, .container-fluid.footerContainer
+    	{
+       		max-width: 1300px;
+       	}
+   	}
+
+   	/*aligns the containers and removes default padding by bootstrap*/
+	.container-fluid.universal, .container-fluid.navContainer, .container-fluid.footerContainer
+	{
+        margin:0 auto;
+        padding: 0;
+    }
+    .container-fluid.universal		{padding: 0em 0.5em 2em 0.5em;}
+    .container-fluid.universal .row {background: white;}
+    #content
+	{
+		margin-right: 5px;
+		margin-left: 5px;
+		box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+		margin-top:0;
+	}
+	/*navbar*/
+	#header
+	{
+		background: #A55D5D;
+		border-bottom: 0px solid #79201E;
+		box-shadow: inset 0 3px 10px 1px rgba(0,0,0,0.1), 0px 0px 10px 1px rgba(0,0,0,0.5);
+	}
+	#header a
+	{
+		text-shadow: 0px 0px #2B2C2A;
+		color: rgba(245,245,245,1);
+		font-size: 15px;
+	}
+	#logo
+	{
+		background-color: white;
+		box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0.1), 0 0 0 3px #A55D5D, 0 6px 0 1px rgba(0,0,0,0.0), 0px 0px 7px 5px rgba(0,0,0,0.5);
+		transition: 0.15s;
+	}
+	#logo:hover
+	{
+		box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0), 0 0 0 3px #A55D5D, 0 6px 0 1px rgba(0,0,0,0.0), 0px 0px 30px 5px rgba(0,0,0,0.5);
+		transition: 0.15s;
+	}
+	#hero
+	{
+		margin-top: 46px;
+		margin-bottom: 30px;
+	}
+	#footer
+	{
+		background: #2B2C2A;
+	}
+	/*container-attached side navigation*/
+	#actions li{margin-bottom: 5px;}
+	#actions li a, #actions li button
+	{
+		background: #A55D5D;
+		border: 0;
+		box-shadow: inset -10px 0px 25px 0px rgba(0,0,0,0.1),4px 1px 1px 1px rgba(0,0,0,0.4);
+		font-weight: 400;
+		padding: 3px 20px;
+		font-size: 19px;
+		text-transform: none;
+		height: 55px;
+		line-height: 18px;
+		border: 1px solid #8c4d4d;
+	}
+	#actions li button /*I think this is just for create propcott page*/
+	{
+		height: 65px;
+	}
+	#actions li a:hover, #actions li button:hover
+	{
+		border-bottom: 4px solid #8c4d4d;
+		text-decoration: none;
+		transition: 0.05s;
+		box-shadow: inset -10px 0px 25px 0px rgba(0,0,0,0),4px 1px 4px 1px rgba(0,0,0,0.3);
+	}
+	.popup-form{ border-radius:5px;}
+	.popup-form .row{width: 400px; margin: 0; margin-bottom: 20px;border: 1px solid #555;border-radius: 5px;box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.2);}
+	.loginForm{background: white; border-radius: 5px}
+	.login-button{border-bottom: 0px solid white;box-shadow: inset 0px 1px 0px 0px rgba(0,0,0,0.1)}
+	.signup-button{border-bottom: 0px solid white;box-shadow: inset 0px 1px 0px 0px rgba(0,0,0,0.1)}
+	.login-tooltip a{font-size: 0.9em; color: #777; font-weight: normal;}
+	.login-bottom-button{border-bottom-left-radius: 4px;border-bottom-right-radius: 4px;padding: 18px}
+	.signup-bottom-button{border-bottom-left-radius: 4px;border-bottom-right-radius: 4px;}
+	.login-tooltip{text-align: left !important;background: #fff !important}
+	#login-box input{color: black;}
+	.login-note{background: white; word-wrap:break-word; max-width: 400px;color: #555; border-radius: 5px; padding:10px; font-size: 10px;}
+	.login-note div {font-size: 15px; text-align: center; padding-bottom: 10px;}
+	.login-note p {line-height: 15px; border: 0;}
+	</style>
 
 {% if !user %}
 <div id="login" class="popup-target"></div>
@@ -610,20 +823,25 @@ button.facebook:hover {
 		<form method="POST" action="/oauth/facebook">
 			<button class="col-12 facebook" type="submit">Log in with Facebook<span class="typcn typcn-social-facebook"></span></button>
 		</form>
-		<p class="col-12">- or -</p>
-		<form method="POST" action="/login">
+		<form class = "loginForm" method="POST" action="/login">
 			<input type="radio" name="login-type" id="login-login" class="login-check" value="login" checked>
 			<input type="radio" name="login-type" id="login-signup" class="signup-check" value="signup">
-			<label class="col-6 button login-button" for="login-login">Log In</label>
-			<label class="col-6 button signup-button" for="login-signup">Sign Up</label>
+			<label class="col-6 button login-button" for="login-login">Log in</label>
+			<label class="col-6 button signup-button" for="login-signup">Sign up</label>
 			<div class="col-12"><input type="text" name="user[username]" placeholder="Username"></div>
 			<div class="col-12"><input type="password" name="user[password]" placeholder="Password"></div>
 			<div class="col-12 signup-only"><input type="password" name="password" placeholder="Confirm Password"></div>
-			<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (optional)"></div>
-			<p class="col-12 login-tooltip signup-only" style="text-align: left;"><a href="#" data-nolink style="font-size: 0.9em; color: #777; font-weight: normal;">Why do we want your email?</a><span>Remembering to avoid something(s) can be difficult. So we want to help you remember by sending you email reminders, <em>of which</em> can be edited in your notification settings. And please rest assured, <strong>we will not share your e-mail with anyone nor spam you. Seriously.</strong></span></p>
-			<button type="submit" class="col-12 login-only">Log In</button>
-			<button type="submit" class="col-12 signup-only">Sign Up</button>
+			<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (required)"></div>
+			<button type="submit" class="col-12 login-only login-bottom-button">Log in with Propcott</button>
+			<button type="submit" class="col-12 signup-only signup-bottom-button">Sign up</button>
 		</form>
+	</div>
+	<div class = "login-note">
+		<div>These login options are here for your convenience</div>
+		<p>
+		We will not share your information with anyone nor spam you. Seriously.
+		However, the last thing we want is to have Propcott campaigns to be flooded with false numbers, so we do require basic account sign-ups for accountability.
+		</p>
 	</div>
 </div>
 {% endif %}
@@ -641,5 +859,11 @@ document.addEventListener('click', function(e) {
 </script>
 {% block body.end %}{% endblock %}
 <a href="#" id="overlay" data-back aria-label="Back"></a>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!--adding bootstrap minified js by cdn link-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 </body>
 </html>

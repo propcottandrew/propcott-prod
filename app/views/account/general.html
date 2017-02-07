@@ -17,6 +17,27 @@
 			padding: 0.5em;
 			vertical-align: top;
 		}
+		form{max-width: 291px;}
+		input:focus, select:focus, textarea:focus, button:focus, .btn:focus /*removes blue highlight when pressing a button*/
+	{outline: none;}
+		.account-block .btn
+		{
+			float:right;
+			margin-right: 7px;
+			padding: 10px 20px;
+			border-radius: 5px;
+			text-align: center;
+			background: #A55D5D;
+			color:#FFF;
+			border: 0.1px solid #CCC;
+			box-shadow:0 0px 4px 0 rgba(0,0,0,.12);
+			font-weight: bold;
+		}
+		.account-block .btn:hover
+		{
+			background: #A87070;
+			transition: 0.2s all;
+		}
 	</style>
 {% endblock %}
 
@@ -68,7 +89,7 @@
 				<td><input type="password" name="password_verify"></td>
 			</tr>
 		</table>
-		<p><input type="submit" value="Update"></p>
+		<p><input class = "btn" type="submit" value="Update"></p>
 	</form>
 </div>
 {% endautoescape %}

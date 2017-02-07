@@ -13,11 +13,12 @@
 			position: relative;
 		}
 		#cke_propcott-how .cke_editable, #cke_propcott-alt .cke_editable {
-			padding: 1em !important;
+			padding: 0em !important;
 		}
 		#cke_propcott-how p, #cke_propcott-alt p {
 			margin: 0;
-			padding-left: 2em;
+			padding-left: 1.5em;
+			padding-right: 1.5em;
 			position: relative;
 		}
 		#cke_propcott-how p:before, #cke_propcott-alt p:before {
@@ -25,34 +26,35 @@
 			font-size: 1.5em;
 			position: absolute;
 			top: 0;
-			left: 0.55em;
+			left: 0.25em;
 			line-height: 1;
 		}
 		#propcott-media .dropzone {
 			height: 250px;
-			background: rgba(0,0,0,0.8);
-			padding: 60px 30px;
+			background: #333;
+			padding: 25px 10px;
 			color: white;
 			text-align: center;
 			font-family: 'Josefin Sans',sans-serif;
 			line-height: 1.2;
-			font-size: 1.4em;
+			font-size: 18px;
 		}
+		.theOr{padding: 15px 0px;background: #333;}
 		#propcott-media .dropzone button {
-			color: inherit;
 			background: transparent;
 			cursor: pointer;
-			font-weight: normal;
 			display: inline-block;
 			margin: .5em;
 			padding: .5em;
-			border: 1px solid rgba(0,0,0,0.1);
 			border-radius: 5px;
 			outline: none;
 			transition: 300ms;
+			border: 1px dashed white;
+			width: 200px;
 		}
 		#propcott-media .dropzone button:hover {
-			background: rgba(255,255,255,0.1);
+			color: #A55D5D;
+			transition: 0.15s;
 		}
 		#propcott-media.filled .dropzone {
 			opacity: 0;
@@ -62,7 +64,7 @@
 			opacity: 1;
 		}
 		.headline-content {
-			padding: 2em;
+			padding: 25px 28px 15px 28px;
 			background: #111;
 			background-color: rgba(0,0,0,0.75);
 			color: white;
@@ -101,7 +103,7 @@
 			background-repeat: no-repeat;
 			background-position: center center;
 			background-color: #ffffff;
-			margin: 0 1em 1em 0;
+			margin: 0 1em;
 		}
 		.question-mark {
 			display: inline-block;
@@ -110,34 +112,36 @@
 			cursor: default;
 			margin-left: 10px;
 			position: absolute;
-			right: 2em;
-			top: 1.4em;
+			right: 2.3em;
+			top: 1.55em;
 			z-index: 1;
 		}
+		.col-md-7 .question-mark{right: 2em;}
 		.question-mark-icon {
-			font-size: 14px;
-			font-weight: bold;
-			color: white;
+			font-size: 12.5px;
+			font-weight: normal;
+			color: #ccc;
 			vertical-align: text-bottom;
 			z-index: 1;
 			position: relative;
 			width: 20px;
 			height: 20px;
-			background: #333;
-			border-radius: 10px;
+			background: rgba(0,0,0,0);
+			border-radius: 8px;
 			display: block;
+			padding: 0.5px 17.5px 0px 5px; /*aligns the question mark*/
 		}
 		.question-mark-container {
 			width: 300px;
 			height: 8em;
-			max-width: 20px;
-			max-height: 20px;
+			max-width: 23px;
+			max-height: 21px;
 			overflow: hidden;
 			position: absolute;
 			top: 0;
 			right: 0;
 			transition: 300ms;
-			border-radius: 10px;
+			border-radius: 5px;
 			pointer-events: none;
 		}
 		.question-mark-text {
@@ -146,7 +150,6 @@
 			border-radius: 10px;
 			color: white;
 			font-family: 'Josefin Sans',sans-serif;
-			line-height: 1.2;
 			text-align: left;
 			display: block;
 			width: 300px;
@@ -154,6 +157,7 @@
 			position: absolute;
 			top: 0;
 			right: 0;
+			border: 2px solid #ccc;
 		}
 		.question-mark-text:before {
 			content: '';
@@ -164,13 +168,9 @@
 		}
 		.question-mark:hover .question-mark-container {
 			max-width: 300px;
-			max-height: 5em;
+			max-height: 100px;
 		}
-		h3 small {
-			font-family: sans-serif;
-			font-size: 16px;
-			font-weight: normal;
-		}
+		small {font-size: 19px !important;}
 		.editable-region {
 			width: 100%;
 			border: none;
@@ -219,6 +219,32 @@
 			width: 100%;
 			height: 4em;
 			vertical-align: text-bottom;
+		}
+		input:focus, select:focus, textarea:focus, button:focus{outline: none;}
+		h3{margin-bottom: 5px; font-weight: bold;font-size: 24px !important;}
+		.col-md-7{border-right: 1px solid #eee;padding:0em 2em 3em 3em;}
+		.col-md-5{padding: 0 1em 2em}
+		.col-md-7 *{font-size: 17px;}
+		.question-mark-icon {
+			font-size: 15px !important; }
+		/*left side of form*/
+		.who{padding-top:0.5em;padding-bottom: 0.3em;}
+		.who .question-mark{margin-top: 8px;}
+		.who p{position: absolute; margin: 0 0.5em 0 0; pointer-events: none; color: #A55D5D;}
+		.whoIndustry p{font-style: italic;padding: 0;margin: 0; cursor: default;}
+		.form-control{padding: 2px 6px;}
+		.form-control:active,.form-control:focus{box-shadow: none; border: 1px solid #A55D5D;}
+		#propcott-industry{font-style: normal;margin-top: 5px;cursor: pointer; width: 58%;height: 25px;}
+		.why{padding-bottom:25px;min-height: 360px;}
+		/*right side of form*/
+		.propcottImage{padding:1em 1em 0em 0em;float: right;clear: right;}
+		.how{min-height: 120px;}
+		.alternative{min-height: 120px;float:right;}
+		/*If width is below or equal to 992px*/
+		@media(max-width: 992px)
+		{
+			.col-md-5{padding: 0 3em;} 
+			.propcottImage{padding: 1em;}
 		}
 	</style>
 	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
@@ -337,9 +363,11 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 {% endblock %}
 
 {% block actions %}
+<div>
 <li><button type="submit" name="action" value="cancel"><span class="typcn typcn-times"></span><br>Cancel</button></li>
 <li><button type="submit" name="action" value="preview"><span class="typcn typcn-tick"></span><br>Preview</button></li>
 <li><button type="submit" name="action" value="save"><span class="typcn typcn-pin"></span><br>Save</button></li>
+</div>
 {% endblock %}
 
 {% block page.start %}<form method="POST" action="/editor/handle" id="propcott-form">{% endblock %}
@@ -349,7 +377,7 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 {% autoescape false %}
 <div class="headline">
 	<div class="headline-content">
-		<div class="container">
+		<div class="container-fluid">
 			<textarea id="propcott-title"
 					  name="title"
 					  class="autosize"
@@ -377,8 +405,8 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 
 {% block content %}
 {% autoescape false %}
-<div class="row">
-	<div class="col-12 col-md-5" style="float: right; clear: right;">
+<div class="row createPropFormBox">
+	<div class="col-12 col-md-5 propcottImage">
 		{% if propcott.media_type == 'image' %}
 		<div id="propcott-media" style="background-image: url('http://static.propcott.com/{{ propcott.media_link }}');" class="filled">
 		{% elseif propcott.media_type == 'video' %}
@@ -387,9 +415,9 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 		<div id="propcott-media">
 		{% endif %}
 			<div class="dropzone">
-				drag and drop image here<br>or<br>
-				<button type="button" onclick="document.getElementById('media-photo').click()">upload<br>image</button>
-				<button type="button" onclick="chooseVideo()">embed<br>youtube</button>
+				drag and drop image here<div class = "theOr">or</div>
+				<button type="button" onclick="document.getElementById('media-photo').click()">upload image</button>
+				<button type="button" onclick="chooseVideo()">embed youtube</button>
 				<input type="hidden" name="media_type" value="{{ propcott.media_type }}" id="propcott-media_type">
 				<input type="hidden" name="media_link" value="{{ propcott.media_link }}" id="propcott-media_link">
 				<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
@@ -397,7 +425,7 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 		</div>
 	</div>
 
-	<div class="col-12 col-md-7" style="padding: 0 2em;">
+	<div class="col-12 col-md-7 who">
 		<h3>Who <small>is your intended target?</small></h3>
 		<span class="question-mark">
 			<span class="question-mark-icon">?</span>
@@ -406,7 +434,7 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 			</span>
 		</span>
 
-		<p style="position: absolute; margin: 0 0.5em 0 0; pointer-events: none; color: rgb(215,0,0);">Propcotting </p>
+		<p>Propcotting </p>
 		<textarea id="propcott-target"
 				  name="target"
 				  class="editable-region autosize"
@@ -415,18 +443,17 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 				  >{{ propcott.target }}</textarea>
 	</div>
 
-	<div class="col-12 col-md-7" style="padding: 0 2em;">
-		<p style="font-style: italic;padding: 0;margin: 0; cursor: default;" id="industry-container">What industry are they in?
-		<select id="propcott-industry"
-		        name="industry"
-				style="font-style: normal; border: 0; outline: 0; padding:.5em; background: rgba(0,0,0,0.025); cursor: pointer;">
+	<div class="col-12 col-md-7 whoIndustry">
+		<p id="industry-container">
+		<select id="propcott-industry" class = "form-control"
+		        name="industry">
 			{% if propcott.industry %}
 			<optgroup label="Saved Industry">
 				<option value="{{ propcott.industry }}" selected>{{ propcott.industry }}</option>
 			</optgroup>
 			<optgroup label="All Industries">
 			{% else %}
-			<option value="" hidden selected>Choose an Industry</option>
+			<option value="" hidden selected>What industry are they in?</option>
 			{% endif %}
 			<option>Other</option>
 			<option>Accounting</option>
@@ -490,7 +517,7 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 		</select></p>
 	</div>
 
-	<div class="col-12 col-md-7" style="padding: 0 2em;">
+	<div class="col-12 col-md-7">
 		<h3>What <small>is the goal of your propcott?</small></h3>
 		<span class="question-mark">
 			<span class="question-mark-icon">?</span>
@@ -505,39 +532,7 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 		  >{{ propcott.goal }}</textarea>
 	</div>
 
-	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right;">
-		<h3>How <small>can we take action?</small></h3>
-		<span class="question-mark">
-			<span class="question-mark-icon">?</span>
-			<span class="question-mark-container">
-				<span class="question-mark-text">i.e. do not purchase this product, do not watch this movie, do not click, do not attend, etc.</span>
-			</span>
-		</span>
-
-		<textarea id="propcott-how"
-				  name="how"
-				  class="editable-region autosize"
-				  placeholder="Course of action"
-				  >{{ propcott.how.join(String.fromCharCode(10)) }}</textarea>
-	</div>
-
-	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right;">
-		<h3>Alternative <small>(optional)</small></h3>
-		<span class="question-mark">
-			<span class="question-mark-icon">?</span>
-			<span class="question-mark-container">
-				<span class="question-mark-text">Wisely choose a viable replacement to the target</span>
-			</span>
-		</span>
-
-		<textarea id="propcott-alt"
-				  name="alt"
-				  class="editable-region autosize"
-				  placeholder="Provide an alternative to the target"
-				  >{{ propcott.alt.join(String.fromCharCode(10)) }}</textarea>
-	</div>
-
-	<div class="col-12 col-md-7" style="padding: 0 2em;">
+	<div class="col-12 col-md-7 why">
 		<div class="propcott-outside-placeholder">
 			<div class="propcott-outside">
 				<h3>Why <small>should others join?</small></h3>
@@ -554,8 +549,45 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 				  name="why"
 				  class="editable-region autosize"
 				  placeholder="Background / Description"
-				  >{{ propcott.why }}</textarea>
+				  >{{ propcott.why }}
+		</textarea>
 	</div>
+
+	<div class="col-12 col-md-5 how">
+		<h3>How <small>can we take action?</small></h3>
+		<span class="question-mark">
+			<span class="question-mark-icon">?</span>
+			<span class="question-mark-container">
+				<span class="question-mark-text">i.e. do not purchase this product, do not watch this movie, do not click, do not attend, etc.</span>
+			</span>
+		</span>
+
+		<textarea id="propcott-how"
+				  name="how"
+				  class="editable-region autosize"
+				  placeholder="Course of action"
+				  >{{ propcott.how.join(String.fromCharCode(10)) }}</textarea>
+	</div>
+
+	<div class="col-12 col-md-5 alternative">
+		<h3>Alternative <small>(optional)</small></h3>
+		<span class="question-mark">
+			<span class="question-mark-icon">?</span>
+			<span class="question-mark-container">
+				<span class="question-mark-text">Wisely choose a viable replacement to the target</span>
+			</span>
+		</span>
+
+		<textarea id="propcott-alt"
+				  name="alt"
+				  class="editable-region autosize"
+				  placeholder="Provide an alternative to the target"
+				  >{{ propcott.alt.join(String.fromCharCode(10)) }}</textarea>
+	</div>
+
+	
 </div>
+
+
 {% endautoescape %}
 {% endblock %}

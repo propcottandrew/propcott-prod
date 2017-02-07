@@ -12,7 +12,36 @@
 		height: 90px;
 		background-size: cover;
 	}
+	/*@andrenaught new css
+	-need to center ads
+	-this page is under a container-fluid, but does not use bootstrap row/col
+	*/
+    .exploreBox
+    {
+    	margin: 0 auto;
+    	background: white;
+    }
+    .propcottItem a
+    {
+    	color: #983131;
+    }
+    #content
+    {
+    	margin-top: 0;
+    }
+    @media screen and (max-width: 815px)
+    {
+    	.propcottItem {
+
+    		min-height: 215px !important;
+    	}
+    	.propcottItem .propcott-desc
+    	{
+    		min-height: 179px !important;
+    	}
+    }
 	</style>
+
 {% endblock %}
 
 {% block hero %}
@@ -28,46 +57,57 @@
 
 {% block content %}
 {% autoescape false %}
-<div style="padding: 2em; overflow: hidden;">
-	<div class="explore-navigation">
-		<div class="tabs">
-			<a href="/explore/daily"{% if tab == 'hot' %} class="active"{% endif %}>Hot</a>
-			<a href="/explore"{% if tab == 'new' %} class="active"{% endif %}>New</a>
-		</div>
-		{% if subtab %}
-		<div class="tabs subtabs">
-			<a href="/explore/daily"{% if subtab == 'daily' %} class="active"{% endif %}>Today</a>
-			<a href="/explore/weekly"{% if subtab == 'weekly' %} class="active"{% endif %}>This Week</a>
-			<a href="/explore/monthly"{% if subtab == 'monthly' %} class="active"{% endif %}>This Month</a>
-			<a href="/explore/all"{% if subtab == 'all' %} class="active"{% endif %}>All Time</a>
-		</div>
-		{% endif %}
-	</div>
-	{% for propcott in propcotts %}
-		{% if loop.index == 4 %}
-		<div style="margin-bottom: 1em; clear: both;">
-			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<!-- Explore Page -->
-			<ins class="adsbygoogle"
-				style="display:block"
-				data-ad-client="ca-pub-5509225747243146"
-				data-ad-slot="1803023116"
-				data-ad-format="auto"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>
-		</div>
-		{% endif %}
-		<div style="margin-bottom: 1em; clear: both;">
-			<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
-			<div style="overflow:hidden; font-size: .9em;">
-				<p style="float: right; text-align: right; line-height: 1.2; margin: 0 0 1em 1em;">Targeting <span style="color:rgb(215,0,0)">{{ propcott.target }}</span><br>
-				<span style="color: rgb(215,0,0);">{{ propcott.support.all }} supporters</span></p>
-				<a href="/p/{{ propcott.slug }}">{{ propcott.title || 'Untitled' }}</a>
-				<p>{{ propcott.goal }}</p>
+<div class = "exploreBox">
+	<div style="padding: 0em 0em;">
+		<div class="explore-navigation" style = "width:100%;height:100%;margin-left: 10px">
+			<div class="tabs">
+				<a href="/explore/daily"{% if tab == 'hot' %} class="active"{% endif %}>Hot</a>
+				<a href="/explore"{% if tab == 'new' %} class="active"{% endif %}>New</a>
 			</div>
+			{% if subtab %}
+			<div class="tabs subtabs">
+				<a href="/explore/daily"{% if subtab == 'daily' %} class="active"{% endif %}>Today</a>
+				<a href="/explore/weekly"{% if subtab == 'weekly' %} class="active"{% endif %}>This Week</a>
+				<a href="/explore/monthly"{% if subtab == 'monthly' %} class="active"{% endif %}>This Month</a>
+				<a href="/explore/all"{% if subtab == 'all' %} class="active"{% endif %}>All Time</a>
+			</div>
+			{% endif %}
 		</div>
-	{% endfor %}
+		<hr style = "border-color: #C1C1C1;color: #C1C1C1; width: 120%; height: 1px; margin: 0px -4em; align:left; float:left;border-top: 0;" noshade color = "#C1C1C1"></hr>
+		{% for propcott in propcotts %}
+			{% if loop.index == 4 %}
+			<div style="margin: 1em 0em; clear: both;">
+				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+				<!-- Explore Page -->
+				<ins class="adsbygoogle"
+					style="display:block;"
+					data-ad-client="ca-pub-5509225747243146"
+					data-ad-slot="1803023116"
+					data-ad-format="auto"></ins>
+				<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+			</div>
+			{% endif %}
+			<div class = "propcottItem" style="margin: 0em; clear: both; padding: 1em 2em 0.5em 2em; min-height: 200px;position: relative">
+				<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}height:170px; width: 250px; background-position: center center;background-repeat: no-repeat;margin-bottom: 1em"></div>
+				<div class = "propcott-desc" style="overflow:hidden; font-size: .9em;padding: 0em 0em 10px 0em;margin-bottom: 0em;min-height: 164px">
+					
+					<a href="/p/{{ propcott.slug }}" style = "font-weight: normal; font-size: 1.5em;">{{ propcott.title || 'Untitled' }}</a>
+					<p style = "margin-top: 5px; margin-bottom: 0px; padding-bottom: 0px">{{ propcott.goal }}</p>
+					
+				</div>
+				<div style = "position: relative; padding-top: 15px">
+				<p class = "targeting" style="text-align: center; line-height: 1.2; margin: 0em 0px 0em 0em;padding-top: 0em; font-size: 12px;margin: 0 auto; width: 100%;position: absolute;bottom: 0;">Targeting <span style="color:rgb(215,0,0);font-size: 12px; color: #A55D5D;overflow:hidden;">{{ propcott.target }} - </span>
+					<span style="color: rgb(215,0,0); color: #A55D5D">{{ propcott.support.all }} supporters</span></p>
+					</div>
+				
+
+			</div>
+						<hr style = "border-color: #C1C1C1;color: #C1C1C1; width: 120%; height: 1px; margin: 0px -4em; align:left; float:left;border-top: 0;" noshade color = "#C1C1C1"></hr>
+
+		{% endfor %}
+	</div>
 </div>
 {% endautoescape %}
 {% endblock %}
@@ -124,8 +164,9 @@
 		margin: 0;
 	}
 	.tabs {
-		margin-bottom: 16px;
-		font-size: 1.2em;
+		margin-bottom: 0px;
+		margin-left: 8px;
+		font-size: 2em;
 	}
 	.tabs a {
 		display: inline-block;
@@ -140,16 +181,19 @@
 		font-weight: bold;
 		transition: 300ms;
 	}
-	.tabs a:hover {
-		background: #eee;
+	.tabs a:hover /*previously background: #eee;*/
+	{
+		color: #A55D5D;
 		text-decoration: none;
 	}
-	.tabs a.active {
-		background: rgb(215,0,0);
-		color: white;
+	.tabs a.active /*previously background: rgb(215,0,0); color: white*/
+	{
+		background: white;
+		color: #A55D5D;
 	}
 	.subtabs {
 		font-size: .9em;
+		margin-left: 12px;
 	}
 	.pagination {
 		list-style: none;

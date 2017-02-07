@@ -15,9 +15,9 @@ var indexOn = (index, callback) => {
 		ExpressionAttributeValues: {':0': {S: '0'}, ':1': {N: String(featured)}},
 		KeyConditionExpression: '#0=:0',
 		FilterExpression: '#1<>:1',
-		Limit: 4
+		Limit: 7
 	}, index => {
-		if(i++ >= 4) return;
+		if(i++ >= 7) return;
 		tasks.push(callback => new Propcott({published: true, id: index.id}).load((err, propcott) => {
 			propcott.import(index);
 			callback(null, propcott);

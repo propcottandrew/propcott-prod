@@ -7,26 +7,29 @@
 	{% if propcott.media_type %}
 	<meta name="thumbnail" content="http://{% if propcott.media_type == 'image' %}static.propcott.com/{{ propcott.media_link }}{% elseif propcott.media_type == 'video' %}img.youtube.com/vi/{{ propcott.media_link }}/hqdefault.jpg{% endif %}" />
 	{% endif %}
+	<link href='//fonts.googleapis.com/css?family=Capriola' rel='stylesheet'>
 	<style type="text/css">
 	#copy-button {
 		width: 100px;
 		text-align: center;
 		float: right;
 		border: 1px solid #ddd;
-		background: #e7e7e7;
+		background: #A55D5D;
 		padding: .5em;
 		font-size: 1em;
 		line-height: 1;
+		color: #fff;font-weight: bold;font-size: 11px;padding:10.5px;border-top-right-radius: 2px;border-bottom-right-radius: 2px;
 	}
+	button:hover{color: #333;}
 	#copy-button span {
 		font-size: 1em;
 		line-height: 1;
 	}
 	#copy-link {
 		font-size: .9em;
-		background: white;
-		padding: .5em;
-		border: 1px solid #ddd;
+		background: #eee;
+		padding: 9px;
+		border: 2px solid #ddd;
 		border-right: 0;
 		line-height: 1;
 		display: inline-block;
@@ -56,6 +59,7 @@
 		margin: 1em auto;
 		max-width :330px;
 	}
+	.sharebuttons a:hover{text-decoration: none;color: #ccc;}
 	.sharebutton {
 		border-radius:2px;
 		display:inline-block;
@@ -72,7 +76,7 @@
 		position: relative;
 	}
 	.headline-content {
-		padding: 2em;
+		padding: 15px 28px;
 		background: #111;
 		background-color: rgba(0,0,0,0.75);
 		color: white;
@@ -131,10 +135,10 @@
 	}
 	.metric {
 		font-weight: bold;
-		font-size: 0.8em;
+		font-size: 0.9em;
 	}
 	.metric p {
-		margin: 0.5em 2.5em;
+		margin: 0.4em 0em 0em 0em;
 	}
 	.metric-bar, .metric-fill {
 		position: relative;
@@ -142,7 +146,10 @@
 		height: 4px;
 	}
 	.metric-fill {
-		background-color: #BD1417;
+		background-color: #A55D5D;
+		height: 8px;
+		margin-top: 2px;
+		border-bottom: 1px solid #8c4d4d;
 	}
 	.fb-comments {
 		margin: 1em 0;
@@ -157,6 +164,51 @@
 		background: #f7f7f7;
 		padding: 0 1em;
 		margin: 1em 0;
+	}
+	input:focus, select:focus, textarea:focus, button:focus{outline: none;}
+	.viewPropFormBox h3{margin-bottom: 5px; font-weight: bold;font-size: 35px !important;}
+	/*banner*/
+	#propcott-title{margin: 0 0 1em 0;font-size: 40px;}
+	.banner-propcott-num{vertical-align: top;}
+	.banner-propcott-num p{line-height: 1; text-align: right; margin: 0; padding-right: 1em;color: #A55D5D;}
+	.banner-propcott-num strong{font-size: 3em;}
+	.banner-propcott-target{vertical-align: top; text-align: left;margin-top:3px;}
+	.banner-propcott-target p{margin: 0; padding-left: 1em; line-height: 1.1;border-left: 1px solid white;min-height: 3.8em;}
+	.banner-propcott-target span{padding-left: 2px;}
+	.banner-propcott-target strong{font-size: 2.7em;}
+	.join-button{margin: 7px auto 0px auto;width: 110px;color:#ddd;background: rgba(0, 255, 0, 0);font-family: 'Capriola';font-size: 28px;}
+	.join-button span{font-size: inherit;color: #A87070;}
+	.join-button:hover{text-decoration: none;color: #A87070;}
+	/*the white box*/
+	.viewPropcottBox{min-height: 400px;padding-bottom: 30px;}
+	.col-md-7{padding: 0em 0em 0em 2.5em;}
+	.col-md-5{padding: .4em 1.5em 0em 3em;float: right; clear: right}
+	.col-md-7 *{font-size: 17px;}
+	.col-md-7 a{display:block;overflow: hidden;text-overflow: ellipsis;}
+	#propcott-media{margin: 0 1em;}
+	.goalCol h3{margin-top: .5em}
+	.whatCol{padding-top: 0;}
+	#propcott-how li{color: #000;} #propcott-how p{color:#A87070;} #propcott-how{padding: 0px 18px;}
+	#propcott-alt li{color: #000;} #propcott-alt p{color:#A87070;} #propcott-alt{padding: 0px 18px;}
+	p{margin-top: 10px;}
+	/*shares and updates*/
+	.share h3{border-top: 1px solid #eee;padding-top: 0.8em;padding-bottom: 0.5em;text-align:center;}
+	#copy-link{color: #777;}
+	.shareLinkButton{width: 335px;margin: 10px auto 5px auto;width: 230px}
+	.sharebuttons {margin-top: 0px;}
+	.sharebuttons a {margin: 3px 1px;}
+	/*metric-bar join*/
+	.metric-join {margin:2px 1px;float:left; padding-left: 4px}
+	.metric-join a{color: #444;}
+	.metric-join span{font-size: 1em;color: #A55D5D;}
+	.metric-join a:hover{color: #A55D5D;text-decoration: none}
+
+	/*If width is below or equal to 992px*/
+	@media(max-width: 992px)
+	{
+		.col-md-5{padding: 0 2em;} 
+		.col-md-7{padding: 0 2em;}
+		.propcottImage{padding: 0em 1em 0em 3em;margin: 1em;}
 	}
 	</style>
 {% endblock %}
@@ -199,12 +251,18 @@
 				<div class="col-12"><input type="text" name="user[username]" placeholder="Username"></div>
 				<div class="col-12"><input type="password" name="user[password]" placeholder="Password"></div>
 				<div class="col-12 signup-only"><input type="password" name="password" placeholder="Confirm Password"></div>
-				<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (optional)"></div>
-				<p class="col-12 login-tooltip signup-only" style="text-align: left;"><a href="#" data-nolink style="font-size: 0.9em; color: #777; font-weight: normal;">Why do we want your email?</a><span>Remembering to avoid something(s) can be difficult. So we want to help you remember by sending you email reminders, <em>of which</em> can be edited in your notification settings. And please rest assured, <strong>we will not share your e-mail with anyone nor spam you. Seriously.</strong></span></p>
+				<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (Required)"></div>
 				<button type="submit" class="col-12 login-only">Log In + Join</button>
 				<button type="submit" class="col-12 signup-only">Sign Up + Join</button>
 			</form>
 		</div>
+		<div class = "login-note">
+		<div>These login options are here for your convenience</div>
+		<p>
+		We will not share your information with anyone nor spam you. Seriously.
+		However, the last thing we want is to have Propcott campaigns to be flooded with false numbers, so we do require basic account sign-ups for accountability.
+		</p>
+	</div>
 	</div>
 {% endblock %}
 
@@ -212,18 +270,18 @@
 {% autoescape false %}
 <div class="headline">
 	<div class="headline-content">
-		<div class="container">
-			<h1 id="propcott-title" style="margin-top: 0;">{{ propcott.title }}</h1>
-			<div class="row" style="margin: 0; margin-top: 1em;">
-				<div class="col-6" style="vertical-align: top;">
-					<p style="line-height: 1; text-align: right; margin: 0; border-right: 1px solid white; padding-right: 1em;"><strong style="font-size: 3em;">{{ propcott.support.all }}</strong><br>propcotters</p>
+		<div class="container-fluid">
+			<h1 id="propcott-title">{{ propcott.title }}</h1>
+			<div class="row">
+				<div class="col-6 banner-propcott-num">
+					<p><strong>{{ propcott.support.all }}</strong><br>propcotters</p>
 				</div>
-				<div class="col-6" style="vertical-align: top; text-align: left;">
-					<p style="margin: 0; padding-left: 1em; line-height: 1;">propcotting<br><strong style="font-size: 3em;">{{ propcott.target }}</strong></p>
+				<div class="col-6 banner-propcott-target">
+					<p><span>propcotting</span><br><strong>{{ propcott.target }}</strong></p>
 				</div>
 			</div>
 			{% if !supporting %}
-			<a href="{% if user %}/p/{{ propcott.slug }}/join{% else %}#join{% endif %}" class="sharebutton" style="margin: 0; margin-top: 1em; background-color:#BD1417; font-size: 1em; padding: 0.5em 6em; border: 0;"><span class="typcn typcn-plus"></span> Join!</a>
+			<a href="{% if user %}/p/{{ propcott.slug }}/join{% else %}#join{% endif %}" class="join-button"><span class="typcn typcn-plus"></span> Join!</a>
 			{% endif %}
 			{% if propcott.creator && propcott.creator.username %}
 				<p style="margin: 0; margin-top: 1em;">By {{ propcott.creator.username }}
@@ -248,7 +306,7 @@
 
 {% block actions %}
 {% if supporting %}
-<li><span><span class="typcn typcn-tick"></span><br>Joined</span></li>
+<li><span style = "color: #A55D5D"><span class="typcn typcn-tick"></span><br>Joined</span></li>
 {% else %}
 <li><a href="{% if user %}/p/{{ propcott.slug }}/join{% else %}#join{% endif %}"><span class="typcn typcn-plus"></span><br>Join</a></li>
 {% endif %}
@@ -259,11 +317,11 @@
 {% block content %}
 {% autoescape false %}
 {#<div class="ribbon">Victory!</div>#}
-<div class="row">
-	<div class="col-12 col-md-5" style="float: right; clear: right;">
+<div class="row viewPropFormBox">
+	<div class="col-12 col-md-5 propcottImage">
 		{% if propcott.media_type %}
 			{% if propcott.media_type == 'image' %}
-			<div style="text-align: center; background: #ddd"><img src="http://static.propcott.com/{{ propcott.media_link }}" style="max-width: 100%; max-height: 250px; vertical-align: top;"></div>
+			<div style="text-align: center; background: #111;"><img src="http://static.propcott.com/{{ propcott.media_link }}" style="max-width: 100%; max-height: 250px; vertical-align: top;"></div>
 			{% elseif propcott.media_type == 'video' %}
 			<div class="fluid-video"><div class="inner"><iframe src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe></div></div>
 			{% endif %}
@@ -271,43 +329,50 @@
 		<div class="metric clear">
 			<div class="metric-bar"><div class="metric-fill" style="width: {{ propcott.support.all / propcott.metric * 100 }}%;"></div></div>
 			<p style="float: left;">{{ propcott.support.all }} propcotters</p>
+			<p class = "metric-join">
+				{% if !supporting %}
+				<a href="{% if user %}/p/{{ propcott.slug }}/join{% else %}#join{% endif %}"><span class="typcn typcn-plus"></span> Join!</a>
+				{% endif %}
+			</p>
 			<p style="float: right;">{{ propcott.metric - propcott.support.all }} more for {{ propcott.metric }}</p>
+
 		</div>
+		
+
 	</div>
 	
-	<div class="col-12 col-md-7" style="padding: 0 2em;">
+	<div class="col-12 col-md-7 goalCol">
 		<h3>Goal</h3>
 		<p>{{ propcott.goal }}</p>
 	</div>
-	
+
+	<div class="col-12 col-md-7">
+		<h3>Why</h3>
+		<p>{{ propcott.why }}</p>
+	</div>
+
 	{% if propcott.how %}
-	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+	<div class="col-12 col-md-5 whatCol">
 		<h3>What to do:</h3>
 		<ul id="propcott-how">
-			{% for how in propcott.how %}<li>{{ how }}</li>{% endfor %}
+			{% for how in propcott.how %}<li><p>{{ how }}</p></li>{% endfor %}
 		</ul>
 	</div>
 	{% endif %}
 
 	{% if propcott.alt %}
-	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+	<div class="col-12 col-md-5">
 		<h3>Instead, try...</h3>
 		<ul id="propcott-alt">
-			{% for alt in propcott.alt %}<li>{{ alt }}</li>{% endfor %}
+			{% for alt in propcott.alt %}<li><p>{{ alt }}</p></li>{% endfor %}
 		</ul>
 	</div>
 	{% endif %}
-	
-	<div class="col-12 col-md-7" style="padding: 0 2em;">
-		<h3>Why</h3>
-		<p>{{ propcott.why }}</p>
-	</div>
-	
-	<div class="col-12 col-md-5" style="padding: 0 2em; float: right; clear: right">
+
+	<div class="col-12 col-md-5 share">
 		<h3>Share!</h3>
-		<p>
-			<span id="copy-label" class="typcn typcn-link"></span>
-			<button id="copy-button" data-clipboard-text="http://www.propcott.com/p/{{ propcott.slug }}">Copy link</button>
+		<p class = "shareLinkButton">
+			<button id="copy-button" data-clipboard-text="http://www.propcott.com/p/{{ propcott.slug }}">COPY LINK</button>
 			<span id="copy-link">http://www.propcott.com/p/{{ propcott.slug }}</span>
 		</p>
 		<p class="sharebuttons">
@@ -324,6 +389,7 @@
 			<a href="https://plus.google.com/share?url=http://www.propcott.com/p/{{ propcott.slug }}" class="sharebutton" style="background-color:#e93f2e;" target="_blank">google+</a>
 
 			<a href="http://pinterest.com/pin/create/button/?url=http://www.propcott.com/p/{{ propcott.slug }}&amp;media={% if propcott.media_type == 'image' %}http://static.propcott.com/{{ propcott.media_link }}{% endif %}{% if propcott.media_type == 'video' %}http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg{% endif %}&amp;description={{ encodeURIComponent(propcott.title) }}" class="sharebutton" style="background-color:#b81621;" target="_blank">pinterest</a>
+			<div style = "border-bottom: 1px solid #eee;padding-top: 30px"></div>
 		</p>
 	{% if propcott.ads %}
 	<div style="margin: 0 -2em; text-align: center; position: relative;">
@@ -349,8 +415,8 @@
 	</div>
     {% endif %}
 	</div>
-	
-	<div class="col-12 col-md-7" style="padding: 0 2em;">
+
+	<div class="col-12 col-md-7">
 		<h3 id="updates">Updates &amp; Announcements</h3>
 		<div id="updates-container">
 		{% if propcott.updates && propcott.updates.length %}
@@ -392,9 +458,11 @@
 		}
 		</script>
 		
-		<h3 id="comments">Comments</h3>
+		<h3 id="comments"></h3>
 		<div class="fb-comments" data-href="http://www.propcott.com/p/{{ propcott.id }}" data-numposts="5"></div>
 	</div>
+	
+	
 </div>
 {% endautoescape %}
 {% endblock %}

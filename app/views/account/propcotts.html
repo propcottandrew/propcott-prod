@@ -9,6 +9,18 @@
 			min-height: 320px;
 			padding: 2em;
 		}
+	a
+	{
+		text-decoration: none;
+		color: #2B2C2A;
+		font-weight: bold;
+		font-size: 14px;
+	}
+	a:hover
+	{
+		text-decoration: none;
+		color: #983131;
+	}
 	</style>
 {% endblock %}
 
@@ -33,7 +45,7 @@
 <h2>Propcotts <small>I haven't published yet</small></h2>
 {% for propcott in drafts %}
 	<div style="margin-bottom: 1em;" class="clear">
-		<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+		<div id="propcott-media" style="float: left; width: 150px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
 		<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
 			<a href="/d/{{ propcott.draft_id }}">{{ propcott.title || 'Untitled' }}</a>
 		</div>
@@ -47,7 +59,7 @@
 <h2>Propcotts <small>I created</small></h2>
 {% for propcott in propcotts %}
 	<div style="margin-bottom: 1em;" class="clear">
-		<div id="propcott-media" style="float: left; width: 120px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+		<div id="propcott-media" style="float: left; width: 150px; height: 90px; margin-right: 0.5em; {% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
 		<div style="overflow:hidden; font-size: .9em; line-height: 1.4;">
 			<a href="/p/{{ propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
 		</div>

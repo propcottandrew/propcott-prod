@@ -16,6 +16,26 @@
 		th, td {
 			padding: 0.5em;
 		}
+		input:focus, select:focus, textarea:focus, button:focus, .btn:focus /*removes blue highlight when pressing a button*/
+	{outline: none;}
+		.notifications .btn
+		{
+			margin: 55px 5px 0 0;
+			padding: 10px 20px;
+			border-radius: 5px;
+			text-align: center;
+			background: #A55D5D;
+			color:#FFF;
+			border: 0.1px solid #CCC;
+			box-shadow:0 0px 4px 0 rgba(0,0,0,.12);
+			font-weight: bold;
+		}
+		.notifications .btn:hover
+		{
+			background: #A87070;
+			transition: 0.1s all;
+			
+		}
 	</style>
 {% endblock %}
 
@@ -36,7 +56,7 @@
 {% endblock %}
 
 {% block content %}
-<form role="form" method="POST" action="{{ url('/account/notifications') }}">
+<form class = "notifications" role="form" method="POST" action="{{ url('/account/notifications') }}">
 	<table style="width: 100%">
 		<tr>
 			<td></td>
@@ -74,9 +94,9 @@
 			<td>&nbsp;</td>
 		</tr>#}
 	</table>
-	<p style="text-align: right;">
+	<p style="text-align: right;margin:0">
 		{{ csrf_field }}
-		<input type="submit" value="Update" />
+		<input class = "btn" type="submit" value="Update" />
 	</p>
 </form>
 {% endblock %}

@@ -14,17 +14,22 @@
 	}
 	#content {
 	    display: inline-block;
+	    border-radius: 5px;
+	    border-color: #FFF;
+	    border: none;
 	}
 	#page {
 		text-align: center;
+		background: #262523 !important;
+		height: 94vh;
 	}
 	</style>
 {% endblock %}
 
 {% block hero %}
 <div class="headline">
-	<div class="headline-content" style="padding-top: 1em;">
-		<h1>Login or Signup</h1>
+	<div class="headline-content" style="padding-top: 1em;color: white;margin-bottom: 23vh">
+		<h1></h1>
 	</div>
 </div>
 {% endblock %}
@@ -32,11 +37,10 @@
 {% block content %}
 {% autoescape false %}
 <div class="popup-form" style="display: block; position: static; margin-left: 0; border: 0;">
-	<div class="row">
+	<div class="row" style = "margin:0; background: #000;">
 		<form method="POST" action="/oauth/facebook">
 			<button class="col-12 facebook" type="submit">Log in with Facebook<span class="typcn typcn-social-facebook"></span></button>
 		</form>
-		<p class="col-12">- or -</p>
 		<form method="POST" action="/login">
 			<input type="radio" name="login-type" id="login-login2" class="login-check" value="login" checked>
 			<input type="radio" name="login-type" id="login-signup2" class="signup-check" value="signup">
@@ -45,9 +49,9 @@
 			<div class="col-12"><input type="text" name="user[username]" placeholder="Username"></div>
 			<div class="col-12"><input type="password" name="user[password]" placeholder="Password"></div>
 			<div class="col-12 signup-only"><input type="password" name="password" placeholder="Confirm Password"></div>
-			<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (optional)"></div>
-			<p class="col-12 login-tooltip signup-only" style="text-align: left;"><a href="#" data-nolink style="font-size: 0.9em; color: #777; font-weight: normal;">Why do we want your email?</a><span>Remembering to avoid something(s) can be difficult. So we want to help you remember by sending you email reminders, <em>of which</em> can be edited in your notification settings. And please rest assured, <strong>we will not share your e-mail with anyone nor spam you. Seriously.</strong></span></p>
-			<button type="submit" class="col-12 login-only">Log In</button>
+			<div class="col-12 signup-only"><input type="email" name="user[email]" placeholder="Email (required)"></div>
+			<!--<p class="col-12 login-tooltip signup-only" style="text-align: left;"><a href="#" data-nolink style="font-size: 0.9em; color: #777; font-weight: normal;">Why do we want your email?</a><span>Remembering to avoid something(s) can be difficult. So we want to help you remember by sending you email reminders, <em>of which</em> can be edited in your notification settings. And please rest assured, <strong>we will not share your e-mail with anyone nor spam you. Seriously.</strong></span></p>-->
+			<button type="submit" class="col-12 login-only" style = "padding: 20px;">Log In</button>
 			<button type="submit" class="col-12 signup-only">Sign Up</button>
 		</form>
 	</div>

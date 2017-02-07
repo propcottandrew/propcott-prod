@@ -2634,8 +2634,6 @@ body {
   text-transform: uppercase;
   color: white;
   background: #BD1417;
-  border-top-left-radius: 15px 50%;
-  border-bottom-left-radius: 15px 50%;
   border: 2px dashed white;
   box-shadow: 0 0 0 3px #BD1417;
   position: relative;
@@ -2653,7 +2651,6 @@ body {
   overflow: hidden;
   background-color: #fff;
   border: 1px solid #ddd;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
 .clear {
   overflow: auto;

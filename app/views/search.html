@@ -123,10 +123,10 @@
 	#searchbox button {
 		float: right;
 		font-weight: bold;
-		background: #BD1417;
+		background: #A55D5D;
 		color: white;
-
 	}
+
 	</style>
 {% endblock %}
 
@@ -142,14 +142,14 @@
 
 {% block content %}
 {% autoescape false %}
-<div id="searchbox">
-<form method="GET" action="/search">
-<button type="submit">Search</button>
-<div>
-<input type="text" name="q" placeholder="Start typing..." value="{{ query }}" autofocus>
-</div>
-</form>
-</div>
+	<div id="searchbox">
+		<form method="GET" action="/search">
+			<button type="submit">Search</button>
+			<div>
+				<input type="text" name="q" placeholder="Start typing..." value="{{ query }}" autofocus>
+			</div>
+		</form>
+	</div>
 {% if query %}
 <script>
   (function() {
