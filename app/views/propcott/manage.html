@@ -224,7 +224,10 @@
 		border-bottom: 1px solid #eee !important;
 	}
 
+	/*after officially submitting your propcott (the last step), you can start managing it in your "my propcotts" in your profile and this page will load*/
 	input:focus, select:focus, textarea:focus, button:focus{outline: none;}
+	/*specific to this page*/
+	.managePropcottBox{min-height: 400px;padding-bottom: 30px;}
 	.managePropcottBox h3{margin-bottom: 5px; font-weight: bold;font-size: 35px !important;}
 	/*banner*/
 	#propcott-title{margin: 0 0 1em 0;font-size: 25px;}
@@ -236,24 +239,32 @@
 	.banner-propcott-target span{padding-left: 2px;}
 	.banner-propcott-target strong{font-size: 2.7em;}
 	/*the white box*/
-	.managePropcottBox{min-height: 400px;padding-bottom: 30px;}
+	
 	.col-md-7{padding: 0em 0em 0em 2.5em;}
-	.col-md-5{padding: .4em 1.5em 0em 3em;float: right; clear: right}
+	.col-md-5{padding: .4em 2.5em 0em 2em;float: right; clear: right;}
 	.col-md-7 *{font-size: 17px;}
 	.col-md-7 a{display:block;overflow: hidden;text-overflow: ellipsis;}
 	#propcott-media{margin: 0 1em;}
+	.image-container{text-align: center; background: #222;box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.1);}
+	.image-container img{max-width: 100%; max-height: 250px; vertical-align: top;}
+	.propcottImage{padding-top: 1em;margin-top: 8px}
 	.goalCol h3{margin-top: .5em}
-	.whatCol{padding-top: 0;}
-	#propcott-how li{color: #000;} #propcott-how p{color:#A87070;} #propcott-how{padding: 0px 18px;}
-	#propcott-alt li{color: #000;} #propcott-alt p{color:#A87070;}	#propcott-alt{padding: 0px 18px;}
+	.whatCol, .insteadCol{padding-top: 0;padding-left: 2.5em;}
+	#propcott-how li{color: #000;} #propcott-how p{color:#A87070;} #propcott-how{padding: 0px 28px;}
+	#propcott-alt li{color: #000;} #propcott-alt p{color:#A87070;} #propcott-alt{padding: 0px 28px;}
 	p{margin-top: 10px;}
 	/*shares and updates*/
 	.share h3{border-top: 1px solid #eee;padding-top: 0.8em;padding-bottom: 0.5em;text-align:center;}
-	#updates{margin-bottom: 25px;}
 	#copy-link{color: #777;}
 	.shareLinkButton{width: 335px;margin: 10px auto 5px auto;width: 230px}
 	.sharebuttons {margin-top: 0px;}
 	.sharebuttons a {margin: 3px 1px;}
+	/*metric-bar join*/
+	.metric {font-weight: bold;font-size: 0.9em;margin-top: 0px;padding: 8px;border-left: 0px solid #555; border-right: 0px solid #777;box-shadow: 0px 2px 1px 1px rgba(0,0,0,0.1);}
+	.metric-join a{color: #444;}
+	.metric-join span{font-size: 1em;color: #A55D5D;}
+	.metric-join a:hover{color: #A55D5D;text-decoration: none}
+
 	/*If width is below or equal to 992px*/
 	@media(max-width: 992px)
 	{
@@ -261,6 +272,11 @@
 		.col-md-7{padding: 0 2em;}
 		.propcottImage{padding: 0em 1em 0em 3em;margin: 1em;}
 	}
+	/*forces a larger container*/
+	.container-fluid.universal, .container-fluid.footerContainer
+	{
+   		max-width: 1100px !important;  
+   	}
 	</style>
 {% endblock %}
 
@@ -394,7 +410,7 @@
 	<div class="col-12 col-md-5 propcottImage">
 		{% if propcott.media_type %}
 			{% if propcott.media_type == 'image' %}
-			<div style="text-align: center; background: #2B2C2A"><img src="http://static.propcott.com/{{ propcott.media_link }}" style="max-width: 100%; max-height: 250px; vertical-align: top;"></div>
+			<div class="image-container"><img src="http://static.propcott.com/{{ propcott.media_link }}"></div>
 			{% elseif propcott.media_type == 'video' %}
 			<div class="fluid-video"><div class="inner"><iframe src="https://www.youtube.com/embed/{{ propcott.media_link }}" frameborder="0" allowfullscreen></iframe></div></div>
 			{% endif %}

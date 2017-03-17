@@ -221,7 +221,7 @@
 			vertical-align: text-bottom;
 		}
 		input:focus, select:focus, textarea:focus, button:focus{outline: none;}
-		h3{margin-bottom: 5px; font-weight: bold;font-size: 24px !important;}
+		.createPropFormBox h3{margin-bottom: 5px; font-weight: bold;font-size: 24px !important;}
 		.col-md-7{border-right: 1px solid #eee;padding:0em 2em 3em 3em;}
 		.col-md-5{padding: 0 1em 2em}
 		.col-md-7 *{font-size: 17px;}
@@ -246,6 +246,16 @@
 			.col-md-5{padding: 0 3em;} 
 			.propcottImage{padding: 1em;}
 		}
+		.blurMe{opacity: 0.2;}
+		.shepherd-step{width: 450px;padding: 0px 5px;z-index: 10 !important;  }
+		.shepherd-text p{max-width: 450px; text-align: center;}
+		.shepherd-target.shepherd-enabled{z-index: 6;
+		opacity: 1;}
+		/*forces a larger container*/
+		.container-fluid.universal, .container-fluid.footerContainer
+		{
+   			max-width: 1100px !important;  
+   		}
 	</style>
 	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 {% endblock %}
@@ -360,6 +370,10 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 		CKEDITOR.instances['propcott-alt'].getData().replace(/<\/p><p>/g, '\n').replace(/<\/p>|<p>/g, '');
 });
 </script>
+
+<!--highlighting guider step by step-->
+<link rel="stylesheet" href="css/sheperd_css/shepherd-theme-default.css" />
+<link rel="stylesheet" href="css/sheperd_css/shepherd-theme-dark.css" />
 {% endblock %}
 
 {% block actions %}
@@ -405,189 +419,363 @@ event.call(document.getElementById('propcott-form'), verb + 'submit', function(e
 
 {% block content %}
 {% autoescape false %}
+<style type="text/css">
+	.guideme a{color: #ccc;text-decoration: none}
+	.guideme a:hover{color: #A55D5D;}
+</style>
+<div ng-app = "createPropApp" ng-controller = "tourCtrl">
 <div class="row createPropFormBox">
+	<div class="col-12 col-md-7 guideme" ng-class="{blurMe:tourStarted}" style = "padding: 12px 2em 0px 3em">
+	<a href="#" ng-click = "startTour()"><span class="typcn typcn-chevron-right"></span>Guide me</a>
+	</div>
 	<div class="col-12 col-md-5 propcottImage">
 		{% if propcott.media_type == 'image' %}
 		<div id="propcott-media" style="background-image: url('http://static.propcott.com/{{ propcott.media_link }}');" class="filled">
-		{% elseif propcott.media_type == 'video' %}
-		<div id="propcott-media" style="background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');" class="filled">
-		{% else %}
-		<div id="propcott-media">
-		{% endif %}
-			<div class="dropzone">
-				drag and drop image here<div class = "theOr">or</div>
-				<button type="button" onclick="document.getElementById('media-photo').click()">upload image</button>
-				<button type="button" onclick="chooseVideo()">embed youtube</button>
-				<input type="hidden" name="media_type" value="{{ propcott.media_type }}" id="propcott-media_type">
-				<input type="hidden" name="media_link" value="{{ propcott.media_link }}" id="propcott-media_link">
-				<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
-			</div>
-		</div>
-	</div>
-
-	<div class="col-12 col-md-7 who">
-		<h3>Who <small>is your intended target?</small></h3>
-		<span class="question-mark">
-			<span class="question-mark-icon">?</span>
-			<span class="question-mark-container">
-				<span class="question-mark-text">We structured Propcott to target each target one at a time to ensure higher effectiveness</span>
-			</span>
-		</span>
-
-		<p>Propcotting </p>
-		<textarea id="propcott-target"
-				  name="target"
-				  class="editable-region autosize"
-				  placeholder="corporation, person, organization etc."
-				  style="text-indent:6.2em;"
-				  >{{ propcott.target }}</textarea>
-	</div>
-
-	<div class="col-12 col-md-7 whoIndustry">
-		<p id="industry-container">
-		<select id="propcott-industry" class = "form-control"
-		        name="industry">
-			{% if propcott.industry %}
-			<optgroup label="Saved Industry">
-				<option value="{{ propcott.industry }}" selected>{{ propcott.industry }}</option>
-			</optgroup>
-			<optgroup label="All Industries">
+			{% elseif propcott.media_type == 'video' %}
+			<div id="propcott-media" style="background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');" class="filled">
 			{% else %}
-			<option value="" hidden selected>What industry are they in?</option>
-			{% endif %}
-			<option>Other</option>
-			<option>Accounting</option>
-			<option>Advertising</option>
-			<option>Aerospace</option>
-			<option>Agriculture</option>
-			<option>Aircraft</option>
-			<option>Airline</option>
-			<option>Apparel &amp; Accessories</option>
-			<option>Automotive</option>
-			<option>Banking</option>
-			<option>Biotechnology</option>
-			<option>Broadcasting</option>
-			<option>Brokerage</option>
-			<option>Call Centers</option>
-			<option>Cargo Handling</option>
-			<option>Chemical</option>
-			<option>Computer</option>
-			<option>Consulting</option>
-			<option>Consumer Products</option>
-			<option>Cosmetics</option>
-			<option>Defense</option>
-			<option>Department Stores</option>
-			<option>Education</option>
-			<option>Electronics</option>
-			<option>Energy</option>
-			<option>Entertainment &amp; Leisure</option>
-			<option>Executive Search</option>
-			<option>Financial Services</option>
-			<option>Food, Beverage &amp; Tobacco</option>
-			<option>Grocery</option>
-			<option>Health Care</option>
-			<option>Internet Publishing</option>
-			<option>Investment Banking</option>
-			<option>Legal</option>
-			<option>Manufacturing</option>
-			<option>Motion Picture &amp; Video</option>
-			<option>Music</option>
-			<option>Newspaper Publishers</option>
-			<option>Online Auctions</option>
-			<option>Pension Funds</option>
-			<option>Pharmaceuticals</option>
-			<option>Private Equity</option>
-			<option>Publishing</option>
-			<option>Real Estate</option>
-			<option>Retail &amp; Wholesale</option>
-			<option>Securities &amp; Commodity Exchanges</option>
-			<option>Service</option>
-			<option>Soap &amp; Detergent</option>
-			<option>Software</option>
-			<option>Sports</option>
-			<option>Technology</option>
-			<option>Telecommunications</option>
-			<option>Television</option>
-			<option>Transportation</option>
-			<option>Trucking</option>
-			<option>Venture Capital</option>
-			{% if propcott.industry %}
-			</optgroup>
-			{% endif %}
-		</select></p>
-	</div>
-
-	<div class="col-12 col-md-7">
-		<h3>What <small>is the goal of your propcott?</small></h3>
-		<span class="question-mark">
-			<span class="question-mark-icon">?</span>
-			<span class="question-mark-container">
-				<span class="question-mark-text">i.e. To change a policy of a company, To simply stop etc.</span>
-			</span>
-		</span>
-		<textarea id="propcott-goal"
-		  name="goal"
-		  class="editable-region autosize"
-		  placeholder="What do you hope to accomplish?"
-		  >{{ propcott.goal }}</textarea>
-	</div>
-
-	<div class="col-12 col-md-7 why">
-		<div class="propcott-outside-placeholder">
-			<div class="propcott-outside">
-				<h3>Why <small>should others join?</small></h3>
+				<div id="propcott-media">
+				{% endif %}
+					<div class="dropzone">
+						drag and drop image here<div class = "theOr">or</div>
+						<button type="button" onclick="document.getElementById('media-photo').click()">upload image</button>
+						<button type="button" onclick="chooseVideo()">embed youtube</button>
+						<input type="hidden" name="media_type" value="{{ propcott.media_type }}" id="propcott-media_type">
+						<input type="hidden" name="media_link" value="{{ propcott.media_link }}" id="propcott-media_link">
+						<input type="file" id="media-photo" style="visibility: collapse; width: 0px;" onchange="upload(this.files[0])">
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-7 who" ng-class="{blurMe:tourStarted}">
+				<h3 style = "margin-top: 0px">Who <small>is your intended target?</small></h3>
 				<span class="question-mark">
 					<span class="question-mark-icon">?</span>
 					<span class="question-mark-container">
-						<span class="question-mark-text">What compelled you to start this and why should others join you?</span>
+						<span class="question-mark-text">We structured Propcott to target each target one at a time to ensure higher effectiveness</span>
 					</span>
 				</span>
+
+				<p>Propcotting </p>
+				<textarea id="propcott-target"
+						  name="target"
+						  class="editable-region autosize"
+						  placeholder="corporation, person, organization etc."
+						  style="text-indent:6.2em;"
+						  >{{ propcott.target }}</textarea>
+			</div>
+
+			<div class="col-12 col-md-7 whoIndustry" ng-class="{blurMe:tourStarted}">
+				<p id="industry-container">
+				<select id="propcott-industry" class = "form-control"
+				        name="industry">
+					{% if propcott.industry %}
+					<optgroup label="Saved Industry">
+						<option value="{{ propcott.industry }}" selected>{{ propcott.industry }}</option>
+					</optgroup>
+					<optgroup label="All Industries">
+					{% else %}
+					<option value="" hidden selected>What industry are they in?</option>
+					{% endif %}
+					<option>Other</option>
+					<option>Accounting</option>
+					<option>Advertising</option>
+					<option>Aerospace</option>
+					<option>Agriculture</option>
+					<option>Aircraft</option>
+					<option>Airline</option>
+					<option>Apparel &amp; Accessories</option>
+					<option>Automotive</option>
+					<option>Banking</option>
+					<option>Biotechnology</option>
+					<option>Broadcasting</option>
+					<option>Brokerage</option>
+					<option>Call Centers</option>
+					<option>Cargo Handling</option>
+					<option>Chemical</option>
+					<option>Computer</option>
+					<option>Consulting</option>
+					<option>Consumer Products</option>
+					<option>Cosmetics</option>
+					<option>Defense</option>
+					<option>Department Stores</option>
+					<option>Education</option>
+					<option>Electronics</option>
+					<option>Energy</option>
+					<option>Entertainment &amp; Leisure</option>
+					<option>Executive Search</option>
+					<option>Financial Services</option>
+					<option>Food, Beverage &amp; Tobacco</option>
+					<option>Grocery</option>
+					<option>Health Care</option>
+					<option>Internet Publishing</option>
+					<option>Investment Banking</option>
+					<option>Legal</option>
+					<option>Manufacturing</option>
+					<option>Motion Picture &amp; Video</option>
+					<option>Music</option>
+					<option>Newspaper Publishers</option>
+					<option>Online Auctions</option>
+					<option>Pension Funds</option>
+					<option>Pharmaceuticals</option>
+					<option>Private Equity</option>
+					<option>Publishing</option>
+					<option>Real Estate</option>
+					<option>Retail &amp; Wholesale</option>
+					<option>Securities &amp; Commodity Exchanges</option>
+					<option>Service</option>
+					<option>Soap &amp; Detergent</option>
+					<option>Software</option>
+					<option>Sports</option>
+					<option>Technology</option>
+					<option>Telecommunications</option>
+					<option>Television</option>
+					<option>Transportation</option>
+					<option>Trucking</option>
+					<option>Venture Capital</option>
+					{% if propcott.industry %}
+					</optgroup>
+					{% endif %}
+				</select></p>
+			</div>
+
+			<div class="col-12 col-md-7 what" ng-class="{blurMe:tourStarted}">
+				<h3>What <small>is the goal of your propcott?</small></h3>
+				<span class="question-mark">
+					<span class="question-mark-icon">?</span>
+					<span class="question-mark-container">
+						<span class="question-mark-text">i.e. To change a policy of a company, To simply stop etc.</span>
+					</span>
+				</span>
+				<textarea id="propcott-goal"
+				  name="goal"
+				  class="editable-region autosize"
+				  placeholder="What do you hope to accomplish?"
+				  >{{ propcott.goal }}</textarea>
+			</div>
+
+			<div class="col-12 col-md-7 why" ng-class="{blurMe:tourStarted}">
+				<div class="propcott-outside-placeholder">
+					<div class="propcott-outside">
+						<h3>Why <small>should others join?</small></h3>
+						<span class="question-mark">
+							<span class="question-mark-icon">?</span>
+							<span class="question-mark-container">
+								<span class="question-mark-text">What compelled you to start this and why should others join you?</span>
+							</span>
+						</span>
+					</div>
+				</div>
+
+				<textarea id="propcott-why"
+						  name="why"
+						  class="editable-region autosize"
+						  placeholder="Background / Description"
+						  >{{ propcott.why }}
+				</textarea>
+			</div>
+
+			<div class="col-12 col-md-5 how" ng-class="{blurMe:tourStarted}">
+				<h3>How <small>can we take action?</small></h3>
+				<span class="question-mark">
+					<span class="question-mark-icon">?</span>
+					<span class="question-mark-container">
+						<span class="question-mark-text">i.e. do not purchase this product, do not watch this movie, do not click, do not attend, etc.</span>
+					</span>
+				</span>
+
+				<textarea id="propcott-how"
+						  name="how"
+						  class="editable-region autosize"
+						  placeholder="Course of action"
+						  >{{ propcott.how.join(String.fromCharCode(10)) }}</textarea>
+			</div>
+
+			<div class="col-12 col-md-5 alternative" ng-class="{blurMe:tourStarted}">
+				<h3>Alternative <small>(optional)</small></h3>
+				<span class="question-mark">
+					<span class="question-mark-icon">?</span>
+					<span class="question-mark-container">
+						<span class="question-mark-text">Wisely choose a viable replacement to the target</span>
+					</span>
+				</span>
+
+				<textarea id="propcott-alt"
+						  name="alt"
+						  class="editable-region autosize"
+						  placeholder="Provide an alternative to the target"
+						  >{{ propcott.alt.join(String.fromCharCode(10)) }}</textarea>
 			</div>
 		</div>
-
-		<textarea id="propcott-why"
-				  name="why"
-				  class="editable-region autosize"
-				  placeholder="Background / Description"
-				  >{{ propcott.why }}
-		</textarea>
 	</div>
-
-	<div class="col-12 col-md-5 how">
-		<h3>How <small>can we take action?</small></h3>
-		<span class="question-mark">
-			<span class="question-mark-icon">?</span>
-			<span class="question-mark-container">
-				<span class="question-mark-text">i.e. do not purchase this product, do not watch this movie, do not click, do not attend, etc.</span>
-			</span>
-		</span>
-
-		<textarea id="propcott-how"
-				  name="how"
-				  class="editable-region autosize"
-				  placeholder="Course of action"
-				  >{{ propcott.how.join(String.fromCharCode(10)) }}</textarea>
-	</div>
-
-	<div class="col-12 col-md-5 alternative">
-		<h3>Alternative <small>(optional)</small></h3>
-		<span class="question-mark">
-			<span class="question-mark-icon">?</span>
-			<span class="question-mark-container">
-				<span class="question-mark-text">Wisely choose a viable replacement to the target</span>
-			</span>
-		</span>
-
-		<textarea id="propcott-alt"
-				  name="alt"
-				  class="editable-region autosize"
-				  placeholder="Provide an alternative to the target"
-				  >{{ propcott.alt.join(String.fromCharCode(10)) }}</textarea>
-	</div>
-
-	
 </div>
+</div>
+<script src="js/tether.js"></script>
+<script src="js/shepherd.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+<script>
+	var app = angular.module('createPropApp', []);
+	
+	app.controller('tourCtrl', function($scope)
+	{
+		//setup for tour
+		$scope.tourStarted = false;
+		let tour = new Shepherd.Tour({
+			  defaults: {
+			    classes: 'shepherd-theme-default',
+			    showCancelLink: true
+			  }
+			});
 
+		$scope.startTour = function()
+		{
+			tour.addStep('title', {
+			  title: 'Step 1',
+			  text: "Start with an engaging title <br> <span style = 'text-align:center;font-size: 12px; color:#666'>[Or you can come back to this after you've filled the other information]</span>",
+			  attachTo: '#propcott-title bottom',
+			  classes: 'shepherd-theme-default shep-step',
+			  advanceOn: {event: 'event.which === 13'},
+			   buttons: [
+			    {
+			      	text: 'Next',
+			      	classes: 'shepherd-button-example-primary',
+			      	action: function(){
+			      		return tour.next();
+			      	}
+			    }
+			  ]
+			  
+		    });
+		    tour.addStep('who', {
+			  title: 'Step 2',
+			  text: "Next, input who your target is. We have an autofill feature for previous targets.",
+			  attachTo: '.who bottom',
+			  classes: 'shepherd-theme-default shep-step',
+			  buttons: [
+			    {
+      				text: 'Back',
+      				action: tour.back,
+      				classes: 'shepherd-button-secondary'
+    			},
+			    {
+			      	text: 'Next',
+			      	classes: 'shepherd-button-example-primary',
+			      	action: tour.next
+			    }
+			  ]
+		    });
+		    tour.addStep('whoIndustry', {
+			  title: 'Step 3',
+			  text: "Select two categories that best describe your target.",
+			  attachTo: '.whoIndustry bottom',
+			  classes: 'shepherd-theme-default shep-step',
+			  buttons: [
+			  	{
+      				text: 'Back',
+      				action: tour.back,
+      				classes: 'shepherd-button-secondary'
+    			},
+			    {
+			      	text: 'Next',
+			      	classes: 'shepherd-button-example-primary',
+			      	action: tour.next
+			    }
+			  ]
+			  
+		    });
 
+		    tour.addStep('what', {
+			  title: 'Step 4',
+			  text: "Ultimately, what are you trying to achieve with this Propcott campaign? Is it to advocate for a policy change or to cause a profit drop of an unethical company?",
+			  attachTo: '.what bottom',
+			  classes: 'shepherd-theme-default shep-title',
+			  buttons: [
+			  	{
+      				text: 'Back',
+      				action: tour.back,
+      				classes: 'shepherd-button-secondary'
+    			},
+			    {
+			      	text: 'Next',
+			     	classes: 'shepherd-button-example-primary',
+			     	action: tour.next
+			    }
+			  ]
+			  
+		    });
+
+		    tour.addStep('why', {
+			  title: 'Step 5',
+			  text: "Here is where you provide potential supporters with a detailed explanation of what this campaign is and why they should join. Provide a background or introduce a news story of what compelled you to start this.",
+			  attachTo: '.why bottom',
+			  classes: 'shepherd-theme-default shep-title',
+			  buttons: [
+			  	{
+      				text: 'Back',
+      				action: tour.back,
+      				classes: 'shepherd-button-secondary'
+    			},
+			    {
+			      	text: 'Next',
+			      	classes: 'shepherd-button-example-primary',
+			     	action: tour.next
+			    }
+			  ]
+			  
+		    });
+
+		    tour.addStep('how', {
+			  title: 'Step 6',
+			  text: "This section is important. How are you going to make a sizeable impact to induce or force change? More specifically, what subsequent actions shall people take after joining this propcott? List the action(s) here. Try to keep it simple and as easy-to-follow-through.",
+			  attachTo: '.how left',
+			  classes: 'shepherd-theme-default shep-title',
+			  buttons: [
+			  	{
+      				text: 'Back',
+      				action: tour.back,
+      				classes: 'shepherd-button-secondary'
+    			},
+			    {
+			      	text: 'Next',
+			      	classes: 'shepherd-button-example-primary',
+			     	action: tour.next
+			    }
+			  ]
+			  
+		    });
+
+		    tour.addStep('last', {
+			  title: 'Step 7',
+			  text: "Optional but definitely recommended- Provide an alternative to the target. And in almost every instance, there are alternatives. Make sure you've done enough research to provide the best alternative.",
+			  attachTo: '.alternative left',
+			  classes: 'shepherd-theme-default shep-title',
+			  buttons: [
+			  	{
+      				text: 'Back',
+      				action: tour.back,
+      				classes: 'shepherd-button-secondary'
+    			},
+			    {
+			      text: 'Exit',
+			      classes: 'shepherd-button-example-primary',
+			      action: tour.cancel
+			    } 
+			  ]
+			  
+		    });
+			tour.start();
+			$scope.tourStarted = true;
+		}
+
+		$scope.exitTour = function() //this is so we can manually cancel a tour however we want
+		{
+			tour.cancel();
+		}
+		tour.on("cancel", function (){ //listens if tour has been canceled/finished
+			$scope.tourStarted = false;
+			$scope.$evalAsync();	   //forces angular to check (nedded because changes are happening outside of angular)
+		});
+	});
+
+</script>
 {% endautoescape %}
 {% endblock %}

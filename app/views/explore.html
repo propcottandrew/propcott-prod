@@ -5,30 +5,48 @@
 {% block body.end %}
 	{% parent %}
 	<style type="text/css">
+	.headline-content{padding-top: 1em;}
 	.propcott-media {
-		margin-right: 1em;
+		margin: 0em 1em 1em 0em;
 		float: left;
-		width: 120px;
-		height: 90px;
 		background-size: cover;
+		height:170px; width: 250px; background-position: center center;
+		background-repeat: no-repeat;
+		margin-bottom: 1em;
 	}
-	/*@andrenaught new css
-	-need to center ads
-	-this page is under a container-fluid, but does not use bootstrap row/col
-	*/
     .exploreBox
     {
     	margin: 0 auto;
     	background: white;
     }
+    .explore-navigation
+    {
+    	width:100%;height:100%;margin-left: 10px;
+    }
     .propcottItem a
     {
     	color: #983131;
+    }
+    .propcottItem
+    {
+    	margin: 0em; clear: both; padding: 1em 2em 0.5em 2em; min-height: 200px;position: relative;
+
     }
     #content
     {
     	margin-top: 0;
     }
+    .propcott-desc
+    {
+    	overflow:hidden; font-size: .9em;padding: 0em 0em 10px 0em;margin-bottom: 0em;min-height: 164px
+
+    }
+    .propcott-desc a{font-weight: normal; font-size: 1.5em;}
+    .propcott-desc p{margin-top: 5px; margin-bottom: 0px; padding-bottom: 0px;}
+    .buffer{padding: 0.9em;}
+    .targeting{text-align: center; line-height: 1.2;font-size: 16px;margin: 0.2em auto; width: 92%;position: absolute;bottom: 0;}
+    .targeting span{color: #A55D5D;}
+    .divider-hr{border-color: #C1C1C1;color: #C1C1C1; width: 120%; height: 1px; margin: 0px -4em; align:left; float:left;border-top: 0;}
     @media screen and (max-width: 815px)
     {
     	.propcottItem {
@@ -37,7 +55,7 @@
     	}
     	.propcottItem .propcott-desc
     	{
-    		min-height: 179px !important;
+    		min-height: 170px !important;
     	}
     }
 	</style>
@@ -47,7 +65,7 @@
 {% block hero %}
 {% autoescape false %}
 <div class="headline">
-	<div class="headline-content" style="padding-top: 1em;">
+	<div class="headline-content">
 		<h1>Explore</h1>
 	</div>
 	
@@ -59,7 +77,7 @@
 {% autoescape false %}
 <div class = "exploreBox">
 	<div style="padding: 0em 0em;">
-		<div class="explore-navigation" style = "width:100%;height:100%;margin-left: 10px">
+		<div class="explore-navigation">
 			<div class="tabs">
 				<a href="/explore/daily"{% if tab == 'hot' %} class="active"{% endif %}>Hot</a>
 				<a href="/explore"{% if tab == 'new' %} class="active"{% endif %}>New</a>
@@ -73,7 +91,8 @@
 			</div>
 			{% endif %}
 		</div>
-		<hr style = "border-color: #C1C1C1;color: #C1C1C1; width: 120%; height: 1px; margin: 0px -4em; align:left; float:left;border-top: 0;" noshade color = "#C1C1C1"></hr>
+		<hr class = "divider-hr" noshade color = "#C1C1C1"></hr>
+
 		{% for propcott in propcotts %}
 			{% if loop.index == 4 %}
 			<div style="margin: 1em 0em; clear: both;">
@@ -89,46 +108,24 @@
 				</script>
 			</div>
 			{% endif %}
-			<div class = "propcottItem" style="margin: 0em; clear: both; padding: 1em 2em 0.5em 2em; min-height: 200px;position: relative">
-				<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}height:170px; width: 250px; background-position: center center;background-repeat: no-repeat;margin-bottom: 1em"></div>
-				<div class = "propcott-desc" style="overflow:hidden; font-size: .9em;padding: 0em 0em 10px 0em;margin-bottom: 0em;min-height: 164px">
-					
-					<a href="/p/{{ propcott.slug }}" style = "font-weight: normal; font-size: 1.5em;">{{ propcott.title || 'Untitled' }}</a>
-					<p style = "margin-top: 5px; margin-bottom: 0px; padding-bottom: 0px">{{ propcott.goal }}</p>
-					
+			<div class = "propcottItem">
+				<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}background-color: #333;{% endif %}"></div>
+				<div class = "propcott-desc">
+					<a href="/p/{{ propcott.slug }}">{{ propcott.title || 'Untitled' }}</a>
+					<p>{{ propcott.goal }}</p>
 				</div>
-				<div style = "position: relative; padding-top: 15px">
-				<p class = "targeting" style="text-align: center; line-height: 1.2; margin: 0em 0px 0em 0em;padding-top: 0em; font-size: 12px;margin: 0 auto; width: 100%;position: absolute;bottom: 0;">Targeting <span style="color:rgb(215,0,0);font-size: 12px; color: #A55D5D;overflow:hidden;">{{ propcott.target }} - </span>
-					<span style="color: rgb(215,0,0); color: #A55D5D">{{ propcott.support.all }} supporters</span></p>
-					</div>
-				
-
+				<div class = "buffer"></div>
+				<p class = "targeting">Targeting 
+					<span>{{ propcott.target }} - </span>
+					<span>{{ propcott.support.all }} supporters</span>
+				</p>
 			</div>
-						<hr style = "border-color: #C1C1C1;color: #C1C1C1; width: 120%; height: 1px; margin: 0px -4em; align:left; float:left;border-top: 0;" noshade color = "#C1C1C1"></hr>
-
+			<hr class = "divider-hr" noshade color = "#C1C1C1"></hr>
 		{% endfor %}
 	</div>
 </div>
 {% endautoescape %}
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 {% block head.end %}
 	{% parent %}

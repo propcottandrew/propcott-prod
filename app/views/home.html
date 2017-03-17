@@ -5,6 +5,9 @@
 	<!--fonts-->
 	<link href='//fonts.googleapis.com/css?family=Arvo' rel='stylesheet'>
 	<link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Arimo' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Dosis' rel='stylesheet'>
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
 	<style type="text/css">
 	#featured {
 		position: relative;
@@ -54,7 +57,6 @@
 		width: 50%;
 		height: 40px;
 		border-bottom: 1px solid #DDD;
-
 	}
 	.tabs button:hover {
 		opacity: 0.9;
@@ -91,7 +93,12 @@
 		background: url(/images/protest-banner.png)no-repeat center top;
 		background-size: cover;
 		/*height: 49vh; this height covers half of the height of the screen device*/
-		height: 380px;
+		height: 270px;
+		border: 1px solid #666;
+		border-top-width: 0px;
+		box-shadow: 0px 0px 25px 2px rgba(0,0,0,0.2);
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
 	}
 	.bannerContent
 	{
@@ -101,17 +108,20 @@
 	.bannerContent h2
 	{
 		position:absolute;
-		bottom: 50px;
+		bottom: 0px;
     	width: 100%;
+
 	}
 	.bannerContent .btn
 	{
 		color:#FFF;
 		background: rgba(255, 255, 255, 0);
-		padding: 1em;
+		padding: 10px;
 		width: 12em;
 		border-radius: 0;
 		border: 0.1px solid #CCC;
+		border-bottom-right-radius: 5px;
+		border-top-left-radius: 5px;
 	}
 	.bannerContent .btn:hover
 	{
@@ -166,8 +176,8 @@
 	input:focus, select:focus, textarea:focus, button:focus /*removes blue highlight when pressing a button*/
 	{outline: none;}
 	#rightbar{height: 950px;}
-	#hot-button{float:left;border-right: 1px solid #DDD;}
-	#new-button{float:right;}
+	/*#hot-button{float:left;border-right: 1px solid #DDD;}
+	#new-button{float:right;}*/
 	#tabsContainer
 	{
 		height:100%;
@@ -234,40 +244,53 @@
        		height: 640px;
        	}
 	}
+	@media only screen and (max-width: 1017px)
+	{
+		.headline img
+		{
+			display: block;
+  			width: 100%;
+  			height: auto;
+		}
+	}
 	</style>
 {% endblock %}
 
 {% block hero %}
 {% autoescape false %}
-<style> /*this is just a quick fix, a white background is inherited from bootstrap 'scaffolding.less:31'*/
-	body{background: #e8e8e8;}
+<style>
+	#page{background: #fff !important;}
 </style>
-
-<div class = "container-fluid" style = "padding: 0;">	
+<div class = "container-fluid">	
 	<div class="headline">
 		<div class="headline-content">
-			<div class = "banner">
-				<div class = "bannerContent">
-					<h2>
-						<p class="buttons">
-							<a href="/new" class = "btn">Start a Propcott</a>
-							<a href="/about" class = "btn">Learn More</a>
-						</p>
-					</h2>
+			<div class = "row" style = "margin-top: 1px">
+				<div class = "col-sm-12">
+					<img src="/images/protest-banner.png" style = "max-height: 400px; max-width: 992px;border-bottom-right-radius: 5px;border-bottom-left-radius: 5px">
+					<div class = "bannerContent">
+						<h2>
+							<p class="buttons">
+								<a href="/new" class = "btn">Start a Propcott</a>
+								<a href="/about" class = "btn">Learn More</a>
+							</p>
+						</h2>
+					</div>
 				</div>
 			</div>
 			<!--Old Banner: 
 			<h1 style="color: #BD1417; text-transform: uppercase; line-height: .8; font-size: 42px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);margin: 1em 0;"><div style="font-size: 1.6em;">Unite</div><div style="font-size: 1.05em;">Abstain</div><div><s>Boycott</s></div><span style="font-family: cursive;font-style: italic;transform: rotate(-10deg) translate(-1em) translateY(0.2em);width: 0;display: inline-block;font-size: 1.25em;">Propcott</span></h1>
 			-->
-	      	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-	      	<ins class="adsbygoogle"
-	           	data-ad-client="ca-pub-5509225747243146"
-	           	data-ad-slot="3860750710"
-	           	data-ad-format="auto">
-	        </ins>
-	      	<script>
-	      		(adsbygoogle = window.adsbygoogle || []).push({});
-	      	</script>
+			<div style = "background: #fff">
+		      	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		      	<ins class="adsbygoogle"
+		           	data-ad-client="ca-pub-5509225747243146"
+		           	data-ad-slot="3860750710"
+		           	data-ad-format="auto">
+		        </ins>
+		      	<script>
+		      		(adsbygoogle = window.adsbygoogle || []).push({});
+		      	</script>
+		      </div>
 		</div>
 	</div>
 	{% if propcott.media_type %}
@@ -280,110 +303,176 @@
 
 {% block content %}
 {% autoescape false %}
-<div class= "container-fluid">
-	<div class="row" style = "background: #e8e8e8;">
-		<div class="leftCol col-12 col-md-7">
-			<div class = "colSeparator">
-				<div class = "leftTitle">
-					Baby Milk Action's - "Nestle Free Zone"
+
+<style type="text/css">
+	.propcott-media
+	{
+		height: 200px; width: 100%; 
+		margin-bottom: 5px;
+		border-bottom-right-radius: 2px;
+		border-bottom-left-radius: 2px;
+	}
+	.propcottItemnew
+	{
+		width: 100%;
+		height: 375px;
+		padding: 0px;
+	}
+	.d
+	{
+		margin-top: 5px;
+		padding: 5px;
+
+		
+
+	}/*f0eeee*/
+	.n{
+		border-bottom-right-radius: 2px;
+		border-bottom-left-radius: 2px;
+		box-shadow: 0px 2px 1px 2px rgba(204, 204, 204, 0.2);
+		height: 241px;
+		}
+	.propcottItem p{padding: 10px 10px 0px 10px;}
+	.s
+	{
+		background: #fff;
+		box-shadow: 0;
+		border: none;
+	}
+	.s:hover{color: #A55D5D;}
+	#hot-tab::-webkit-scrollbar, #new-tab::-webkit-scrollbar { 
+    display: none; }
+    #hot-button.active, #new-button.active{color: #A55D5D;}
+    #hot-button, #new-button{-webkit-transition:0.3s all;}
+}
+</style>
+<div class= "">
+	<div class="" style = "background: #fff;">
+		<button id = "hot-button" class="active s" onclick="show('hot')"><div style = "font-family: 'SoleilW01-bold','Dosis'; font-size: 30px"><i class="fa fa-fire" aria-hidden="true"></i> HOT</div></button>
+		<button id = "new-button" onclick="show('new')" class = "s"><div style = "font-family: 'SoleilW01-bold','Dosis'; font-size: 30px"><i class="fa fa-child" aria-hidden="true"></i> NEW</div></button>
+
+		<hr style = "margin-top: 0;margin-bottom: 5px; color: #321">
+		
+		<div id = "hot-tab">
+			<div class = "row" style = "padding: 0px 8px">
+				{% for propcott in hot %}
+				<div class = "col-xs-12 col-md-4 col-sm-6" style = "padding: 5px">
+					<div class = "propcottItemnew">
+						<div class = "n">
+						<div style = "border: solid #212c30; border-width: 8px 0px 0px 0px;margin-bottom:-4px;border-top-left-radius: 4px;border-top-right-radius: 4px;"></div>
+							<div style = "padding: 5px 10px; background: #35464c;border-top-left-radius: 4px;border-top-right-radius: 4px;">
+								<span style="color: #cca0a0; font-size: 20.6px;">{{ propcott.support.all }} </span> 
+								<span style = "color: #fff;">supporters</span>
+							</div>
+							<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}{% endif %}">
+							</div>
+						</div>
+						<div class = "d">
+							<a href="/p/{{ propcott.slug || propcott.id }}" style = " font-size: 13px; font-weight: 550; color: #677999">{{ propcott.title || 'Untitled' }}</a>	
+							<p style="color: #767676;white-space: normal">Targeting {{ propcott.target }}</p>
+						</div>
+					</div>
 				</div>
-			  	<div class = "leftImage">
-			  		<a href="https://www.facebook.com/events/1489691241358851/">
-			  		<img src="http://static.propcott.com/images/nestle-free-week-feature.png" style = "height: 450px;">
-			  		</a>
-			  	</div>
-			  	<p class = "leftDesc">From our friends at Baby 	Milk Action. Check them out 
-			  		<a href="http://www.babymilkaction.org/">here</a>
-			  		and their Facebook 
-			  		<a href="https://www.facebook.com/nestleboycottINBC">here</a>
-			  	</p>
-	      	</div>
+				{% endfor %}
+			</div>
+		</div>
+		
+
+		<div id = "new-tab" style = "display:none">
+			<div class = "row" style = "padding: 0px 8px">
+				{% for propcott in recent %}
+				<div class = "col-xs-12 col-md-4 col-sm-6" style = "padding: 5px">
+					<div class = "propcottItemnew">
+						<div class = "n">
+						<div style = "border: solid #212c30; border-width: 8px 0px 0px 0px;margin-bottom:-4px;border-top-left-radius: 4px;border-top-right-radius: 4px;"></div>
+							<div style = "padding: 5px 10px; background: #35464c;border-top-left-radius: 4px;border-top-right-radius: 4px;">
+								<span style="color: #cca0a0; font-size: 20.6px;">{{ propcott.support.all }} </span> 
+								<span style = "color: #fff;">supporters</span>
+							</div>
+							<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}{% endif %}">
+							</div>
+						</div>
+						<div class = "d">
+							<a href="/p/{{ propcott.slug || propcott.id }}" style = " font-size: 13px; font-weight: 550; color: #677999">{{ propcott.title || 'Untitled' }}</a>	
+							<p style="color: #767676;white-space: normal">Targeting {{ propcott.target }}</p>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
 		</div>
 
-		<div class="rightCol col-12 col-md-5"> 
-			<div id="rightbar">
-				<div class="tabs">
-					<button class="active btn" id="hot-button" onclick="show('hot')">Hot</button>
-					<button id="new-button" onclick="show('new')" class = "btn">New</button>
-				</div>
-
-				{% if featured %}
-				<div id = "tabsContainer" style= "background: #FFF">
-					<div class = "propcottItemFeatured">
-						<p style="margin: 0;"><strong><small>FEATURED</small></strong></p>
-						<div class="propcott-media" style="{% if featured.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ featured.media_link }}');{% elseif featured.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ featured.media_link }}/mqdefault.jpg');{% else %}{% endif %}">
-						</div>
-						<div class = "propcott-desc">
-							<a href="/p/{{ featured.slug || featured.id }}">{{ featured.title || 'Untitled' }}</a>
-							<p style="color: #767676">Targeting {{ featured.target }}<br>
-								<span style="color: #983131; font-size: 12.6px">{{ featured.support.all }}</span> 
-								<span style = "color: #767676;">supporters</span>
-							</p>
-						</div>
-						
+		
+		<div style = "font-family: 'SoleilW01-bold','Dosis'; font-size: 30px"> FEATURED</div>
+		<hr style = "margin-top: 0px">
+		<div class = "row">
+			<div class="col-sm-6" style = "border-radius: 5px;padding-bottom: 55px">
+				<div style = "width: 100%">
+					<div class = "leftTitle" style = "font-size: 25px; text-align: center;padding:0px">
+						Baby Milk Action's - "Nestle Free Zone"
 					</div>
-					<hr style = "border-color: #CCC; width: 94%; margin-top: 0;margin-bottom: 0; align:center"></hr>
+					<p class = "" style = "font-size: 12px; margin-bottom: 20px; text-align: center">From our friends at Baby 	Milk Action. Check them out 
+				  		<a href="http://www.babymilkaction.org/">here</a>
+				  		and their Facebook 
+				  		<a href="https://www.facebook.com/nestleboycottINBC">here</a>
+				  	</p>
+				  	<div style = "margin: 0px auto;width: 90%;">
+				  		<a href="https://www.facebook.com/events/1489691241358851/">
+				  		<img src="http://static.propcott.com/images/nestle-free-week-feature.png" style = "width: 100%;">
+				  		</a>
+				  	</div>
+				  
+		      	</div>
+			</div>
 
-					{% endif %}
 
-					<div id="new-tab" style="display: none;">
-						{% for propcott in recent %}
-							<div class = "propcottItem">
-								<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}{% endif %}">
-								</div>
-								<div class = "propcott-desc">
-									<a href="/p/{{ propcott.slug || propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
-									<p style="color: #767676">Targeting {{ propcott.target }}<br>
-										<span style="color: #983131; font-size: 12.6px">{{ propcott.support.all }} </span> 
-										<span style = "color: #767676;">supporters</span>
-									</p>
-								</div>
+			{% if featured %}
+				<div class = "col-sm-6">
+					<div class = "propcottItemnew feat">
+						<div class = "n" style = "height: 450px">
+							<div style = "padding: 5px 10px; background: #444;border-top-left-radius: 5px;">
+								<span style="color: #A55D5D; font-size: 20.6px">{{ featured.support.all }} </span> 
+								<span style = "color: #fff;">supporters</span>
 							</div>
-						{% endfor %}
-						<p class = "viewMore"><a href="/explore">View more...</a></p>
-					</div>
+							<style type="text/css">
+								.feat .propcott-media{height: 411px;}
 
-					<div id="hot-tab">
-						{% for propcott in hot %}
-							<div class = "propcottItem">
-								<div class="propcott-media" style="{% if propcott.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ propcott.media_link }}');{% elseif propcott.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ propcott.media_link }}/mqdefault.jpg');{% else %}{% endif %}">
-								</div>
-								<div class = "propcott-desc">
-									<a href="/p/{{ propcott.slug || propcott.id }}">{{ propcott.title || 'Untitled' }}</a>
-									<p style="color: #767676">Targeting {{ propcott.target }}<br>
-										<span style="color: #983131; font-size: 12.6px">{{ propcott.support.all }} </span> 
-										<span style = "color: #767676;">supporters</span>
-									</p>
-								</div>
+							</style>
+							<div class="propcott-media" style="{% if featured.media_type == 'image' %}background-image: url('http://static.propcott.com/{{ featured.media_link }}');{% elseif featured.media_type == 'video' %}background-image: url('http://img.youtube.com/vi/{{ featured.media_link }}/mqdefault.jpg');{% else %}{% endif %}">
 							</div>
-						{% endfor %}
-						<p class = "viewMore"><a href="/explore/monthly">View more...</a></p>
+						</div>
+						<div class = "d">
+							<a href="/p/{{ featured.slug || featured.id }}" style = " font-size: 13px; font-weight: 550; color: #677999">{{ featured.title || 'Untitled' }}</a>	
+							<p style="color: #767676;white-space: normal">Targeting {{ featured.target }}</p>
+						</div>
 					</div>
 				</div>
+			{% endif %}
+		</div>
+		
+		<div class = "row" style = "background: #fff">
+			<div class = "col-12" style = "margin-top: 100px">
+				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	      		<!-- Home Page -->
+	      		<ins class="adsbygoogle"
+	           		style="display:block;"
+	           		data-ad-client="ca-pub-5509225747243146"
+	           		data-ad-slot="4530231913"
+	           		data-ad-format="auto">
+	           	</ins>
+	      		<script>
+	      			(adsbygoogle = window.adsbygoogle || []).push({});
+	      		</script>
 			</div>
 		</div>
 	</div>
-	<div class = "row" style = "background: #e8e8e8">
-		<div class = "col-12" style = "margin-top: 325px">
-			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      		<!-- Home Page -->
-      		<ins class="adsbygoogle"
-           		style="display:block;"
-           		data-ad-client="ca-pub-5509225747243146"
-           		data-ad-slot="4530231913"
-           		data-ad-format="auto">
-           	</ins>
-      		<script>
-      			(adsbygoogle = window.adsbygoogle || []).push({});
-      		</script>
-		</div>
-	</div>
 </div>
+
 <script type="text/javascript">
 var show = function(tab) {
-	document.getElementById('hot-button').className = '';
-	document.getElementById('new-button').className = '';
-	document.getElementById(tab + '-button').className = 'active';
+	document.getElementById('hot-button').className = 's';
+	document.getElementById('new-button').className = 's';
+	document.getElementById(tab + '-button').className = 'active s';
 
 	document.getElementById('hot-tab').style.display='none';
 	document.getElementById('new-tab').style.display='none';

@@ -108,7 +108,7 @@ module.exports.join = (req, res) => {
 			req.session.joined.push(req.params.id);
 		}
 		
-		req.flash('Thank you for joining this propcott!');
+		//req.flash('Thank you for joining this propcott!'); taking this for now to deal with join + signup showing two popups
 		res.redirect(`/p/${req.params.slug}`);
 	});
 };

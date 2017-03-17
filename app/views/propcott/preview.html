@@ -150,8 +150,13 @@
 	.fb-comments, .fb-comments * {
 		width: 100% !important;
 	}
+
+	/*if you press "preview" on create propcott page, this page loads*/
 	input:focus, select:focus, textarea:focus, button:focus{outline: none;}
+	/*specific to this page*/
 	.previewPropcottBox h3{margin-bottom: 5px; font-weight: bold;font-size: 35px !important;}
+	.previewPropcottBox{min-height: 400px;padding-bottom: 30px;}
+
 	/*banner*/
 	#propcott-title{margin: 0 0 1em 0;font-size: 25px;}
 	.banner-propcott-num{vertical-align: top;}
@@ -162,16 +167,20 @@
 	.banner-propcott-target span{padding-left: 2px;}
 	.banner-propcott-target strong{font-size: 2.7em;}
 	/*the white box*/
-	.previewPropcottBox{min-height: 400px;padding-bottom: 30px;}
+	
 	.col-md-7{padding: 0em 0em 0em 2.5em;}
-	.col-md-5{padding: .4em 1.5em 0em 3em;float: right; clear: right}
+	.col-md-5{padding: .4em 2.5em 0em 2em;float: right; clear: right;}
 	.col-md-7 *{font-size: 17px;}
 	.col-md-7 a{display:block;overflow: hidden;text-overflow: ellipsis;}
 	#propcott-media{margin: 0 1em;}
+	.image-container{text-align: center; background: #222;box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.1);}
+	.image-container img{max-width: 100%; max-height: 250px; vertical-align: top;}
+	.propcottImage{padding-top: 1em;margin-top: 8px}
 	.goalCol h3{margin-top: .5em}
-	.whatCol{padding-top: 0;}
-	#propcott-how li{color: #000;} #propcott-how p{color:#A87070;} #propcott-how{padding: 0px 18px;}
-	#propcott-alt li{color: #000;} #propcott-alt p{color:#A87070;}	#propcott-alt{padding: 0px 18px;}
+	.whatCol, .insteadCol{padding-top: 0;padding-left: 2.5em;}
+	#propcott-how li{color: #000;} #propcott-how p{color:#A87070;} #propcott-how{padding: 0px 28px;}
+	#propcott-alt li{color: #000;} #propcott-alt p{color:#A87070;} #propcott-alt{padding: 0px 28px;}
+	p{margin-top: 10px;}
 
 	/*If width is below or equal to 992px*/
 	@media(max-width: 992px)
@@ -180,6 +189,11 @@
 		.col-md-7{padding: 0 2em;}
 		.propcottImage{padding: 0em 1em 0em 3em;margin: 1em;}
 	}
+	/*forces a larger container*/
+	.container-fluid.universal, .container-fluid.footerContainer
+	{
+   		max-width: 1100px !important;  
+   	}
 	</style>
 {% endblock %}
 

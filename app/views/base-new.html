@@ -284,6 +284,10 @@
 			color: white;
 			margin-bottom: 1.6px;
 		}
+		#header .proplogo a:hover
+		{
+			border: 0px;
+		}
 		#nav ul li {
 			float: none;
 		}
@@ -387,13 +391,14 @@
 </head>
 <body>
 {% block body.start %}{% endblock %}
-<a href="/" id="logo">Propcott</a>
+<!--<a href="/" id="logo">Propcott</a>-->
 <div id="close"></div>
 <div id="menu"></div>
 <div id="header">
 	<div class="container-fluid navContainer">
 	<ul id="nav" class="clear" aria-label="Navigation">
 		<span class = "left">
+			<li class = "proplogo" style = "padding-left: 0px"><a href="/" style = "padding: 8px;"><img src="/images/logo-mobile-header.png" style = "height: 30px;width: 40px;padding-right: 15px;border: 1px solid #ccc; border-width: 0px 1px 0px 0px;"></a></li>
 			<li><a href="/search"><span class="typcn typcn-zoom"></span> Search</a></li>
 			<li><a href="/explore"><span class="typcn typcn-world"></span> Explore</a></li>
 			<li><a href="/editor"><span class="typcn typcn-pen"></span> Start a Propcott</a></li>
@@ -424,7 +429,8 @@
 	</span>
 	</div>
 </div>
-<div id="page" style = "background: #E8E8E8">
+
+<div id="page" style = "background: #e8e8e8">
 	
 	{% block page.start %}{% endblock %}
 	{% for message in messages %}
@@ -440,7 +446,7 @@
 		<p>Just a short description.</p>
 	{% endblock %}
 	</div>
-		<div class = "container-fluid universal">
+	<div class = "container-fluid universal">
 		{% block page %}
 			<ul id="actions">
 			{% block actions %}{% endblock %}
@@ -450,7 +456,7 @@
 			{% endblock %}
 			</div>
 		{% endblock %}
-		</div>
+	</div>
 	{% block page.end %}{% endblock %}
 </div>
 <style>
@@ -504,7 +510,7 @@
 				<h3>We need your help!</h3>
 				<p>Starting something great isn't easy. It takes a lot of work and resources. We're willing to put in the work, but need help with funding the project. If willing, please donate!</p>
 			</div-->
-			<div class="col-0 col-md-3" style = "width: 20%"></div>
+			<div class="col-0 col-md-3" style = "width: 16%;"></div>
 			<div class="col-12 col-md-3" style="text-align:left;padding: 0 0em;">
 				<div>
 					
@@ -713,9 +719,13 @@ button.facebook:hover {
 	/*If device screen is larger than or equal to 992px*/
 	@media (min-device-width: 992px) 
 	{
-    	.container-fluid.universal, .container-fluid.navContainer, .container-fluid.footerContainer
+    	.container-fluid.universal, .container-fluid.footerContainer
     	{
-       		max-width: 1150px;
+       		max-width: 992px;
+       	}
+       	.container-fluid.navContainer
+       	{
+       		max-width: 1030px;
        	}
    	}
    	/*If browser window width is larger than or equal to 1300px (cannot be reached by laptops)*/
@@ -723,18 +733,18 @@ button.facebook:hover {
 	{
     	.container-fluid.universal, .container-fluid.navContainer, .container-fluid.footerContainer
     	{
-       		max-width: 1300px;
+       		/*max-width: 992px;*/
        	}
    	}
 
    	/*aligns the containers and removes default padding by bootstrap*/
-	.container-fluid.universal, .container-fluid.navContainer, .container-fluid.footerContainer
+	.container.universal, .container.navContainer, .container.footerContainer
 	{
         margin:0 auto;
         padding: 0;
     }
-    .container-fluid.universal		{padding: 0em 0.5em 2em 0.5em;}
-    .container-fluid.universal .row {background: white;}
+    .container.universal		{padding: 0em 0.5em 2em 0.5em;}
+    .container.universal .row {background: white;}
     #content
 	{
 		margin-right: 5px;
@@ -810,7 +820,7 @@ button.facebook:hover {
 	.login-bottom-button{border-bottom-left-radius: 4px;border-bottom-right-radius: 4px;padding: 18px}
 	.signup-bottom-button{border-bottom-left-radius: 4px;border-bottom-right-radius: 4px;}
 	.login-tooltip{text-align: left !important;background: #fff !important}
-	#login-box input{color: black;}
+	.popup-form input{color: black !important;}
 	.login-note{background: white; word-wrap:break-word; max-width: 400px;color: #555; border-radius: 5px; padding:10px; font-size: 10px;}
 	.login-note div {font-size: 15px; text-align: center; padding-bottom: 10px;}
 	.login-note p {line-height: 15px; border: 0;}
